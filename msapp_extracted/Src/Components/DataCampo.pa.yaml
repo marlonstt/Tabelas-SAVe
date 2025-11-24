@@ -1,0 +1,236 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  DataCampo:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      Ancora:
+        PropertyKind: Input
+        DisplayName: Ancora
+        Description: Define a ancora ao qual a data está vinculada na coleção.
+        DataType: Text
+        Default: ="Texto"
+      ContextoEntrada:
+        PropertyKind: Input
+        DisplayName: ContextoEntrada
+        Description: Recebe variáveis de contexto para uso interno.
+        DataType: Text
+        Default: ="Texto"
+      DataEntrada:
+        PropertyKind: Input
+        DisplayName: DataEntrada
+        Description: Define uma data predefinida que já estará pronta.
+        DataType: DateAndTime
+        Default: =Today()
+      DataHora:
+        PropertyKind: Input
+        DisplayName: DataHora
+        Description: Booleano que define se será exibida também a hora ou apenas a data. (true para mostrar hora, false apenas data)
+        DataType: Boolean
+        Default: =false
+      DataMaxima:
+        PropertyKind: Input
+        DisplayName: DataMaxima
+        Description: Uma propriedade personalizada
+        DataType: DateAndTime
+        Default: =Today()
+      DataMinima:
+        PropertyKind: Input
+        DisplayName: DataMinima
+        Description: Uma propriedade personalizada
+        DataType: DateAndTime
+        Default: =DateTime(1900, 1, 1, 0, 0, 0)
+      DataSaida:
+        PropertyKind: Input
+        DisplayName: DataSaida
+        Description: Exporta a data digitada ou editada para fora.
+        RaiseOnReset: true
+        DataType: DateAndTime
+        Default: =LookUp(_tempDataAux, tela = Self.Ancora, data)
+      ModoEdicao:
+        PropertyKind: Input
+        DisplayName: ModoEdicao
+        Description: Define se o controle está apenas em modo exibição ou em modo edição.
+        DataType: Boolean
+        Default: =true
+      SalvarData:
+        PropertyKind: Event
+        DisplayName: SalvarData
+        Description: Salva a data de saída na lista respectiva.
+        ReturnType: None
+        Default: =
+    Properties:
+      Height: =32
+      OnReset: =Self.SalvarData()
+      Width: =320
+    Children:
+      - entradaDataEmCalendario:
+          Control: DatePicker@0.0.46
+          Properties:
+            DisplayMode: =If(Parent.ModoEdicao, DisplayMode.Edit, DisplayMode.View)
+            EndDate: =Parent.DataMaxima
+            Height: =Parent.Height
+            OnChange: |
+              =If(
+                  IsBlankOrError(
+                      LookUp(
+                          _tempDataAux,
+                          tela = Parent.Ancora
+                      )
+                  ),
+                  Collect(
+                      _tempDataAux,
+                      {
+                          data: Self.SelectedDate,
+                          tela: Parent.Ancora
+                      }
+                  ),
+                  Patch(
+                      _tempDataAux,
+                      LookUp(
+                          _tempDataAux,
+                          tela = Parent.Ancora
+                      ),
+                      {data: Self.SelectedDate}
+                  )
+              );
+            Placeholder: =
+            SelectedDate: =LookUp(_tempDataAux, tela = Parent.Ancora, data)
+            StartDate: =Parent.DataMinima
+            Width: =Parent.Width
+      - entradaDataEmTexto:
+          Control: TextInput@0.0.54
+          Properties:
+            DisplayMode: =If(Parent.ModoEdicao, DisplayMode.Edit, DisplayMode.View)
+            Fill: =Blank()
+            Font: =Font.Lato
+            FontSize: =9
+            OnChange: |-
+              =If(
+                  IsBlankOrError(
+                      LookUp(
+                          _tempDataAux,
+                          tela = Parent.Ancora
+                      )
+                  ),
+                  Collect(
+                      _tempDataAux,
+                      {
+                          data: If(
+                              IsMatch(
+                                  Self.Value,
+                                  "^\d{2}/\d{2}/\d{4}$"
+                              ) && !IsBlankOrError(DateValue((Self.Value))),
+                              DateValue(Self.Value),
+                              IsMatch(
+                                  Self.Value,
+                                  "^\d{8}$"
+                              ),
+                              DateValue(
+                                  Mid(
+                                      Self.Value,
+                                      1,
+                                      2
+                                  ) & "/" & Mid(
+                                      Self.Value,
+                                      3,
+                                      2
+                                  ) & "/" & Mid(
+                                      Self.Value,
+                                      5,
+                                      4
+                                  )
+                              ),
+                              Blank()
+                          ),
+                          tela: Parent.Ancora
+                      }
+                  ),
+                  Patch(
+                      _tempDataAux,
+                      LookUp(
+                          _tempDataAux,
+                          tela = Parent.Ancora
+                      ),
+                      {
+                          data: If(
+                              IsMatch(
+                                  Self.Value,
+                                  "^\d{2}/\d{2}/\d{4}$"
+                              ) && !IsBlankOrError(DateValue((Self.Value))),
+                              DateValue(Self.Value),
+                              IsMatch(
+                                  Self.Value,
+                                  "^\d{8}$"
+                              ),
+                              DateValue(
+                                  Mid(
+                                      Self.Value,
+                                      1,
+                                      2
+                                  ) & "/" & Mid(
+                                      Self.Value,
+                                      3,
+                                      2
+                                  ) & "/" & Mid(
+                                      Self.Value,
+                                      5,
+                                      4
+                                  )
+                              ),
+                              Blank()
+                          )
+                      }
+                  )
+              );
+              Reset(Self);
+              Reset(entradaDataEmCalendario)
+            Placeholder: =
+            TriggerOutput: ='TextInputCanvas.TriggerOutput'.Delayed
+            Value: |-
+              =If(
+                  Parent.DataHora = false,
+                  Text(
+                      If(
+                          IsBlank(
+                              LookUp(
+                                  _tempDataAux,
+                                  tela = Parent.Ancora,
+                                  data
+                              )
+                          ),
+                          DataCampo.DataEntrada,
+                          LookUp(
+                              _tempDataAux,
+                              tela = Parent.Ancora,
+                              data
+                          )
+                      ),
+                      "[$-pt-BR]dd/mm/yyyy"
+                  ),
+                  If(
+                      IsBlank(
+                          LookUp(
+                              _tempDataAux,
+                              tela = Parent.Ancora,
+                              data
+                          )
+                      ),
+                      DataCampo.DataEntrada,
+                      LookUp(
+                          _tempDataAux,
+                          tela = Parent.Ancora,
+                          data
+                      )
+                  )
+              )
+            Width: =If(Parent.ModoEdicao, entradaDataEmCalendario.Width - 30, entradaDataEmCalendario.Width)
+            X: =entradaDataEmCalendario.X
+            Y: =entradaDataEmCalendario.Y

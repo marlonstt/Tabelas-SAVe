@@ -1,0 +1,1194 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  Tela_Matriz_De_Risco:
+    Properties:
+      Fill: =RGBA(245, 246, 248, 1)
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+      OnVisible: |
+        =If(!IsBlankOrError(ItemAtual.ID_Caso),
+            If(
+                !(App.ActiveScreen.Name in _paginasVisitadas),
+                Collect(
+                    _paginasVisitadas,
+                    App.ActiveScreen.Name
+                );
+                Patch(
+                    SAVe_Geral,
+                    {ID: ItemAtual.ID_Caso},
+                    {Paginas_Visitadas: JSON(_paginasVisitadas)}
+                )
+            );
+        )
+    Children:
+      - Container1_25:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =Parent.Height-Self.Y-10
+            RadiusBottomLeft: =8
+            RadiusBottomRight: =8
+            RadiusTopLeft: =8
+            RadiusTopRight: =8
+            Width: =1346
+            X: =10
+            Y: =80
+          Children:
+            - MenuPassos_12:
+                Control: CanvasComponent
+                ComponentName: MenuPassos
+                Properties:
+                  GaleriaAbas: "=With(\r\n    {\r\n        menu: If(_FormCompleto, \r\n        [\r\n            {\r\n                idMenu: 1,\r\n                largura: 120,\r\n                nome: \"Dados de Entrada\",\r\n                descricao: \"\",\r\n                pagina: Tela_Dados_Entrada\r\n            },\r\n            {\r\n                idMenu: 2,\r\n                largura: 120,//150\r\n                nome: \"Sócio identificação\",\r\n                descricao: \"\",\r\n                pagina: Tela_Socio_Identificacao\r\n            },\r\n            {\r\n                idMenu: 3,\r\n                largura: 120,//180\r\n                nome: \"Ensino - trab - renda\",\r\n                descricao: \"\",\r\n                pagina: Tela_Ensino_Trab_Renda\r\n            },\r\n            \r\n            {\r\n                idMenu: 4,\r\n                largura: 60,\r\n                nome: \"Assistência\",\r\n                descricao: \"\",\r\n                pagina: Tela_Assistencia\r\n            },\r\n            {\r\n                idMenu: 5,\r\n                largura: 90,\r\n                nome: \"Território\",\r\n                descricao: \"\",\r\n                pagina: Tela_Territorio\r\n            },\r\n            {\r\n                idMenu: 6,\r\n                largura: 80,\r\n                nome: \"Saúde\",\r\n                descricao: \"\",\r\n                pagina: Tela_Saude\r\n            },\r\n            {\r\n                idMenu: 7,\r\n                largura: 85,\r\n                nome: \"Vínculos\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vinculos\r\n            },\r\n            {\r\n                idMenu: 8,\r\n                largura: 120,//200\r\n                nome: \"Situação Jurídica\",\r\n                descricao: \"\",\r\n                pagina: Tela_SitJuridica\r\n            },\r\n            {\r\n                idMenu: 9,\r\n                largura: 110,\r\n                nome: \"Agressor\",\r\n                descricao: \"\",\r\n                pagina: Tela_Agressor\r\n            },\r\n            {\r\n                idMenu: 10,\r\n                largura: 120,//180\r\n                nome: \"Proteção-segurança\",\r\n                descricao: \"\",\r\n                pagina: Tela_Protecao_Seguranca\r\n            },\r\n            {\r\n                idMenu: 11,\r\n                largura: 120,\r\n                nome: \"Vitimização secundária e terciária\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vitimizacao\r\n            },\r\n            {\r\n                idMenu: 12,\r\n                largura: 120,\r\n                nome: \"Síntese Analítica\",\r\n                descricao: \"\",\r\n                pagina: Tela_Sintese_Analitica\r\n            },\r\n            {\r\n                idMenu: 13,\r\n                largura: 120,//170\r\n                nome: \"Acompanhamentos\",\r\n                descricao: \"\",\r\n                pagina: Tela_Acompanhamento\r\n            },\r\n            /*{\r\n                idMenu: 14;\r\n                largura: 120;//200\r\n                nome: \"Relato de Atendimento\";\r\n                descricao: \"\";\r\n                pagina: Tela_Relato_De_Atendimento\r\n            };*/\r\n            {\r\n                idMenu: 14,\r\n                largura: 120,//135\r\n                nome: \"Encerramento\",\r\n                descricao: \"\",\r\n                pagina: Tela_Encerramento\r\n            },\r\n            /*{\r\n                idMenu: 15;\r\n                largura: 120;//132\r\n                nome: \"Matriz de risco\";\r\n                descricao: \"\";\r\n                pagina: Tela_Matriz_De_Risco\r\n            };*/\r\n            {\r\n                idMenu: 15,\r\n                largura: 120,//135\r\n                nome: \"Referências\",\r\n                descricao: \"\",\r\n                pagina: Tela_Referencias\r\n            }\r\n        ], //dados de entrada, socioidentificação, situação juridica maior e menor, proteção-segurança e vitimização \r\n        [\r\n            {\r\n                idMenu: 1,\r\n                largura: 170,\r\n                nome: \"Dados de Entrada\",\r\n                descricao: \"\",\r\n                pagina: Tela_Dados_Entrada\r\n            },\r\n            {\r\n                idMenu: 2,\r\n                largura: 150,\r\n                nome: \"Sócio identificação\",\r\n                descricao: \"\",\r\n                pagina: Tela_Socio_Identificacao\r\n            },\r\n            {\r\n                idMenu: 3,\r\n                largura: 200,\r\n                nome: \"Situação Jurídica\",\r\n                descricao: \"\",\r\n                pagina: Tela_SitJuridica\r\n            },\r\n            {\r\n                idMenu: 4,\r\n                largura: 180,\r\n                nome: \"Proteção-segurança\",\r\n                descricao: \"\",\r\n                pagina: Tela_Protecao_Seguranca\r\n            },\r\n            {\r\n                idMenu: 5,\r\n                largura: 240,\r\n                nome: \"Vitimização secundária e terciária\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vitimizacao\r\n            }\r\n        ]\r\n        )\r\n    },\r\n    With(\r\n        {\r\n            // Acrescenta a coluna \"larguraCalc\" conforme regra:\r\n            // Se o item for o selecionado (_passoAtual.idMenu), usa a largura definida;\r\n// Senão, divide o espaço restante igualmente entre os demais itens.\r\nmenuCalc: AddColumns(\r\n                menu,\r\n                larguraCalc,\r\n                If(\r\n                    pagina = MenuPassos_12.TelaAtual,\r\n                    largura,\r\n                    If(pagina = Tela_Vitimizacao, largura,\r\n                    ((Self.Width - 100) - LookUp(\r\n                        menu,\r\n                        pagina = MenuPassos_12.TelaAtual,\r\n                        largura\r\n                    )) / (CountRows(menu) - 1))\r\n                )\r\n            )\r\n        },\r\n        // Ordena os itens pelo idMenu e calcula a posição \"distancia\" de cada item\r\n// somando as larguras calculadas dos itens anteriores.\r\n        AddColumns(\r\n            SortByColumns(\r\n                menuCalc,\r\n                \"idMenu\",\r\n                SortOrder.Ascending\r\n            ) As m1,\r\n            distancia,\r\n            Sum(\r\n                Filter(\r\n                    menuCalc,\r\n                    idMenu < m1.idMenu\r\n                ),\r\n                larguraCalc\r\n            )\r\n        )\r\n    )\r\n)"
+                  Height: =100
+                  TelaAtual: =App.ActiveScreen
+                  Width: =App.Width
+            - Canvas2_12:
+                Control: FluidGrid@2.3.0
+                Properties:
+                  BorderThickness: =0
+                  Height: =583
+                  Width: =Parent.Width
+                  Y: =95
+                Children:
+                  - DataCard16_1:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: |+
+                          =Container2_53.Height+10
+                        Width: =1346
+                        X: =0
+                        Y: =0
+                      Children:
+                        - Container2_53:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Regular
+                              Height: =700
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1315
+                              X: =10
+                              Y: =5
+                            Children:
+                              - Container7_4:
+                                  Control: GroupContainer@1.3.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    Fill: =RGBA(247, 250, 252, 1)
+                                    Height: =590
+                                    Width: =200
+                                    X: =24
+                                    Y: =60
+                              - Container7_3:
+                                  Control: GroupContainer@1.3.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    Fill: =RGBA(247, 251, 255, 1)
+                                    Height: =590
+                                    Width: =250
+                                    X: =998
+                                    Y: =60
+                              - Container7_2:
+                                  Control: GroupContainer@1.3.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    Fill: =RGBA(247, 243, 242, 1)
+                                    Height: =590
+                                    Width: =250
+                                    X: =742
+                                    Y: =60
+                              - Container7_1:
+                                  Control: GroupContainer@1.3.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    Fill: =RGBA(247, 247, 240, 1)
+                                    Height: =590
+                                    Width: =250
+                                    X: =486
+                                    Y: =60
+                              - Container7:
+                                  Control: GroupContainer@1.3.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    Fill: =RGBA(251, 255, 250, 1)
+                                    Height: =590
+                                    Width: =250
+                                    X: =230
+                                    Y: =60
+                              - Label2_483:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoSecundaria
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Matriz de Risco para Avaliação de Vulnerabilidades"
+                                    Width: =500
+                                    X: =24
+                                    Y: =13
+                              - TextCanvas3:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =10
+                                    Fill: =RGBA(217, 242, 208, 1)
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(21, 68, 18, 1)
+                                    Height: =34
+                                    Size: =20
+                                    Text: ="Baixo Risco (1)"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =250
+                                    X: =230
+                                    Y: =40
+                              - TextCanvas3_1:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =10
+                                    Fill: =RGBA(250, 250, 190, 1)
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(105, 105, 6, 1)
+                                    Height: =34
+                                    Size: =20
+                                    Text: ="Médio Risco (2)"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =250
+                                    X: =486
+                                    Y: =40
+                              - TextCanvas3_2:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =10
+                                    Fill: =RGBA(252, 225, 220, 1)
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(132, 40, 38, 1)
+                                    Height: =34
+                                    Size: =20
+                                    Text: ="Alto Risco (3)"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =250
+                                    X: =742
+                                    Y: =40
+                              - TextCanvas3_3:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =10
+                                    Fill: =RGBA(225, 238, 252, 1)
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(12, 59, 94, 1)
+                                    Height: =34
+                                    Size: =20
+                                    Text: ="Observações/Intervençõe"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =250
+                                    X: =998
+                                    Y: =40
+                              - TextCanvas3_4:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =10
+                                    Fill: =RGBA(235, 238, 240, 1)
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =34
+                                    Size: =20
+                                    Text: ="Unidade Analítica"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =200
+                                    X: =24
+                                    Y: =40
+                              - UnidadeAnaliticaVEV:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Vítima de especial vulnerabilidade"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =200
+                                    X: =24
+                                    Y: =86
+                              - UnidadeAnaliticaGFVS:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Grupo familiar e vínculos sociais"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =200
+                                    X: =24
+                                    Y: =156
+                              - UnidadeAnaliticaEQ:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Escolaridade/qualificação"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =200
+                                    X: =24
+                                    Y: =226
+                              - UnidadeAnaliticaSLE:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Situação laboral e econômica"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =200
+                                    X: =24
+                                    Y: =296
+                              - UnidadeAnaliticaSHT:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Situação habitacional e território"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =200
+                                    X: =24
+                                    Y: =366
+                              - UnidadeAnaliticaSS:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Situação de saúde"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =200
+                                    X: =24
+                                    Y: =436
+                              - UnidadeAnaliticaDJ:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Demandas jurídicas"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =200
+                                    X: =24
+                                    Y: =506
+                              - UnidadeAnaliticaPS:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Proteção e segurança"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =200
+                                    X: =24
+                                    Y: =576
+                              - VEV_01:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.verde
+                                    CheckboxSize: =20
+                                    Checked: =((LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso, PPS_Sexo) = "Masculino" && Value(entradaIdade.Value) > 18 && Value(entradaIdade.Value) < 60 && LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso, PPS_idgenero) = "Homem cisgênero" && LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso, PPS_orientacao_sexual) = "Heterossexual") || IsBlank(LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso))) && !VEV_03.Checked
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Não pertence a grupos vulneráveis"
+                                    OnCheck: |-
+                                      =Reset(VEV_02);
+                                      Reset(VEV_03);
+                                      Set(UA_VEV, 1)
+                                    Width: =250
+                                    X: =230
+                                    Y: =86
+                              - VEV_02:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.amarelo
+                                    CheckboxSize: =20
+                                    Checked: =!VEV_01.Checked && !VEV_03.Checked
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Pertence a grupos vulneráveis, mas com apoio"
+                                    OnCheck: |-
+                                      =Reset(VEV_01);
+                                      Reset(VEV_03);
+                                      Set(UA_VEV, 2)
+                                    Width: =250
+                                    X: =486
+                                    Y: =86
+                              - VEV_03:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.vermelho
+                                    CheckboxSize: =20
+                                    Checked: |-
+                                      =(
+                                          LookUp(
+                                              SAVe_Vinculos,
+                                              ID_Caso = ItemAtual.ID_Caso,
+                                              Alt_Fam_Com_Vitim
+                                          ) = "Sim" ||
+                                          LookUp(
+                                              SAVe_Vinculos,
+                                              ID_Caso = ItemAtual.ID_Caso,
+                                              Vulnerab_Vinculos_Fam
+                                          ) = "Sim" &&
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ID_Caso = ItemAtual.ID_Caso,
+                                              PPS_Sexo
+                                          ) <> "Masculino" &&
+                                          Value(entradaIdade.Value) < 18 ||
+                                          Value(entradaIdade.Value) > 60 &&
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ID_Caso = ItemAtual.ID_Caso,
+                                              PPS_idgenero
+                                          ) <> "Homem cisgênero" &&
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ID_Caso = ItemAtual.ID_Caso,
+                                              PPS_orientacao_sexual
+                                          ) <> "Heterossexual"
+                                      ) && 
+                                      !IsBlank(
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          )
+                                      ) &&
+                                      !IsBlank(
+                                          LookUp(
+                                              SAVe_Vinculos,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          )
+                                      )
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Pertence a grupos vulneráveis sem apoio"
+                                    OnCheck: |-
+                                      =Reset(VEV_02);
+                                      Reset(VEV_01);
+                                      Set(UA_VEV, 3)
+                                    Width: =250
+                                    X: =742
+                                    Y: =86
+                              - TextCanvas3_14:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Crianças, idosos, PCDs, LGBTQIA+, etc."
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =250
+                                    X: =998
+                                    Y: =86
+                              - GFVS_01:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.verde
+                                    CheckboxSize: =20
+                                    Checked: =!GFVS_02.Checked && !GFVS_03.Checked && !IsBlank(entradaHouveAlteracaoSistemaFamiliarEmRazaoVitimizacao.Selected.Value)
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Rede de apoio funcional"
+                                    OnCheck: |-
+                                      =Reset(GFVS_02);
+                                      Reset(GFVS_03);
+                                      Set(UA_GFVS, 1)
+                                    Width: =250
+                                    X: =230
+                                    Y: =156
+                              - GFVS_02:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.amarelo
+                                    CheckboxSize: =20
+                                    Checked: =entradaHouveAlteracaoSistemaFamiliarEmRazaoVitimizacao.Selected.Value = "Não" && entradaFoiIdentificadaVulnerabilidadeVinculosFamiliares.Selected.Value = "Sim"
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Rede de apoio frágil e instável"
+                                    OnCheck: |-
+                                      =Reset(GFVS_01);
+                                      Reset(GFVS_03);
+                                      Set(UA_GFVS, 2)
+                                    Width: =250
+                                    X: =486
+                                    Y: =156
+                              - GFVS_03:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.vermelho
+                                    CheckboxSize: =20
+                                    Checked: =entradaHouveAlteracaoSistemaFamiliarEmRazaoVitimizacao.Selected.Value = "Sim"
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Isolamento social, rompimento familiar"
+                                    OnCheck: |-
+                                      =Reset(GFVS_02);
+                                      Reset(GFVS_01);
+                                      Set(UA_GFVS, 3)
+                                    Width: =250
+                                    X: =742
+                                    Y: =156
+                              - TextCanvas3_15:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Avaliar apoio familiar e comunitário"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =250
+                                    X: =998
+                                    Y: =156
+                              - EQ_01:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.verde
+                                    CheckboxSize: =20
+                                    Checked: =!EQ_02.Checked && !EQ_03.Checked && !IsBlank(entradaGrauEscolaridade.Selected.Value)
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Ensino médio completo ou superior"
+                                    OnCheck: |-
+                                      =Reset(EQ_02);
+                                      Reset(EQ_03);
+                                      Set(UA_EQ, 1)
+                                    Width: =250
+                                    X: =230
+                                    Y: =226
+                              - EQ_02:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.amarelo
+                                    CheckboxSize: =20
+                                    Checked: =entradaGrauEscolaridade.Selected.Value = "E. Fund. Completo" || entradaGrauEscolaridade.Selected.Value = "E. Médio Incompleto"
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Ensino fundamental completo ou médio incompleto"
+                                    OnCheck: |-
+                                      =Reset(EQ_01);
+                                      Reset(EQ_03);
+                                      Set(UA_EQ, 2)
+                                    Width: =250
+                                    X: =486
+                                    Y: =226
+                              - EQ_03:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.vermelho
+                                    CheckboxSize: =20
+                                    Checked: =entradaGrauEscolaridade.Selected.Value = "Analfabeto Funcional" || entradaGrauEscolaridade.Selected.Value = "Analfabeto" || entradaGrauEscolaridade.Selected.Value = "E. Fund. Incompleto"
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Analfabetismo ou nenhuma qualificação"
+                                    OnCheck: |-
+                                      =Reset(EQ_02);
+                                      Reset(EQ_01);
+                                      Set(UA_EQ, 3)
+                                    Width: =250
+                                    X: =742
+                                    Y: =226
+                              - TextCanvas3_16:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Impacto na autonomia econômica"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =250
+                                    X: =998
+                                    Y: =226
+                              - SLE_01:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.verde
+                                    CheckboxSize: =20
+                                    Checked: =!SLE_02.Checked && !SLE_03.Checked && !IsBlank(entradaSituacaoOcupacionalTrabalho.Selected.Value)
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Emprego formal estável"
+                                    OnCheck: |-
+                                      =Reset(SLE_02);
+                                      Reset(SLE_03);
+                                      Set(UA_SLE, 1)
+                                    Width: =250
+                                    X: =230
+                                    Y: =296
+                              - SLE_02:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.amarelo
+                                    CheckboxSize: =20
+                                    Checked: =entradaSituacaoOcupacionalTrabalho.Selected.Value = "Estudante/Mestrando/Doutorando/Bolsista" || entradaSituacaoOcupacionalTrabalho.Selected.Value = "Trabalhador/a informal" || entradaAfastadoTrabalho.Selected.Value = "Afastamento por Motivo Pessoal ou Profissional" && !SLE_03.Checked || entradaValorRenda.Selected.Value = "de 1 a 2 salários mínimos" || entradaValorRenda.Selected.Value = "de 2 a 5 salários mínimos"
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Trabalho informal ou desemprego eventual"
+                                    OnCheck: |-
+                                      =Reset(SLE_01);
+                                      Reset(SLE_03);
+                                      Set(UA_SLE, 2)
+                                    Width: =250
+                                    X: =486
+                                    Y: =296
+                              - SLE_03:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.vermelho
+                                    CheckboxSize: =20
+                                    Checked: =entradaSituacaoOcupacionalTrabalho.Selected.Value = "Desempregado/a" || entradaSituacaoOcupacionalTrabalho.Selected.Value = "Inativo/a" || entradaSituacaoOcupacionalTrabalho.Selected.Value = "Aposentado/a" || entradaAfastadoTrabalho.Selected.Value = "Afastamento Médico" || entradaValorRenda.Selected.Value = "Menos de um salário mínimo"
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Desemprego crônico, renda insuficiente"
+                                    OnCheck: |-
+                                      =Reset(SLE_02);
+                                      Reset(SLE_01);
+                                      Set(UA_SLE, 3)
+                                    Width: =250
+                                    X: =742
+                                    Y: =296
+                              - SHT_01:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.verde
+                                    CheckboxSize: =20
+                                    Checked: =entradaMoradiaRegular.Value && !SHT_02.Checked && !SHT_03.Checked
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Moradia segura em local adequado"
+                                    OnCheck: |-
+                                      =Reset(SHT_02);
+                                      Reset(SHT_03);
+                                      Set(UA_SHT, 1)
+                                    Width: =250
+                                    X: =230
+                                    Y: =366
+                              - TextCanvas3_17:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Avaliar programas de inclusão econômica"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =250
+                                    X: =998
+                                    Y: =296
+                              - SHT_02:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.amarelo
+                                    CheckboxSize: =20
+                                    Checked: =entradaMoradiaIrregular.Value && !SHT_03.Checked || entradaMaterialPredominante.Selected.Value = "Madeira"
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Moradia precária em área urbana de risco"
+                                    OnCheck: |-
+                                      =Reset(SHT_01);
+                                      Reset(SHT_03);
+                                      Set(UA_SHT, 2)
+                                    Width: =250
+                                    X: =492
+                                    Y: =366
+                              - SHT_03:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.vermelho
+                                    CheckboxSize: =20
+                                    Checked: =entradaMoradiaEmergencial.Value || entradaMaterialPredominante.Selected.Value = "Mista" || entradaMaterialPredominante.Selected.Value = "Outro" || entradaSofreuDanosNaturais.Selected.Value = "Sim" || entradaApresentaRiscoGeologico.Selected.Value = "Sim" || entradaFatorRiscoAmbiental.Value || entradaFatorConflitoFundiario.Value || entradaFatorConflitoUrbano.Value || entradaFatorOutros.Value
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Sem moradia fixa ou em área de risco grave"
+                                    OnCheck: |-
+                                      =Reset(SHT_02);
+                                      Reset(SHT_01);
+                                      Set(UA_SHT, 3)
+                                    Width: =250
+                                    X: =742
+                                    Y: =366
+                              - TextCanvas3_18:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Avaliar riscos ambientais e habitacionais"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =250
+                                    X: =998
+                                    Y: =366
+                              - SS_01:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.verde
+                                    CheckboxSize: =20
+                                    Checked: |-
+                                      =//!SS_02.Checked && !SS_03.Checked && !IsBlank(_dadosSaude)
+                                      !SS_02.Checked && !SS_03.Checked && !IsBlank(LookUp(SAVe_Saude, ID_Caso = ItemAtual.ID_Caso))
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Saúde estável, acesso regular a cuidados"
+                                    OnCheck: |-
+                                      =Reset(SS_02);
+                                      Reset(SS_03);
+                                      Set(UA_SS, 1)
+                                    Width: =250
+                                    X: =230
+                                    Y: =436
+                              - SS_02:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.amarelo
+                                    CheckboxSize: =20
+                                    Checked: =(entradaHistoricoVitimizacaoSexual.Selected.Value = "Sim" || entradaPrecisaCuidadosComSaude.Selected.Value = "Sim" || entradaPossuiDoencaCronica.Selected.Value = "Sim" || entradaPossuiProblemaSaudeNaoPermanente.Selected.Value = "Sim" || entradaPessoaDeficiencia.Selected.Value = "Sim" || entradaUsaMedicacaoContinua.Selected.Value = "Sim" || entradaUsaMedicacaoPsiquiatrica.Selected.Value = "Sim") && !SS_03.Checked
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Doenças crônicas controladas"
+                                    OnCheck: |-
+                                      =Reset(SS_01);
+                                      Reset(SS_03);
+                                      Set(UA_SS, 2)
+                                    Width: =250
+                                    X: =492
+                                    Y: =436
+                              - SS_03:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.vermelho
+                                    CheckboxSize: =20
+                                    Checked: =entradaProblemaSaudeAcompanhado.Selected.Value = "Não" || entradaProblemaSaudeAcompanhado.Selected.Value = "Não" || entradaCuidadosComSaudeAcompanhado.Selected.Value = "Não" || entradaVitimizacaoSexualAcompanhada.Selected.Value = "Não"
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Doenças graves sem acompanhamento"
+                                    OnCheck: |-
+                                      =Reset(SS_02);
+                                      Reset(SS_01);
+                                      Set(UA_SS, 3)
+                                    Width: =250
+                                    X: =742
+                                    Y: =436
+                              - TextCanvas3_19:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Necessidade de suporte médico contínuo"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =250
+                                    X: =998
+                                    Y: =436
+                              - DJ_01:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.verde
+                                    CheckboxSize: =20
+                                    Checked: =!DJ_02.Checked && !DJ_03.Checked && !IsBlank(entradaVitimaIdentificadaComoVulneravelVitmizacaoSecundariaTerciaria.Selected.Value)
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Sem pendências jurídicas"
+                                    OnCheck: |-
+                                      =Reset(DJ_02);
+                                      Reset(DJ_03);
+                                      Set(UA_DJ, 1)
+                                    Width: =250
+                                    X: =230
+                                    Y: =506
+                              - DJ_02:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.amarelo
+                                    CheckboxSize: =20
+                                    Checked: =(checkDMV.Checked || checkDAA.Checked || checkDS.Checked || checkDPP.Checked || checkDPD.Checked || checkDCOFRI.Checked || checkDTDR.Checked) && !DJ_03.Checked
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Questões jurídicas em andamento"
+                                    OnCheck: |-
+                                      =Reset(DJ_01);
+                                      Reset(DJ_03);
+                                      Set(UA_DJ, 2)
+                                    Width: =250
+                                    X: =492
+                                    Y: =506
+                              - DJ_03:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.vermelho
+                                    CheckboxSize: =20
+                                    Checked: =entradaVitimaIdentificadaComoVulneravelVitmizacaoSecundariaTerciaria.Selected.Value = "Sim" || checkDJDD.Checked || checkDPNR.Checked
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Sem documentação ou litígios complexos"
+                                    OnCheck: |-
+                                      =Reset(DJ_02);
+                                      Reset(DJ_01);
+                                      Set(UA_DJ, 3)
+                                    Width: =250
+                                    X: =742
+                                    Y: =506
+                              - TextCanvas3_20:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Necessidade de assistência jurídica"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =250
+                                    X: =998
+                                    Y: =506
+                              - PS_01:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.verde
+                                    CheckboxSize: =20
+                                    Checked: =!entradaSituacaoAmeacaRelatada.Checked && !PS_02.Checked && !PS_03.Checked && !IsBlank(LookUp(SAVe_protecao_seguranca, ID_Caso = ItemAtual.ID_Caso))//!IsBlank(_dadosProtecaoSeguranca)
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Não há ameaças diretas"
+                                    OnCheck: |-
+                                      =Reset(PS_02);
+                                      Reset(PS_03);
+                                      Set(UA_PS, 1)
+                                    Width: =250
+                                    X: =230
+                                    Y: =576
+                              - PS_02:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =RGBA(8, 222, 8, 1)
+                                    CheckboxSize: =20
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Ameaças ocasionais"
+                                    OnCheck: |-
+                                      =Reset(PS_01);
+                                      Reset(PS_03);
+                                      Set(UA_PS, 2)
+                                    Width: =250
+                                    X: =492
+                                    Y: =576
+                              - PS_03:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.vermelho
+                                    CheckboxSize: =20
+                                    Checked: =entradaSituacaoAmeacaRelatada.Checked
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =70
+                                    Label: ="Ameaça iminente à integridade física"
+                                    OnCheck: |-
+                                      =Reset(PS_02);
+                                      Reset(PS_01);
+                                      Set(UA_PS, 3)
+                                    Width: =250
+                                    X: =742
+                                    Y: =576
+                              - TextCanvas3_21:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Center
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =15
+                                    Text: ="Acesso a medidas protetivas e segurança"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =250
+                                    X: =998
+                                    Y: =576
+                              - TextCanvas3_23:
+                                  Control: Text@0.0.51
+                                  Properties:
+                                    Align: ='TextCanvas.Align'.Start
+                                    BorderRadius: =4
+                                    Font: =Font.Lato
+                                    FontColor: =RGBA(53, 61, 63, 1)
+                                    Height: =70
+                                    Size: =20
+                                    Text: |-
+                                      ="Obs: Atribuir uma pontuação de 1 (baixo risco), 2 (médio risco) ou 3 (alto risco) para cada critério."
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    Width: =1224
+                                    X: =24
+                                    Y: =640
+                              - Container17:
+                                  Control: GroupContainer@1.3.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    Height: =Parent.Height
+                                    Width: =Parent.Width
+                  - DataCard1_2:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =60
+                        Width: =1346
+                        X: =0
+                        Y: =3
+                      Children:
+                        - botaoSalvarPasso1_5:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =ColorFade(Self.Fill, -15%)
+                              BorderThickness: =0
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              Fill: =cor.tema
+                              Font: =Font.'Open Sans'
+                              HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              OnSelect: |-
+                                =/*Patch(
+                                    'SAVe_Forms_Demo';
+                                    ItemAtual;
+                                    {
+                                        Matriz_de_Risco: JSON(
+                                            {
+                                                VEV: UA_VEV;
+                                                GFVS: UA_GFVS;
+                                                EQ: UA_EQ;
+                                                SLE: UA_SLE;
+                                                SHT: UA_SHT;
+                                                SS: UA_SS;
+                                                DJ: UA_DJ;
+                                                PS: UA_PS;
+                                                OV: UA_OV
+                                            }
+                                        )
+                                    }
+                                )*/
+                                Set(
+                                    _dadosMatriz,
+                                    {
+                                        VEV: UA_VEV,
+                                        GFVS: UA_GFVS,
+                                        EQ: UA_EQ,
+                                        SLE: UA_SLE,
+                                        SHT: UA_SHT,
+                                        SS: UA_SS,
+                                        DJ: UA_DJ,
+                                        PS: UA_PS
+                                    }
+                                );
+                                /*************
+                                If(
+                                    IsBlankOrError(ItemAtual);
+                                    Set(
+                                        ItemAtual;
+                                        Patch(
+                                            SAVe_Forms_Demo;
+                                            Defaults(SAVe_Forms_Demo);
+                                            {
+                                                Título: _FormCompleto;
+                                                Dados_de_Entrada: JSON(_dadosEntrada);
+                                                Socio_Identificacao: JSON(_dadosSocioIdentificacao);
+                                                'Ensino-Trab-Renda': JSON(_dadosEnsinoTrabRenda);
+                                                Assistencia: JSON(_dadosAssistencia);
+                                                Territorio: JSON(_dadosTerritorio);
+                                                Saude: JSON(_dadosSaude);
+                                                Vinculos: JSON(_dadosVinculos);
+                                                Situacao_Juridica: JSON(_dadosSitJuridica);
+                                                Agressor: JSON(_dadosAgressor);
+                                                Protecao_Seguranca: JSON(_dadosProtecaoSeguranca);
+                                                Vitimizacao_Secundaria_e_Terciaria: JSON(_dadosVitimizacao);
+                                                Matriz_de_Risco: JSON(_dadosMatriz);
+                                                Acompanhamento: JSON(_dadosAcompanhamento);
+                                                Relato_de_Atendimento: JSON(_dadosRelato);
+                                                Encerramento: JSON(_dadosEncerramento)
+                                            }
+                                        )
+                                    );
+                                    Patch(
+                                        SAVe_Forms_Demo;
+                                        ItemAtual;
+                                        {
+                                            Título: _FormCompleto;
+                                            Dados_de_Entrada: JSON(_dadosEntrada);
+                                            Socio_Identificacao: JSON(_dadosSocioIdentificacao);
+                                            'Ensino-Trab-Renda': JSON(_dadosEnsinoTrabRenda);
+                                            Assistencia: JSON(_dadosAssistencia);
+                                            Territorio: JSON(_dadosTerritorio);
+                                            Saude: JSON(_dadosSaude);
+                                            Vinculos: JSON(_dadosVinculos);
+                                            Situacao_Juridica: JSON(_dadosSitJuridica);
+                                            Agressor: JSON(_dadosAgressor);
+                                            Protecao_Seguranca: JSON(_dadosProtecaoSeguranca);
+                                            Vitimizacao_Secundaria_e_Terciaria: JSON(_dadosVitimizacao);
+                                            Matriz_de_Risco: JSON(_dadosMatriz);
+                                            Acompanhamento: JSON(_dadosAcompanhamento);
+                                            Relato_de_Atendimento: JSON(_dadosRelato);
+                                            Encerramento: JSON(_dadosEncerramento)
+                                        }
+                                    )
+                                );;
+                                **********/
+
+                                //MenuPassos_12.NavegarProximo()
+                                Navigate(Tela_Referencias)
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: =Self.Color
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Size: =13
+                              Text: ="Referências"
+                              Width: =194
+                              X: =botaoSalvarPasso1.X
+                              Y: =botaoSalvarPasso1.Y
+                        - botaoSalvarPasso1_26:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =ColorFade(Self.Fill, -15%)
+                              BorderThickness: =0
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              Fill: =ColorFade(Color.Red, 40%)
+                              Font: =Font.'Open Sans'
+                              HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              OnSelect: |-
+                                =/*If(
+                                    IsBlankOrError(ItemAtual);
+                                    Set(
+                                        ItemAtual;
+                                        Patch(
+                                            SAVe_Forms_Demo;
+                                            Defaults(SAVe_Forms_Demo);
+                                            {
+                                                Título: _FormCompleto;
+                                                Dados_de_Entrada: JSON(_dadosEntrada);
+                                                Socio_Identificacao: JSON(_dadosSocioIdentificacao);
+                                                'Ensino-Trab-Renda': JSON(_dadosEnsinoTrabRenda);
+                                                Assistencia: JSON(_dadosAssistencia);
+                                                Territorio: JSON(_dadosTerritorio);
+                                                Saude: JSON(_dadosSaude);
+                                                Vinculos: JSON(_dadosVinculos);
+                                                Situacao_Juridica: JSON(_dadosSitJuridica);
+                                                Agressor: JSON(_dadosAgressor);
+                                                Protecao_Seguranca: JSON(_dadosProtecaoSeguranca);
+                                                Vitimizacao_Secundaria_e_Terciaria: JSON(_dadosVitimizacao);
+                                                Matriz_de_Risco: JSON(_dadosMatriz);
+                                                Acompanhamento: JSON(_dadosAcompanhamento);
+                                                Relato_de_Atendimento: JSON(_dadosRelato);
+                                                Encerramento: JSON(_dadosEncerramento)
+                                            }
+                                        )
+                                    );
+                                    Patch(
+                                        SAVe_Forms_Demo;
+                                        ItemAtual;
+                                        {
+                                            Título: _FormCompleto;
+                                            Dados_de_Entrada: JSON(_dadosEntrada);
+                                            Socio_Identificacao: JSON(_dadosSocioIdentificacao);
+                                            'Ensino-Trab-Renda': JSON(_dadosEnsinoTrabRenda);
+                                            Assistencia: JSON(_dadosAssistencia);
+                                            Territorio: JSON(_dadosTerritorio);
+                                            Saude: JSON(_dadosSaude);
+                                            Vinculos: JSON(_dadosVinculos);
+                                            Situacao_Juridica: JSON(_dadosSitJuridica);
+                                            Agressor: JSON(_dadosAgressor);
+                                            Protecao_Seguranca: JSON(_dadosProtecaoSeguranca);
+                                            Vitimizacao_Secundaria_e_Terciaria: JSON(_dadosVitimizacao);
+                                            Matriz_de_Risco: JSON(_dadosMatriz);
+                                            Acompanhamento: JSON(_dadosAcompanhamento);
+                                            Relato_de_Atendimento: JSON(_dadosRelato);
+                                            Encerramento: JSON(_dadosEncerramento)
+                                        }
+                                    )
+                                );;
+                                */
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: =Self.Color
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Size: =13
+                              Text: ="Salvar Tudo"
+                              Visible: =false
+                              Width: =194
+                              X: =907
+                              Y: =5
+                        - botaoSalvarPasso1_25:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =ColorFade(Self.Fill, -15%)
+                              BorderThickness: =0
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              Fill: =cor.tema
+                              Font: =Font.'Open Sans'
+                              HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              OnSelect: =MenuPassos_12.NavegarAnterior()
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: =Self.Color
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Size: =13
+                              Text: ="Voltar"
+                              Width: =194
+                              X: =12
+                              Y: =16
+      - MenuSuperior_13:
+          Control: CanvasComponent
+          ComponentName: MenuSuperior
+          Properties:
+            Height: =60
+            Width: =1346
+            X: =10
+            Y: =10

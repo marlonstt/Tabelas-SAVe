@@ -1,0 +1,121 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  MenuBuscar:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      TextoBusca:
+        PropertyKind: Output
+        DisplayName: TextoBusca
+        Description: Define o texto da caixa de entrada de texto de busca.
+        DataType: Text
+      buscarCasosArquivados:
+        PropertyKind: Output
+        DisplayName: buscarCasosArquivados
+        Description: Define a busca por casos arquivados.
+        DataType: Boolean
+    Properties:
+      Height: =If(_expandirBuscar, 100, 60)
+      TextoBusca: =entradaCampoBuscar.Value
+      Width: =If(_expandirBuscar, 400, 60)
+      buscarCasosArquivados: =checkCasosArquivados.Checked
+    Children:
+      - ContainerMenuBuscar:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Center
+            LayoutDirection: =LayoutDirection.Horizontal
+            LayoutGap: =If(_expandirBuscar, 10, 0)
+            LayoutJustifyContent: =LayoutJustifyContent.Center
+            PaddingBottom: =10
+            PaddingLeft: =10
+            PaddingRight: =10
+            PaddingTop: =10
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Width: =Parent.Width
+          Children:
+            - ContainerFiltrosBusca:
+                Control: GroupContainer@1.3.0
+                Variant: AutoLayout
+                Properties:
+                  BorderColor: =RGBA(106, 122, 127, 1)
+                  BorderThickness: =1
+                  DropShadow: =DropShadow.Semilight
+                  Fill: =RGBA(255, 255, 255, 1)
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutJustifyContent: =LayoutJustifyContent.Center
+                  LayoutMinHeight: =80
+                  PaddingBottom: =10
+                  PaddingLeft: =15
+                  PaddingRight: =15
+                  PaddingTop: =10
+                  RadiusBottomLeft: =10
+                  RadiusBottomRight: =10
+                  RadiusTopLeft: =10
+                  RadiusTopRight: =10
+                  Visible: =_expandirBuscar
+                Children:
+                  - entradaCampoBuscar:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Digite para buscar um caso específico."
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                        BorderColor: =RGBA(106, 122, 127, 1)
+                        BorderRadius: =255
+                        BorderStyle: =BorderStyle.Solid
+                        BorderThickness: =1
+                        FillPortions: =1
+                        LayoutMinWidth: =100
+                        Placeholder: ="Buscar Caso..."
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Width: =160
+                        X: =906
+                        Y: =24
+                  - ContainerCheckbox:
+                      Control: GroupContainer@1.3.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutMinHeight: =10
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                      Children:
+                        - checkCasosArquivados:
+                            Control: CheckBox@0.0.30
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              BasePaletteColor: =cor.tema
+                              FillPortions: =1
+                              Label: ="Casos Arquivados"
+            - BotaoMenuBuscar:
+                Control: Button@0.0.45
+                Properties:
+                  Align: =Align.Center
+                  BasePaletteColor: =cor.tema
+                  BorderRadius: =255
+                  Height: =50
+                  Icon: ="Search"
+                  Layout: ='ButtonCanvas.Layout'.IconOnly
+                  OnSelect: |-
+                    =Set(_expandirBuscar, !_expandirBuscar);
+                    Reset(entradaCampoBuscar);
+                    Reset(GalCasos)
+                  Width: =50

@@ -1,0 +1,526 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  Tela_Gestao_Usuarios:
+    Properties:
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+    Children:
+      - MenuSuperior_6:
+          Control: CanvasComponent
+          ComponentName: MenuSuperior
+          Properties:
+            Height: =60
+            Width: =1346
+            X: =10
+            Y: =10
+      - ContainerFundoUsuarios:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            Height: =679
+            LayoutDirection: =LayoutDirection.Vertical
+            Width: =1346
+            X: =10
+            Y: =81
+          Children:
+            - ContainerTopo:
+                Control: GroupContainer@1.3.0
+                Variant: ManualLayout
+                Properties:
+                  LayoutMinHeight: =60
+                Children:
+                  - CampoPesquisarUsuario:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                        BorderColor: =RGBA(214, 221, 224, 1)
+                        BorderRadius: =8
+                        BorderStyle: =BorderStyle.Solid
+                        BorderThickness: =1
+                        DisplayMode: =If(IsBlank(_UserPesquisado), DisplayMode.Edit, DisplayMode.View)
+                        Height: =35
+                        Placeholder: ="Pesquisar..."
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Type: ='TextInputCanvas.Type'.Search
+                        Value: =_UserPesquisado.DisplayName
+                        Width: =500
+                        X: =20
+                        Y: =(Parent.Height/2) - (Self.Height/2)
+                  - AdicionarUsuario:
+                      Control: Button@0.0.45
+                      Properties:
+                        BasePaletteColor: =ColorFade(cor.tema, 30%)
+                        BorderRadius: =8
+                        DisplayMode: =If(IsEmpty(GalUsuarios.AllItems) && !IsBlank(_UserPesquisado), DisplayMode.Edit, DisplayMode.Disabled)
+                        Height: =35
+                        Icon: ="Person"
+                        Layout: ='ButtonCanvas.Layout'.IconAfter
+                        OnSelect: |-
+                          =Notify(
+                              "Salvando...",
+                              NotificationType.Information
+                          );
+                          Patch(
+                              SAVe_Usuarios,
+                              Defaults(SAVe_Usuarios),
+                              {
+                                   Usuario: {
+                                      '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+                                      Claims: "i:0#.f|membership|" & Lower(_UserPesquisado.Mail),
+                                      DisplayName: _UserPesquisado.DisplayName,
+                                      Email: _UserPesquisado.Mail,
+                                      Department: _UserPesquisado.Department,
+                                      JobTitle: _UserPesquisado.JobTitle,
+                                      Picture: UsuáriosdoOffice365.UserPhotoV2(_UserPesquisado.Mail)
+                                  },
+                                  Cargo: "Usuário"
+                              }
+                          );
+                          UpdateContext(
+                              {
+                                  _UserPesquisado:
+                                  Blank()
+                              }
+                          );
+                          Reset(CampoPesquisarUsuario);
+                          Notify(
+                              "Salvo! ✅",
+                              NotificationType.Success,
+                              2000
+                          )
+                        Text: ="Adicionar Usuário"
+                        Width: =180
+                        X: =CampoPesquisarUsuario.X + CampoPesquisarUsuario.Width + 20
+                        Y: =(Parent.Height/2) - (Self.Height/2)
+                  - RemoverUsuario:
+                      Control: Button@0.0.45
+                      Properties:
+                        BasePaletteColor: =ColorFade(cor.tema, 30%)
+                        BorderRadius: =8
+                        DisplayMode: =If(!IsBlankOrError(GalUsuarios.Selected), DisplayMode.Edit, DisplayMode.Disabled)
+                        Height: =35
+                        Icon: ="Delete"
+                        Layout: ='ButtonCanvas.Layout'.IconAfter
+                        OnSelect: |-
+                          =Notify(
+                              "Salvando...",
+                              NotificationType.Information
+                          );
+                          Remove(
+                              SAVe_Usuarios,
+                              {ID: GalUsuarios.Selected.ID}
+                          );
+                          Notify(
+                              "Salvo! ✅",
+                              NotificationType.Success,
+                              2000
+                          )
+                        Text: ="Remover Usuário"
+                        Width: =180
+                        X: =AdicionarUsuario.X + AdicionarUsuario.Width + 20
+                        Y: =(Parent.Height/2) - (Self.Height/2)
+                  - ButtonCanvas8:
+                      Control: Button@0.0.45
+                      Properties:
+                        Appearance: ='ButtonCanvas.Appearance'.Transparent
+                        Icon: ="Eraser"
+                        Layout: ='ButtonCanvas.Layout'.IconOnly
+                        OnSelect: |-
+                          =UpdateContext({_UserPesquisado: Blank()});
+                          Reset(CampoPesquisarUsuario)
+                        Text: =
+                        Visible: =!IsBlank(CampoPesquisarUsuario.Value)
+                        Width: =32
+                        X: =CampoPesquisarUsuario.Width - Self.Width
+                        Y: =CampoPesquisarUsuario.Y
+            - ContainerGalUsuarios:
+                Control: GroupContainer@1.3.0
+                Variant: ManualLayout
+                Properties:
+                  FillPortions: =10
+                Children:
+                  - GalUsuarios:
+                      Control: Gallery@2.15.0
+                      Variant: BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Height: =Parent.Height
+                        Items: |
+                          =SortByColumns(
+                              AddColumns(
+                                  Filter(
+                                      ShowColumns(SAVe_Usuarios, Usuario, Cargo, ID),
+                                      CampoPesquisarUsuario.Value in Usuario.DisplayName || CampoPesquisarUsuario.Value in Usuario.Email || CampoPesquisarUsuario.Value in Usuario.JobTitle || CampoPesquisarUsuario.Value in Cargo
+                                  ),
+                                  NomeUsuario, Usuario.DisplayName,
+                                  NomeCargo, Cargo
+                              ),
+                              "NomeCargo",
+                              SortOrder.Ascending,
+                              "NomeUsuario",
+                              SortOrder.Ascending
+                          )
+                        Transition: =Transition.Pop
+                        Width: =Parent.Width
+                      Children:
+                        - FundoPerfilUser:
+                            Control: Rectangle@2.3.0
+                            Properties:
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Fill: =If(ThisItem.IsSelected, ColorFade(cor.tema, 50%), ColorFade(cor.tema, 70%))
+                              Height: =Parent.TemplateHeight - 10
+                              OnSelect: =Select(Parent)
+                              Width: =Parent.TemplateWidth - 10
+                              X: =5
+                              Y: =5
+                        - NomePerfilUser:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 1)
+                              Color: =RGBA(255, 255, 255, 1)
+                              Font: =Font.Lato
+                              FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                              Height: =Self.Size * 1.8
+                              OnSelect: =Select(Parent)
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: =ThisItem.Usuario.DisplayName
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =550
+                              X: =140
+                              Y: =(Parent.TemplateHeight - (Self.Size * 1.8 + EmailPerfilUser.Size * 1.8)) / 3
+                        - EmailPerfilUser:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 1)
+                              Color: =RGBA(255, 255, 255, 1)
+                              Font: =Font.Lato
+                              FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                              Height: =Self.Size * 1.8
+                              OnSelect: =Select(Parent)
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =12
+                              Text: =ThisItem.Usuario.Email
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =NomePerfilUser.Width
+                              X: =NomePerfilUser.X
+                              Y: =NomePerfilUser.Y + NomePerfilUser.Height
+                        - FuncaoPerfilUser:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 1)
+                              Color: =RGBA(255, 255, 255, 1)
+                              Font: =Font.Lato
+                              FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                              Height: =Self.Size * 1.8
+                              OnSelect: =Select(Parent)
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =12
+                              Text: =ThisItem.Usuario.JobTitle
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =NomePerfilUser.Width
+                              X: =NomePerfilUser.X
+                              Y: =EmailPerfilUser.Y + EmailPerfilUser.Height
+                        - ComboboxCanvas1:
+                            Control: ComboBox@0.0.51
+                            Properties:
+                              DefaultSelectedItems: |-
+                                =[{Value: ThisItem.Cargo}]
+                              InputTextPlaceholder: ="Cargo"
+                              Items: =["Administrador","Usuário"]
+                              OnChange: |-
+                                =Patch(
+                                    SAVe_Usuarios,
+                                    {ID: ThisItem.ID},
+                                    {Cargo: Self.Selected.Value}
+                                )
+                              Width: =200
+                              X: =1080
+                              Y: =38
+                            Children:
+                              - Value1:
+                                  Control: ComboBoxDataField@1.5.0
+                                  Variant: textualColumn
+                                  IsLocked: true
+                                  Properties:
+                                    FieldDisplayName: ="Value"
+                                    FieldName: ="Value"
+                                    FieldType: ="s"
+                                    Order: =4
+                        - CheckboxCanvas1:
+                            Control: CheckBox@0.0.30
+                            Properties:
+                              BasePaletteColor: =cor.tema
+                              Checked: =ThisItem.IsSelected
+                              DisplayMode: =If(!ThisItem.IsSelected, DisplayMode.Edit, DisplayMode.View)
+                              FontColor: =RGBA(166, 215, 153, 1)
+                              Height: =40
+                              Label: =
+                              Width: =40
+                              X: =CointainerFotoUser.X - Self.Width - 5
+                              Y: =EmailPerfilUser.Y - EmailPerfilUser.Height/2
+                        - CointainerFotoUser:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =
+                              DropShadow: =DropShadow.None
+                              Fill: =RGBA(255, 255, 255, 1)
+                              Height: =If(ThisItem.IsSelected, 72, 65)
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =If(ThisItem.IsSelected, 72, 65)
+                              X: =NomePerfilUser.X - Self.Width - 7
+                              Y: =(Parent.TemplateHeight / 2) - (Self.Height / 2)
+                            Children:
+                              - IniciaisNome:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: "=Switch((Left(\r\n        Trim(Text(User().FullName)),\r\n        1\r\n    )), \r\n     \"A\",RGBA(255, 102, 102, 1), // Vermelho claro\r\n        \r\n     \"B\",\r\n        RGBA(102, 255, 102, 1), // Verde claro\r\n        \r\n     \"C\",\r\n        RGBA(102, 102, 255, 1), // Azul claro\r\n        \r\n     \"D\",\r\n        RGBA(255, 255, 102, 1), // Amarelo claro\r\n        \r\n     \"E\",\r\n        RGBA(255, 153, 51, 1), // Laranja claro\r\n        \r\n     \"F\",\r\n        RGBA(255, 204, 204, 1), // Rosa claro\r\n        \r\n     \"G\",\r\n        RGBA(204, 204, 255, 1), // Lilás claro\r\n        \r\n     \"H\",\r\n        RGBA(204, 255, 255, 1), // Turquesa claro\r\n        \r\n     \"I\",\r\n        RGBA(255, 204, 153, 1), // Pêssego claro\r\n        \r\n     \"J\",\r\n        RGBA(255, 255, 204, 1), // Marfim claro\r\n        \r\n     \"K\",\r\n        RGBA(204, 255, 204, 1), // Verde menta claro\r\n        \r\n     \"L\",\r\n        RGBA(255, 204, 255, 1), // Magenta claro\r\n        \r\n     \"M\",\r\n        RGBA(204, 255, 102, 1), // Limão claro\r\n        \r\n     \"N\",\r\n        RGBA(153, 255, 255, 1), // Azul celeste claro\r\n        \r\n     \"O\",\r\n        RGBA(255, 204, 102, 1), // Dourado claro\r\n        \r\n     \"P\",\r\n        RGBA(255, 204, 102, 1), // Dourado claro\r\n        \r\n     \"Q\",\r\n        RGBA(255, 153, 255, 1), // Rosa chá claro\r\n        \r\n     \"R\",\r\n        RGBA(204, 204, 204, 1), // Cinza claro\r\n        \r\n     \"S\",\r\n        RGBA(204, 204, 204, 1), // Cinza claro\r\n        \r\n     \"T\",\r\n        RGBA(255, 204, 102, 1), // Dourado claro\r\n        \r\n     \"U\",\r\n        RGBA(204, 204, 204, 1), // Cinza claro\r\n        \r\n     \"V\",\r\n        RGBA(255, 204, 102, 1), // Dourado claro\r\n        \r\n     \"W\",\r\n        RGBA(255, 255, 255, 1), // Branco\r\n        \r\n     \"X\",\r\n        RGBA(255, 255, 255, 1), // Branco\r\n        \r\n     \"Y\",\r\n        RGBA(255, 255, 255, 1), // Branco\r\n        \r\n     \"Z\",\r\n        RGBA(255, 255, 255, 1)) // Branco\r\n        \r\n\r\n"
+                                    BorderStyle: =BorderStyle.None
+                                    BorderThickness: =1
+                                    Color: "=Switch(\r\n    Left(\r\n        Trim(Text(User().FullName)),\r\n        1\r\n    ), \r\n    \"A\", RGBA(102, 0, 0, 1), // Vermelho escuro\r\n        \r\n    \"B\", RGBA(0, 102, 0, 1), // Verde escuro\r\n        \r\n    \"C\", RGBA(0, 0, 102, 1), // Azul escuro\r\n        \r\n    \"D\", RGBA(102, 102, 0, 1), // Amarelo escuro\r\n        \r\n    \"E\", RGBA(153, 77, 0, 1), // Laranja escuro\r\n        \r\n    \"F\", RGBA(204, 102, 102, 1), // Rosa escuro\r\n        \r\n    \"G\", RGBA(102, 102, 153, 1), // Lilás escuro\r\n        \r\n    \"H\", RGBA(102, 153, 153, 1), // Turquesa escuro\r\n        \r\n    \"I\", RGBA(204, 102, 0, 1), // Pêssego escuro\r\n        \r\n    \"J\", RGBA(102, 102, 51, 1), // Marfim escuro\r\n        \r\n    \"K\", RGBA(0, 102, 51, 1), // Verde menta escuro\r\n        \r\n    \"L\", RGBA(102, 0, 102, 1), // Magenta escuro\r\n        \r\n    \"M\", RGBA(0, 102, 0, 1), // Limão escuro\r\n        \r\n    \"N\", RGBA(0, 102, 102, 1), // Azul celeste escuro\r\n        \r\n    \"O\", RGBA(204, 102, 0, 1), // Dourado escuro\r\n        \r\n    \"P\", RGBA(204, 102, 0, 1), // Dourado escuro\r\n        \r\n    \"Q\", RGBA(153, 0, 102, 1), // Rosa chá escuro\r\n        \r\n    \"R\", RGBA(102, 102, 102, 1), // Cinza escuro\r\n        \r\n    \"S\", RGBA(102, 102, 102, 1), // Cinza escuro\r\n        \r\n    \"T\", RGBA(204, 102, 0, 1), // Dourado escuro\r\n        \r\n    \"U\", RGBA(102, 102, 102, 1), // Cinza escuro\r\n        \r\n    \"V\", RGBA(204, 102, 0, 1), // Dourado escuro\r\n        \r\n    \"W\", RGBA(0, 0, 0, 1), // Preto\r\n        \r\n    \"X\", RGBA(0, 0, 0, 1), // Preto\r\n        \r\n    \"Y\", RGBA(0, 0, 0, 1), // Preto\r\n        \r\n    \"Z\", RGBA(0, 0, 0, 1) // Preto\r\n)\r\n"
+                                    DisabledBorderColor: =
+                                    DisabledColor: =
+                                    DisabledFill: =
+                                    Fill: "=Switch((Left(\r\n        Trim(Text(Text(User().FullName))),\r\n        1\r\n    )), \r\n     \"A\",RGBA(255, 102, 102, 0.10), // Vermelho claro\r\n        \r\n     \"B\",\r\n        RGBA(102, 255, 102, 0.10), // Verde claro\r\n        \r\n     \"C\",\r\n        RGBA(102, 102, 255, 0.10), // Azul claro\r\n        \r\n     \"D\",\r\n        RGBA(255, 255, 102, 0.10), // Amarelo claro\r\n        \r\n     \"E\",\r\n        RGBA(255, 153, 51, 0.10), // Laranja claro\r\n        \r\n     \"F\",\r\n        RGBA(255, 204, 204, 0.10), // Rosa claro\r\n        \r\n     \"G\",\r\n        RGBA(204, 204, 255, 0.10), // Lilás claro\r\n        \r\n     \"H\",\r\n        RGBA(204, 255, 255, 0.10), // Turquesa claro\r\n        \r\n     \"I\",\r\n        RGBA(255, 204, 153, 0.10), // Pêssego claro\r\n        \r\n     \"J\",\r\n        RGBA(255, 255, 204, 0.10), // Marfim claro\r\n        \r\n     \"K\",\r\n        RGBA(204, 255, 204, 0.10), // Verde menta claro\r\n        \r\n     \"L\",\r\n        RGBA(255, 204, 255, 0.10), // Magenta claro\r\n        \r\n     \"M\",\r\n        RGBA(204, 255, 102, 0.10), // Limão claro\r\n        \r\n     \"N\",\r\n        RGBA(153, 255, 255, 0.10), // Azul celeste claro\r\n        \r\n     \"O\",\r\n        RGBA(255, 204, 102, 0.10), // Dourado claro\r\n        \r\n     \"P\",\r\n        RGBA(255, 204, 102, 0.10), // Dourado claro\r\n        \r\n     \"Q\",\r\n        RGBA(255, 153, 255, 0.10), // Rosa chá claro\r\n        \r\n     \"R\",\r\n        RGBA(204, 204, 204, 0.10), // Cinza claro\r\n        \r\n     \"S\",\r\n        RGBA(204, 204, 204, 0.10), // Cinza claro\r\n        \r\n     \"T\",\r\n        RGBA(255, 204, 102, 0.10), // Dourado claro\r\n        \r\n     \"U\",\r\n        RGBA(204, 204, 204, 0.10), // Cinza claro\r\n        \r\n     \"V\",\r\n        RGBA(255, 204, 102, 0.10), // Dourado claro\r\n        \r\n     \"W\",\r\n        RGBA(255, 255, 255, 0.10), // Branco\r\n        \r\n     \"X\",\r\n        RGBA(255, 255, 255, 0.10), // Branco\r\n        \r\n     \"Y\",\r\n        RGBA(255, 255, 255, 0.10), // Branco\r\n        \r\n     \"Z\",\r\n        RGBA(255, 255, 255, 1)) // Branco\r\n        \r\n\r\n"
+                                    Font: =Font.Lato
+                                    Height: =Parent.Height
+                                    HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                                    HoverColor: =Self.BorderColor
+                                    HoverFill: =Self.Color
+                                    OnSelect: =
+                                    PressedBorderColor: =Self.Fill
+                                    PressedColor: =Self.Fill
+                                    PressedFill: =Self.Fill
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =20
+                                    Text: |-
+                                      =Concatenate(
+                                          Upper(Left(
+                                              Trim(Text(ThisItem.Usuario.DisplayName)),
+                                              1
+                                          )),
+                                          Upper(Left(
+                                              Last(
+                                                  Split(
+                                                      Text(ThisItem.Usuario.DisplayName),
+                                                      " "
+                                                  )
+                                              ).Value,
+                                              1
+                                          ))
+                                      )
+                                    Tooltip: =User().FullName
+                                    Width: =Parent.Width
+                              - FotoUser:
+                                  Control: Image@2.2.3
+                                  Properties:
+                                    ApplyEXIFOrientation: =false
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    DisabledBorderColor: =RGBA(159, 167, 165, 1)
+                                    DisabledFill: =RGBA(193, 193, 193, 0.95)
+                                    Height: =Parent.Height
+                                    HoverBorderColor: =ColorFade(FotoUser.BorderColor, 20%)
+                                    HoverFill: =ColorFade(FotoUser.Fill, 20%)
+                                    Image: =ThisItem.Usuario.Picture
+                                    OnSelect: =
+                                    PressedBorderColor: =ColorFade(FotoUser.BorderColor, -20%)
+                                    PressedFill: =ColorFade(FotoUser.Fill, -20%)
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    TabIndex: =0
+                                    Tooltip: =User().FullName
+                                    Visible: |-
+                                      =If(
+                                         UsuáriosdoOffice365.UserPhotoMetadata(ThisItem.Usuario.Email).HasPhoto = true,
+                                         true,
+                                         false
+                                      )
+                                    Width: =Parent.Width
+      - GalUsuariosPesquisados:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =200
+            Items: |-
+              =Filter(UsuáriosdoOffice365.SearchUserV2({searchTerm: CampoPesquisarUsuario.Value, top: 15}).value, "@mpmg.mp.br" in Mail)
+              //Search(Choices([@SAVe_Usuarios].Usuario); CampoPesquisarUsuario.Value; DisplayName; Email)
+            TemplateSize: =88
+            Visible: =IsBlank(_UserPesquisado) && IsEmpty(GalUsuarios.AllItems) && !IsBlank(CampoPesquisarUsuario.Value)
+            Width: =CampoPesquisarUsuario.Width
+            X: =30
+            Y: =128
+          Children:
+            - Rectangle2:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Fill: =RGBA(77, 90, 107, 0.81)
+                  Height: =Parent.TemplateHeight
+                  OnSelect: =Select(Parent)
+                  Width: =Parent.Width
+            - CointainerFotoPerfilPesq:
+                Control: GroupContainer@1.3.0
+                Variant: ManualLayout
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 0)
+                  BorderStyle: =
+                  DropShadow: =DropShadow.None
+                  Fill: =RGBA(255, 255, 255, 1)
+                  Height: =If(ThisItem.IsSelected, 72, 65)
+                  RadiusBottomLeft: =8
+                  RadiusBottomRight: =8
+                  RadiusTopLeft: =8
+                  RadiusTopRight: =8
+                  Width: =If(ThisItem.IsSelected, 72, 65)
+                  Y: =(Parent.TemplateHeight / 2) - (Self.Height / 2)
+                Children:
+                  - IniciaisNomePerfilPesq:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: "=Switch((Left(\r\n        Trim(Text(User().FullName)),\r\n        1\r\n    )), \r\n     \"A\",RGBA(255, 102, 102, 1), // Vermelho claro\r\n        \r\n     \"B\",\r\n        RGBA(102, 255, 102, 1), // Verde claro\r\n        \r\n     \"C\",\r\n        RGBA(102, 102, 255, 1), // Azul claro\r\n        \r\n     \"D\",\r\n        RGBA(255, 255, 102, 1), // Amarelo claro\r\n        \r\n     \"E\",\r\n        RGBA(255, 153, 51, 1), // Laranja claro\r\n        \r\n     \"F\",\r\n        RGBA(255, 204, 204, 1), // Rosa claro\r\n        \r\n     \"G\",\r\n        RGBA(204, 204, 255, 1), // Lilás claro\r\n        \r\n     \"H\",\r\n        RGBA(204, 255, 255, 1), // Turquesa claro\r\n        \r\n     \"I\",\r\n        RGBA(255, 204, 153, 1), // Pêssego claro\r\n        \r\n     \"J\",\r\n        RGBA(255, 255, 204, 1), // Marfim claro\r\n        \r\n     \"K\",\r\n        RGBA(204, 255, 204, 1), // Verde menta claro\r\n        \r\n     \"L\",\r\n        RGBA(255, 204, 255, 1), // Magenta claro\r\n        \r\n     \"M\",\r\n        RGBA(204, 255, 102, 1), // Limão claro\r\n        \r\n     \"N\",\r\n        RGBA(153, 255, 255, 1), // Azul celeste claro\r\n        \r\n     \"O\",\r\n        RGBA(255, 204, 102, 1), // Dourado claro\r\n        \r\n     \"P\",\r\n        RGBA(255, 204, 102, 1), // Dourado claro\r\n        \r\n     \"Q\",\r\n        RGBA(255, 153, 255, 1), // Rosa chá claro\r\n        \r\n     \"R\",\r\n        RGBA(204, 204, 204, 1), // Cinza claro\r\n        \r\n     \"S\",\r\n        RGBA(204, 204, 204, 1), // Cinza claro\r\n        \r\n     \"T\",\r\n        RGBA(255, 204, 102, 1), // Dourado claro\r\n        \r\n     \"U\",\r\n        RGBA(204, 204, 204, 1), // Cinza claro\r\n        \r\n     \"V\",\r\n        RGBA(255, 204, 102, 1), // Dourado claro\r\n        \r\n     \"W\",\r\n        RGBA(255, 255, 255, 1), // Branco\r\n        \r\n     \"X\",\r\n        RGBA(255, 255, 255, 1), // Branco\r\n        \r\n     \"Y\",\r\n        RGBA(255, 255, 255, 1), // Branco\r\n        \r\n     \"Z\",\r\n        RGBA(255, 255, 255, 1)) // Branco\r\n        \r\n\r\n"
+                        BorderStyle: =BorderStyle.None
+                        BorderThickness: =1
+                        Color: "=Switch(\r\n    Left(\r\n        Trim(Text(User().FullName)),\r\n        1\r\n    ), \r\n    \"A\", RGBA(102, 0, 0, 1), // Vermelho escuro\r\n        \r\n    \"B\", RGBA(0, 102, 0, 1), // Verde escuro\r\n        \r\n    \"C\", RGBA(0, 0, 102, 1), // Azul escuro\r\n        \r\n    \"D\", RGBA(102, 102, 0, 1), // Amarelo escuro\r\n        \r\n    \"E\", RGBA(153, 77, 0, 1), // Laranja escuro\r\n        \r\n    \"F\", RGBA(204, 102, 102, 1), // Rosa escuro\r\n        \r\n    \"G\", RGBA(102, 102, 153, 1), // Lilás escuro\r\n        \r\n    \"H\", RGBA(102, 153, 153, 1), // Turquesa escuro\r\n        \r\n    \"I\", RGBA(204, 102, 0, 1), // Pêssego escuro\r\n        \r\n    \"J\", RGBA(102, 102, 51, 1), // Marfim escuro\r\n        \r\n    \"K\", RGBA(0, 102, 51, 1), // Verde menta escuro\r\n        \r\n    \"L\", RGBA(102, 0, 102, 1), // Magenta escuro\r\n        \r\n    \"M\", RGBA(0, 102, 0, 1), // Limão escuro\r\n        \r\n    \"N\", RGBA(0, 102, 102, 1), // Azul celeste escuro\r\n        \r\n    \"O\", RGBA(204, 102, 0, 1), // Dourado escuro\r\n        \r\n    \"P\", RGBA(204, 102, 0, 1), // Dourado escuro\r\n        \r\n    \"Q\", RGBA(153, 0, 102, 1), // Rosa chá escuro\r\n        \r\n    \"R\", RGBA(102, 102, 102, 1), // Cinza escuro\r\n        \r\n    \"S\", RGBA(102, 102, 102, 1), // Cinza escuro\r\n        \r\n    \"T\", RGBA(204, 102, 0, 1), // Dourado escuro\r\n        \r\n    \"U\", RGBA(102, 102, 102, 1), // Cinza escuro\r\n        \r\n    \"V\", RGBA(204, 102, 0, 1), // Dourado escuro\r\n        \r\n    \"W\", RGBA(0, 0, 0, 1), // Preto\r\n        \r\n    \"X\", RGBA(0, 0, 0, 1), // Preto\r\n        \r\n    \"Y\", RGBA(0, 0, 0, 1), // Preto\r\n        \r\n    \"Z\", RGBA(0, 0, 0, 1) // Preto\r\n)\r\n"
+                        DisabledBorderColor: =
+                        DisabledColor: =
+                        DisabledFill: =
+                        Fill: "=Switch((Left(\r\n        Trim(Text(Text(User().FullName))),\r\n        1\r\n    )), \r\n     \"A\",RGBA(255, 102, 102, 0.10), // Vermelho claro\r\n        \r\n     \"B\",\r\n        RGBA(102, 255, 102, 0.10), // Verde claro\r\n        \r\n     \"C\",\r\n        RGBA(102, 102, 255, 0.10), // Azul claro\r\n        \r\n     \"D\",\r\n        RGBA(255, 255, 102, 0.10), // Amarelo claro\r\n        \r\n     \"E\",\r\n        RGBA(255, 153, 51, 0.10), // Laranja claro\r\n        \r\n     \"F\",\r\n        RGBA(255, 204, 204, 0.10), // Rosa claro\r\n        \r\n     \"G\",\r\n        RGBA(204, 204, 255, 0.10), // Lilás claro\r\n        \r\n     \"H\",\r\n        RGBA(204, 255, 255, 0.10), // Turquesa claro\r\n        \r\n     \"I\",\r\n        RGBA(255, 204, 153, 0.10), // Pêssego claro\r\n        \r\n     \"J\",\r\n        RGBA(255, 255, 204, 0.10), // Marfim claro\r\n        \r\n     \"K\",\r\n        RGBA(204, 255, 204, 0.10), // Verde menta claro\r\n        \r\n     \"L\",\r\n        RGBA(255, 204, 255, 0.10), // Magenta claro\r\n        \r\n     \"M\",\r\n        RGBA(204, 255, 102, 0.10), // Limão claro\r\n        \r\n     \"N\",\r\n        RGBA(153, 255, 255, 0.10), // Azul celeste claro\r\n        \r\n     \"O\",\r\n        RGBA(255, 204, 102, 0.10), // Dourado claro\r\n        \r\n     \"P\",\r\n        RGBA(255, 204, 102, 0.10), // Dourado claro\r\n        \r\n     \"Q\",\r\n        RGBA(255, 153, 255, 0.10), // Rosa chá claro\r\n        \r\n     \"R\",\r\n        RGBA(204, 204, 204, 0.10), // Cinza claro\r\n        \r\n     \"S\",\r\n        RGBA(204, 204, 204, 0.10), // Cinza claro\r\n        \r\n     \"T\",\r\n        RGBA(255, 204, 102, 0.10), // Dourado claro\r\n        \r\n     \"U\",\r\n        RGBA(204, 204, 204, 0.10), // Cinza claro\r\n        \r\n     \"V\",\r\n        RGBA(255, 204, 102, 0.10), // Dourado claro\r\n        \r\n     \"W\",\r\n        RGBA(255, 255, 255, 0.10), // Branco\r\n        \r\n     \"X\",\r\n        RGBA(255, 255, 255, 0.10), // Branco\r\n        \r\n     \"Y\",\r\n        RGBA(255, 255, 255, 0.10), // Branco\r\n        \r\n     \"Z\",\r\n        RGBA(255, 255, 255, 1)) // Branco\r\n        \r\n\r\n"
+                        Font: =Font.Lato
+                        Height: =Parent.Height
+                        HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                        HoverColor: =Self.BorderColor
+                        HoverFill: =Self.Color
+                        OnSelect: =
+                        PressedBorderColor: =Self.Fill
+                        PressedColor: =Self.Fill
+                        PressedFill: =Self.Fill
+                        RadiusBottomLeft: =8
+                        RadiusBottomRight: =8
+                        RadiusTopLeft: =8
+                        RadiusTopRight: =8
+                        Size: =20
+                        Text: |-
+                          =Concatenate(
+                              Upper(Left(
+                                  Trim(Text(ThisItem.DisplayName)),
+                                  1
+                              )),
+                              Upper(Left(
+                                  Last(
+                                      Split(
+                                          Text(ThisItem.DisplayName),
+                                          " "
+                                      )
+                                  ).Value,
+                                  1
+                              ))
+                          )
+                        Tooltip: =User().FullName
+                        Width: =Parent.Width
+                  - FotoPerfilPesq:
+                      Control: Image@2.2.3
+                      Properties:
+                        ApplyEXIFOrientation: =false
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        DisabledBorderColor: =RGBA(159, 167, 165, 1)
+                        DisabledFill: =RGBA(193, 193, 193, 0.95)
+                        Height: =Parent.Height
+                        HoverBorderColor: =ColorFade(FotoPerfilPesq.BorderColor, 20%)
+                        HoverFill: =ColorFade(FotoPerfilPesq.Fill, 20%)
+                        Image: |-
+                          =If(
+                              !IsError(UsuáriosdoOffice365.UserPhotoV2(ThisItem.Id)),
+                              UsuáriosdoOffice365.UserPhotoV2(ThisItem.Mail)
+                          )
+                        OnSelect: =
+                        PressedBorderColor: =ColorFade(FotoPerfilPesq.BorderColor, -20%)
+                        PressedFill: =ColorFade(FotoPerfilPesq.Fill, -20%)
+                        RadiusBottomLeft: =8
+                        RadiusBottomRight: =8
+                        RadiusTopLeft: =8
+                        RadiusTopRight: =8
+                        TabIndex: =0
+                        Tooltip: =User().FullName
+                        Visible: |-
+                          =If(
+                             UsuáriosdoOffice365.UserPhotoMetadata(ThisItem.Mail).HasPhoto,
+                             true,
+                             false
+                          )
+                        Width: =Parent.Width
+            - NomePerfilPesq:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  Font: =Font.Lato
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =ThisItem.DisplayName
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Parent.TemplateWidth - 173
+                  X: =103
+                  Y: =(Parent.TemplateHeight - (Self.Size * 1.8 + EmailPerfilPesq.Size * 1.8)) / 2
+            - EmailPerfilPesq:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  Font: =Font.Lato
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =ThisItem.Mail
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =NomePerfilPesq.Width
+                  X: =NomePerfilPesq.X
+                  Y: =NomePerfilPesq.Y + NomePerfilPesq.Height
+            - PeliculaPerfilPesq:
+                Control: Button@0.0.45
+                Properties:
+                  Appearance: ='ButtonCanvas.Appearance'.Transparent
+                  Height: =Parent.TemplateHeight
+                  Layout: ='ButtonCanvas.Layout'.TextOnly
+                  OnSelect: |-
+                    =Select(Parent);
+                    UpdateContext({_UserPesquisado: ThisItem});
+                    Reset(CampoPesquisarUsuario)
+                  Text: =
+                  Width: =Parent.TemplateWidth

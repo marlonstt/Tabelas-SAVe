@@ -1,0 +1,2658 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  Tela_Socio_Identificacao:
+    Properties:
+      Fill: =RGBA(245, 246, 248, 1)
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+      OnVisible: |-
+        =If(!IsBlankOrError(ItemAtual.ID_Caso),
+            If(
+                !(App.ActiveScreen.Name in _paginasVisitadas),
+                Collect(
+                    _paginasVisitadas,
+                    App.ActiveScreen.Name
+                );
+                Patch(
+                    SAVe_Geral,
+                    {ID: ItemAtual.ID_Caso},
+                    {Paginas_Visitadas: JSON(_paginasVisitadas)}
+                )
+            );
+
+            If(
+                IsBlankOrError(
+                    LookUp(
+                        SAVe_Identificacao,
+                        ID_Caso = ItemAtual.ID_Caso
+                    )
+                ),
+                Patch(
+                    SAVe_Identificacao,
+                    Defaults(SAVe_Identificacao),
+                    {ID_Caso: ItemAtual.ID_Caso}
+                )
+            )
+        )
+    Children:
+      - Container1_3:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =Parent.Height-Self.Y-10
+            RadiusBottomLeft: =8
+            RadiusBottomRight: =8
+            RadiusTopLeft: =8
+            RadiusTopRight: =8
+            Width: =1346
+            X: =10
+            Y: =80
+          Children:
+            - Canvas2_2:
+                Control: FluidGrid@2.3.0
+                Properties:
+                  BorderThickness: =0
+                  Height: =583
+                  Width: =Parent.Width
+                  Y: =95
+                Children:
+                  - DataCard2_2:
+                      Control: DataCard@1.0.2
+                      Properties:
+                        Height: =301
+                        Width: =Parent.Width
+                        X: =0
+                        Y: =0
+                      Children:
+                        - Container2:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Regular
+                              Height: =281
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1316
+                              X: =10
+                              Y: =5
+                            Children:
+                              - tituloNomeRegistroCivil:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Nome (Registro Civil):"
+                                    Width: =entradaNomeRegistroCivil.Width
+                                    X: =10
+                                    Y: =10
+                              - entradaNomeRegistroCivil:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Nome_RC: Self.Value}
+                                      );
+                                      Patch(
+                                          SAVe_Geral,
+                                          LookUp(
+                                              SAVe_Geral,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Nome: Self.Value}
+                                      );
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                    Value: |-
+                                      =//_dadosSocioIdentificacao.Nome_Registro_Civil
+                                      LookUp(
+                                          SAVe_Identificacao,
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          Nome_RC
+                                      )
+                                    Width: =642
+                                    X: =10
+                                    Y: =37
+                              - tituloNomeSocialAncestral:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Nome Social ou Ancestral:"
+                                    Width: =entradaNomeSocialAncestral.Width
+                                    X: =10
+                                    Y: =76
+                              - entradaNomeSocialAncestral:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Nome_social_ancestral: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                    Value: |-
+                                      =//_dadosSocioIdentificacao.Nome_Social_Ancestral
+                                      LookUp(
+                                          SAVe_Identificacao,
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          Nome_social_ancestral
+                                      )
+                                    Width: =642
+                                    X: =10
+                                    Y: =103
+                              - tituloComoQuerSerChamada:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Como quer ser chamada:"
+                                    Width: =entradaComoQuerSerChamada.Width
+                                    X: =11
+                                    Y: =143
+                              - entradaComoQuerSerChamada:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Como_querser_chamada: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                    Value: |-
+                                      =//_dadosSocioIdentificacao.Como_Quer_Ser_Chamada
+                                      LookUp(
+                                          SAVe_Identificacao,
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          Como_querser_chamada
+                                      )
+                                    Width: =642
+                                    X: =10
+                                    Y: =169
+                              - tituloDataNascimento:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Data de nascimento:"
+                                    Width: =258
+                                    X: =665
+                                    Y: =10
+                              - tituloFiliacao1:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Filiação 1:"
+                                    Width: =entradaFiliacao1.Width
+                                    X: =665
+                                    Y: =76
+                              - entradaFiliacao1:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Filiacao_1: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                    Value: |-
+                                      =//_dadosSocioIdentificacao.Filiacao_1
+                                      LookUp(
+                                          SAVe_Identificacao,
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          Filiacao_1
+                                      )
+                                    Width: =642
+                                    X: =665
+                                    Y: =103
+                              - tituloFiliacao2:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Filiação 2:"
+                                    Width: =entradaFiliacao2.Width
+                                    X: =665
+                                    Y: =142
+                              - entradaFiliacao2:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Filiacao_2: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                    Value: |+
+                                      =//_dadosSocioIdentificacao.Filiacao_2
+                                      LookUp(
+                                          SAVe_Identificacao,
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          Filiacao_2
+                                      )
+                                    Width: =642
+                                    X: =665
+                                    Y: =169
+                              - tituloIdade:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Idade:"
+                                    Width: =entradaIdade.Width
+                                    X: =973
+                                    Y: =10
+                              - entradaIdade:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =DisplayMode.View
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |+
+                                      =Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso),
+                                          {
+                                              Idade: Self.Value
+                                          }
+                                      )
+                                    TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                    Value: |-
+                                      =With(
+                                          {
+                                              DataNascimento: LookUp(
+                                                  SAVe_Identificacao,
+                                                  ItemAtual.ID_Caso = ID_Caso,
+                                                  Data_nascimento
+                                              )
+                                          },
+                                          If(
+                                              DateDiff(
+                                                  Text(Year(DataNascimento)),
+                                                  Today(),
+                                                  TimeUnit.Years
+                                              ) > 110,
+                                              Blank(),
+                                              If(
+                                                  Month(Today()) < Month(DataNascimento) || (Month(Today()) = Month(DataNascimento) && Day(Today()) < Day(DataNascimento)),
+                                                  DateDiff(
+                                                      Text(Year(DataNascimento)),
+                                                      Today(),
+                                                      TimeUnit.Years
+                                                  ) - 1,
+                                                  DateDiff(
+                                                      Text(Year(DataNascimento)),
+                                                      Today(),
+                                                      TimeUnit.Years
+                                                  )
+                                              )
+                                          )
+                                      )
+                                    Width: =332
+                                    X: =973
+                                    Y: =37
+                              - tituloNaturalidade:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Naturalidade:"
+                                    Width: =entradaNaturalidade.Width
+                                    X: =10
+                                    Y: =211
+                              - tituloNacionalidade:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Nacionalidade:"
+                                    Width: =entradaNacionalidade.Width
+                                    X: =334
+                                    Y: =211
+                              - entradaNacionalidade:
+                                  Control: ComboBox@0.0.51
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =//[{Value: _dadosSocioIdentificacao.Nacionalidade}]
+                                      If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  SAVe_Identificacao,
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Nacionalidade
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      SAVe_Identificacao,
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      Nacionalidade
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    InputTextPlaceholder: =""
+                                    Items: |+
+                                      =["Afegã (Afeganistão)","Albanesa (Albânia)","Alemã (Alemanha)","Andorrana (Andorra)","Angolana (Angola)","Antiguana (Antígua e Barbuda)","Saudita (Arábia Saudita)","Argelina (Argélia)","Argentina (Argentina)","Armênia (Armênia)","Australiana (Austrália)","Austríaca (Áustria)","Azerbaijana (Azerbaijão)","Bahamenha (Bahamas)","Bangladeshiana (Bangladesh)","Barbadiana (Barbados)","Bareinita (Bahrein)","Belga (Bélgica)","Belizenha (Belize)","Beninense (Benin)","Bielorrussa (Bielorrússia)","Boliviana (Bolívia)","Bósnia (Bósnia e Herzegovina)","Botsuanesa (Botsuana)","Brasileira (Brasil)","Britânica (Reino Unido)","Bruneana (Brunei)","Búlgara (Bulgária)","Burkinesa (Burkina Faso)","Burundesa (Burundi)","Butanesa (Butão)","Cabo-verdiana (Cabo Verde)","Camaronesa (Camarões)","Cambojana (Camboja)","Canadense (Canadá)","Cazaque (Cazaquistão)","Chadiana (Chade)","Chilena (Chile)","Chinesa (China)","Cingapuriana (Cingapura)","Colombiana (Colômbia)","Comorense (Comores)","Congolesa (República do Congo)","Costarriquenha (Costa Rica)","Croata (Croácia)","Cubana (Cuba)","Dinamarquesa (Dinamarca)","Dominicana (República Dominicana)","Egípcia (Egito)","Salvadorenha (El Salvador)","Emiradense (Emirados Árabes Unidos)","Equatoriana (Equador)","Eritreia (Eritreia)","Eslovaca (Eslováquia)","Eslovena (Eslovênia)","Espanhola (Espanha)","Estoniana (Estônia)","Etíope (Etiópia)","Fijiana (Fiji)","Filipina (Filipinas)","Finlandesa (Finlândia)","Francesa (França)","Gabonesa (Gabão)","Gambiana (Gâmbia)","Ganense (Gana)","Georgiana (Geórgia)","Grega (Grécia)","Granadina (Granada)","Guatemalteca (Guatemala)","Guianense (Guiana)","Guiné-Bissauense (Guiné-Bissau)","Guineense (Guiné)","Haitiana (Haiti)","Holandesa (Holanda)","Hondurenha (Honduras)","Húngara (Hungria)","Iemenita (Iêmen)","Indiana (Índia)","Indonésia (Indonésia)","Iraniana (Irã)","Iraquiana (Iraque)","Irlandesa (Irlanda)","Islandesa (Islândia)","Israelense (Israel)","Italiana (Itália)","Jamaicana (Jamaica)","Japonesa (Japão)","Jordana (Jordânia)","Kosovar (Kosovo)","Kuwaitiana (Kuwait)","Laosiana (Laos)","Letã (Letônia)","Libanesa (Líbano)","Liberiana (Libéria)","Líbia (Líbia)","Liechtensteinense (Liechtenstein)","Lituana (Lituânia)","Luxemburguesa (Luxemburgo)","Macedônia (Macedônia do Norte)","Madagascarense (Madagascar)","Malásia (Malásia)","Malauiana (Malaui)","Maldiva (Maldivas)","Malienses (Mali)","Maltesa (Malta)","Marroquina (Marrocos)","Marshallina (Ilhas Marshall)","Mauritana (Mauritânia)","Mexicana (México)","Mianmarense (Mianmar)","Micronésia (Micronésia)","Moçambicana (Moçambique)","Moldava (Moldávia)","Monacanesa (Mônaco)","Mongol (Mongólia)","Montenegrina (Montenegro)","Namibiana (Namíbia)","Nauruana (Nauru)","Nepalesa (Nepal)","Neozelandesa (Nova Zelândia)","Nicaraguense (Nicarágua)","Nigeriana (Nigéria)","Norueguesa (Noruega)","Omã (Omã)","Palauense (Palau)","Panamenha (Panamá)","Papua (Papua-Nova Guiné)","Paquistanesa (Paquistão)","Paraguaia (Paraguai)","Peruana (Peru)","Polonesa (Polônia)","Portuguesa (Portugal)","Queniana (Quênia)","Quirguiz (Quirguistão)","Romena (Romênia)","Ruandesa (Ruanda)","Russa (Rússia)","Samoana (Samoa)","Santa-lucense (Santa Lúcia)","São-cristovense (São Cristóvão e Nevis)","São-marinense (San Marino)","São-tomense (São Tomé e Príncipe)","São-vicentina (São Vicente e Granadinas)","Saudita (Arábia Saudita)","Senegalesa (Senegal)","Sérvia (Sérvia)","Síria (Síria)","Somali (Somália)","Sul-africana (África do Sul)","Sudanesa (Sudão)","Sueca (Suécia)","Suíça (Suíça)","Surinamesa (Suriname)","Tadjique (Tadjiquistão)","Tailandesa (Tailândia)","Tanzaniana (Tanzânia)","Tcheca (República Tcheca)","Timorense (Timor-Leste)","Togolesa (Togo)","Tonganesa (Tonga)","Trinidadiana (Trinidad e Tobago)","Tunisiana (Tunísia)","Turca (Turquia)","Tuvaluana (Tuvalu)","Ucraniana (Ucrânia)","Ugandense (Uganda)","Uruguaia (Uruguai)","Usbeque (Uzbequistão)","Vanuatuense (Vanuatu)","Vaticana (Vaticano)","Venezuelana (Venezuela)","Vietnamita (Vietnã)","Zambiana (Zâmbia)","Zimbabuana (Zimbábue)"]
+                                    OnChange: "=If(!IsBlankOrError(Self.Selected.Value),SetFocus(Button5));\r\nNotify(\r\n    \"Salvando...\",\r\n    NotificationType.Information\r\n);\r\n \r\nPatch(\r\n    SAVe_Identificacao,\r\n    LookUp(\r\n        SAVe_Identificacao,\r\n        ID_Caso = ItemAtual.ID_Caso\r\n    ),\r\n    {Nacionalidade: Self.Selected.Value}\r\n);\r\n\r\nNotify(\r\n    \"Salvo! ✅\",\r\n    NotificationType.Success,\r\n    2000\r\n)"
+                                    TriggerOutput: ='ComboboxCanvas.TriggerOutput'.FocusOut
+                                    Width: =316
+                                    X: =334
+                                    Y: =238
+                              - entradaNaturalidade:
+                                  Control: ComboBox@0.0.51
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =//[{Value: _dadosSocioIdentificacao.Naturalidade}]
+                                      If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  SAVe_Identificacao,
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Naturalidade
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      SAVe_Identificacao,
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      Naturalidade
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    InputTextPlaceholder: =""
+                                    Items: |+
+                                      =["ABAETE","ABRE CAMPO","ACUCENA","AGUA BOA","AGUAS FORMOSAS","AIMORES","AIURUOCA","ALEM PARAIBA","ALFENAS","ALMENARA","ALPINOPOLIS","ALTO RIO DOCE","ALVINOPOLIS","ANDRADAS","ANDRELANDIA","ARACUAI","ARAGUARI","ARAXA","ARCOS","AREADO","ARINOS","BAEPENDI","BAMBUI","BARAO DE COCAIS","BARBACENA","BARROSO","BELO HORIZONTE","BELO ORIENTE","BELO VALE","BETIM","BICAS","BOA ESPERANCA","BOCAIUVA","BOM DESPACHO","BOM JESUS DO GALHO","BOM SUCESSO","BONFIM","BONFINOPOLIS DE MINAS","BORDA DA MATA","BOTELHOS","BRASILIA DE MINAS","BRAZÓPOLIS","BRUMADINHO","BUENO BRANDAO","BUENOPOLIS","BURITIS","CABO VERDE","CACHOEIRA DE MINAS","CAETE","CALDAS","CAMANDUCAIA","CAMBUÍ","CAMBUQUIRA","CAMPANHA","CAMPESTRE","CAMPINA VERDE","CAMPO BELO","CAMPOS ALTOS","CAMPOS GERAIS","CANAPOLIS","CANDEIAS","CAPELINHA","CAPINOPOLIS","CARANDAI","CARANGOLA","CARATINGA","CARLOS CHAGAS","CARMO DA MATA","CARMO DE MINAS","CARMO DO CAJURU","CARMO DO PARANAIBA","CARMO DO RIO CLARO","CARMOPOLIS DE MINAS","CARNEIRINHO","CASSIA","CATAGUASES","CAXAMBU","CLAUDIO","CONCEICAO DAS ALAGOAS","CONCEICAO DO MATO DENTRO","CONCEICAO DO RIO VERDE","CONGONHAS","CONQUISTA","CONSELHEIRO LAFAIETE","CONSELHEIRO PENA","CONTAGEM","CORACAO DE JESUS","CORINTO","COROACI","COROMANDEL","CORONEL FABRICIANO","CRISTINA","CRUZILIA","CURVELO","DIAMANTINA","DIVINO","DIVINOPOLIS","DORES DO INDAIA","ELOI MENDES","ENTRE RIOS DE MINAS","ERVALIA","ESMERALDAS","ESPERA FELIZ","ESPINOSA","ESTRELA DO SUL","EUGENOPOLIS","EXTREMA","FERROS","FORMIGA","FRANCISCO SA","FRONTEIRA","FRUTAL","GALILEIA","GOVERNADOR VALADARES","GRAO MOGOL","GUANHAES","GUAPE","GUARANESIA","GUARANI","GUAXUPE","IBIA","IBIRACI","IBIRITE","IGARAPE","IGUATAMA","INHAPIM","IPANEMA","IPATINGA","ITABIRA","ITABIRINHA","ITABIRITO","ITAGUARA","ITAJUBA","ITAMARANDIBA","ITAMBACURI","ITAMOGI","ITAMONTE","ITANHANDU","ITANHOMI","ITAOBIM","ITAPAGIPE","ITAPECERICA","ITAUNA","ITUIUTABA","ITUMIRIM","ITURAMA","JABOTICATUBAS","JACINTO","JACUI","JACUTINGA","JAIBA","JANAUBA","JANUARIA","JEQUERI","JEQUITINHONHA","JOAIMA","JOAO MONLEVADE","JOAO PINHEIRO","JUATUBA","JUIZ DE FORA","LAGOA DA PRATA","LAGOA DOURADA","LAGOA SANTA","LAJINHA","LAMBARI","LAVRAS","LEOPOLDINA","LIMA DUARTE","LUZ","MACHADO","MALACACHETA","MANGA","MANHUACU","MANHUMIRIM","MANTENA","MAR DE ESPANHA","MARIANA","MARTINHO CAMPOS","MATEUS LEME","MATIAS BARBOSA","MATO VERDE","MATOZINHOS","MEDINA","MERCES","MESQUITA","MINAS NOVAS","MIRABELA","MIRADOURO","MIRAI","MONTALVANIA","MONTE ALEGRE DE MINAS","MONTE AZUL","MONTE BELO","MONTE CARMELO","MONTE SANTO DE MINAS","MONTE SIAO","MONTES CLAROS","MORADA NOVA DE MINAS","MURIAE","MUTUM","MUZAMBINHO","NANUQUE","NATERCIA","NEPOMUCENO","NOVA ERA","NOVA LIMA","NOVA PONTE","NOVA RESENDE","NOVA SERRANA","NOVO CRUZEIRO","OLIVEIRA","OURO BRANCO","OURO FINO","OURO PRETO","PADRE PARAISO","PAINS","PALMA","PAPAGAIOS","PARA DE MINAS","PARACATU","PARAGUACU","PARAISOPOLIS","PARAOPEBA","PASSA QUATRO","PASSA TEMPO","PASSOS","PATOS DE MINAS","PATROCINIO","PECANHA","PEDRA AZUL","PEDRALVA","PEDRO LEOPOLDO","PERDIZES","PERDOES","PIRANGA","PIRAPETINGA","PIRAPORA","PITANGUI","PIUMHI","POCO FUNDO","POCOS DE CALDAS","POMPEU","PONTE NOVA","PORTEIRINHA","POUSO ALEGRE","PRADOS","PRATA","PRATAPOLIS","PRESIDENTE OLEGARIO","RAUL SOARES","RESENDE COSTA","RESPLENDOR","RIBEIRAO DAS NEVES","RIO CASCA","RIO NOVO","RIO PARANAIBA","RIO PARDO DE MINAS","RIO PIRACICABA","RIO POMBA","RIO PRETO","RIO VERMELHO","RUBIM","SABARA","SABINOPOLIS","SACRAMENTO","SALINAS","SANTA BARBARA","SANTA LUZIA","SANTA MARIA DE ITABIRA","SANTA MARIA DO SUACUI","SANTA RITA DE CALDAS","SANTA RITA DO SAPUCAI","SANTA VITORIA","SANTO ANTONIO DO AMPARO","SANTO ANTONIO DO MONTE","SANTOS DUMONT","SAO DOMINGOS DO PRATA","SAO FRANCISCO","SAO GONCALO DO ABAETE","SAO GONCALO DO PARA","SAO GONCALO DO SAPUCAI","SAO GOTARDO","SAO JOAO DA PONTE","SAO JOAO DEL REI","SAO JOAO DO PARAISO","SAO JOAO EVANGELISTA","SAO JOAO NEPOMUCENO","SAO LOURENCO","SAO ROMAO","SAO ROQUE DE MINAS","SAO SEBASTIAO DO PARAISO","SAO TOMAS DE AQUINO","SENADOR FIRMINO","SERRO","SETE LAGOAS","SILVIANOPOLIS","TAIOBEIRAS","TARUMIRIM","TEIXEIRAS","TEOFILO OTONI","TIMOTEO","TIROS","TOCANTINS","TOMBOS","TRES CORACOES","TRES MARIAS","TRES PONTAS","TUPACIGUARA","TURMALINA","UBA","UBERABA","UBERLANDIA","UNAI","VARGINHA","VARZEA DA PALMA","VAZANTE","VESPASIANO","VICOSA","VIRGINOPOLIS","VISCONDE DO RIO BRANCO"]
+                                    OnChange: |-
+                                      =If(!IsBlankOrError(Self.Selected.Value),SetFocus(Button5_1));
+
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Naturalidade: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TriggerOutput: ='ComboboxCanvas.TriggerOutput'.FocusOut
+                                    Width: =316
+                                    X: =10
+                                    Y: =238
+                              - Button5:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =ColorFade(Self.Fill, -15%)
+                                    BorderThickness: =0
+                                    Color: =cor.textoSecundaria
+                                    DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                                    Fill: =ColorFade(Self.Color,60%)
+                                    FocusedBorderThickness: =0
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =24
+                                    HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                                    HoverColor: =Self.Color
+                                    HoverFill: =ColorFade(Self.Fill,20%)
+                                    OnSelect: |-
+                                      =Reset(entradaNacionalidade);
+                                      SetFocus(entradaNacionalidade);
+                                    PaddingBottom: =3
+                                    PaddingTop: =0
+                                    PressedBorderColor: =Self.Fill
+                                    PressedColor: =ColorFade(Self.Color,20%)
+                                    PressedFill: =ColorFade(Self.Fill,40%)
+                                    RadiusBottomLeft: =200
+                                    RadiusBottomRight: =200
+                                    RadiusTopLeft: =200
+                                    RadiusTopRight: =200
+                                    Text: ="x"
+                                    Visible: =!IsBlankOrError(entradaNacionalidade.Selected.Value)
+                                    Width: =24
+                                    X: =619
+                                    Y: =242
+                              - Button5_1:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =ColorFade(Self.Fill, -15%)
+                                    BorderThickness: =0
+                                    Color: =cor.textoSecundaria
+                                    DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                                    Fill: =ColorFade(Self.Color,60%)
+                                    FocusedBorderThickness: =0
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =24
+                                    HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                                    HoverColor: =Self.Color
+                                    HoverFill: =ColorFade(Self.Fill,20%)
+                                    OnSelect: |-
+                                      =Reset(entradaNaturalidade);
+                                      SetFocus(entradaNaturalidade);
+                                    PaddingBottom: =3
+                                    PaddingTop: =0
+                                    PressedBorderColor: =Self.Fill
+                                    PressedColor: =ColorFade(Self.Color,20%)
+                                    PressedFill: =ColorFade(Self.Fill,40%)
+                                    RadiusBottomLeft: =200
+                                    RadiusBottomRight: =200
+                                    RadiusTopLeft: =200
+                                    RadiusTopRight: =200
+                                    Text: ="x"
+                                    Visible: =!IsBlankOrError(entradaNaturalidade.Selected.Value)
+                                    Width: =24
+                                    X: =297
+                                    Y: =242
+                              - DataCampo_3:
+                                  Control: CanvasComponent
+                                  ComponentName: DataCampo
+                                  Properties:
+                                    Ancora: ="tituloDataNascimento"
+                                    ContextoEntrada: ="Texto"
+                                    DataEntrada: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              DateValue(
+                                                  LookUp(
+                                                      SAVe_Identificacao,
+                                                      ItemAtual.ID_Caso = ID_Caso,
+                                                      Data_nascimento
+                                                  )
+                                              )
+                                          ),
+                                          Blank(),
+                                          DateValue(
+                                              LookUp(
+                                                  SAVe_Identificacao,
+                                                  ItemAtual.ID_Caso = ID_Caso,
+                                                  Data_nascimento
+                                              )
+                                          )
+                                      )
+                                    DataHora: =false
+                                    DataMaxima: =Today()
+                                    DataMinima: =DateTime(1900, 1, 1, 0, 0, 0)
+                                    DataSaida: =LookUp(_tempDataAux, tela = Self.Ancora, data)
+                                    Height: =32
+                                    ModoEdicao: =true
+                                    SalvarData: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {
+                                              Data_nascimento: Self.DataSaida,
+                                              Idade: If(
+                                                  DateDiff(
+                                                      Text(Year(DataCampo_3.DataSaida)),
+                                                      Today(),
+                                                      TimeUnit.Years
+                                                  ) > 110,
+                                                  "0",
+                                                  If(
+                                                      Month(Today()) < Month(DataCampo_3.DataSaida) || (Month(Today()) = Month(DataCampo_3.DataSaida) && Day(Today()) < Day(DataCampo_3.DataSaida)),
+                                                      DateDiff(
+                                                          Text(Year(DataCampo_3.DataSaida)),
+                                                          Today(),
+                                                          TimeUnit.Years
+                                                      ) - 1,
+                                                      DateDiff(
+                                                          Text(Year(DataCampo_3.DataSaida)),
+                                                          Today(),
+                                                          TimeUnit.Years
+                                                      )
+                                                  )
+                                              )
+                                              //Idade: entradaIdade.Value
+                                          }
+                                      );
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Width: =258
+                                    X: =665
+                                    Y: =37
+                  - DataCard5:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =137
+                        Width: =1346
+                        X: =0
+                        Y: =1
+                      Children:
+                        - Container2_1:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Regular
+                              Height: =121
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1316
+                              X: =10
+                              Y: =5
+                            Children:
+                              - tituloCPF:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="CPF:"
+                                    Width: =250
+                                    X: =510
+                                    Y: =42
+                              - entradaCPF:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {DC_CPF: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                    Value: |-
+                                      =//_dadosSocioIdentificacao.CPF
+                                      LookUp(
+                                          SAVe_Identificacao,
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          DC_CPF
+                                      )
+                                    Width: =250
+                                    X: =510
+                                    Y: =69
+                              - tituloRG:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="RG:"
+                                    Width: =250
+                                    X: =774
+                                    Y: =42
+                              - entradaRG:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          { ' DC_RG': Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                    Value: |-
+                                      =//_dadosSocioIdentificacao.RG
+                                      LookUp(
+                                          SAVe_Identificacao,
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          ' DC_RG'
+                                      )
+                                    Width: =250
+                                    X: =774
+                                    Y: =69
+                              - tituloCTPS:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="CTPS:"
+                                    Width: =250
+                                    X: =1044
+                                    Y: =42
+                              - entradaCTPS:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {DC_CTPS: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                    Value: |-
+                                      =//_dadosSocioIdentificacao.CTPS
+                                      LookUp(
+                                          SAVe_Identificacao,
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          DC_CTPS
+                                      )
+                                    Width: =250
+                                    X: =1044
+                                    Y: =69
+                              - Label2_58:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Documentação civil"
+                                    Width: |+
+                                      =500
+                                    X: =10
+                                    Y: =10
+                              - tituloSituacaoDocumentoCivil:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Situação:"
+                                    Width: |+
+                                      =400
+                                    X: =10
+                                    Y: =42
+                              - entradaSituacaoDocumentoCivil:
+                                  Control: Radio@0.0.25
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =/*If(
+                                          !IsBlank(_dadosSocioIdentificacao.Situacao_Documentacao_Civil);
+                                          [{Value: _dadosSocioIdentificacao.Situacao_Documentacao_Civil}]
+                                      )*/
+
+                                      If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  SAVe_Identificacao,
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  DC_situacao
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      SAVe_Identificacao,
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      DC_situacao
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    Height: =53
+                                    Items: |-
+                                      =["Possui", "Nunca teve", "Perda/Roubo/
+                                      Danificado/Extravio"]
+                                    Layout: ='RadioGroupCanvas.Layout'.Horizontal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(
+                                              SAVe_Identificacao,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {DC_situacao: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    RadioSize: =20
+                                    Width: =500
+                                    X: =5
+                                    Y: =65
+                  - DataCard6:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =Container2_2.Y+Container2_2.Height+10
+                        Width: =1346
+                        X: =0
+                        Y: =2
+                      Children:
+                        - Container2_2:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Regular
+                              Height: =galEnderecos.Y+galEnderecos.Height+10
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1316
+                              X: =10
+                              Y: =10
+                            Children:
+                              - Label2_86:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Endereço(s)"
+                                    Width: |+
+                                      =500
+                                    X: =10
+                                    Y: =10
+                              - Button4_3:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =ColorFade(Self.Fill, -15%)
+                                    BorderThickness: =0
+                                    Color: =cor.tema
+                                    DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Fill: =ColorFade(Self.Color,80%)
+                                    FocusedBorderThickness: =0
+                                    Font: =Font.'Open Sans'
+                                    Height: =32
+                                    HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                                    HoverColor: =RGBA(255, 255, 255, 1)
+                                    HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                                    OnSelect: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao_endereco,
+                                          Defaults(SAVe_Identificacao_endereco),
+                                          {ID_Caso: ItemAtual.ID_Caso}
+                                      );
+
+                                      ClearCollect(
+                                          _enderecos,
+                                          Filter(
+                                              SAVe_Identificacao_endereco,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          )
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    PressedBorderColor: =Self.Fill
+                                    PressedColor: =Self.Fill
+                                    PressedFill: =Self.Color
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =12
+                                    Text: ="Incluir endereço"
+                                    Width: =151
+                                    X: =1140
+                                    Y: =10
+                              - galEnderecos:
+                                  Control: Gallery@2.15.0
+                                  Variant: Vertical
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Height: =201
+                                    Items: |-
+                                      =//SAVe_Identificacao_endereco
+                                      Filter(SAVe_Identificacao_endereco, ID_Caso = ItemAtual.ID_Caso)
+                                    OnSelect: =
+                                    TemplatePadding: =0
+                                    TemplateSize: =159
+                                    Width: =1211
+                                    X: =10
+                                    Y: =46
+                                  Children:
+                                    - tituloEndereco:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =27
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Endereço:"
+                                          Width: =entradaEndereco.Width
+                                          X: =65
+                                          Y: =76
+                                    - entradaEndereco:
+                                        Control: TextInput@0.0.54
+                                        Properties:
+                                          BasePaletteColor: =cor.tema
+                                          DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                          OnChange: |-
+                                            =Notify(
+                                                "Salvando...",
+                                                NotificationType.Information
+                                            );
+
+                                            Patch(
+                                                SAVe_Identificacao_endereco,
+                                                {ID: ThisItem.ID},
+                                                {Endereco: Self.Value
+                                                }
+                                            );
+
+                                            Notify(
+                                                "Salvo! ✅",
+                                                NotificationType.Success,
+                                                2000
+                                            )
+                                          TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                          Value: =ThisItem.Endereco
+                                          Width: =420
+                                          X: =146
+                                          Y: =74
+                                    - tituloNumero:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =27
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Nº:"
+                                          Width: =entradaNumero.Width
+                                          X: =596
+                                          Y: =76
+                                    - entradaNumero:
+                                        Control: TextInput@0.0.54
+                                        Properties:
+                                          BasePaletteColor: =cor.tema
+                                          DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                          OnChange: |-
+                                            =Notify(
+                                                "Salvando...",
+                                                NotificationType.Information
+                                            );
+
+                                            Patch(
+                                                SAVe_Identificacao_endereco,
+                                                {ID: ThisItem.ID},
+                                                {Numero: Self.Value}
+                                            );
+
+                                            Notify(
+                                                "Salvo! ✅",
+                                                NotificationType.Success,
+                                                2000
+                                            )
+                                          TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                          Value: =ThisItem.Numero
+                                          Width: =130
+                                          X: =629
+                                          Y: =74
+                                    - tituloComplementos:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =27
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Complemento:"
+                                          Width: =119
+                                          X: =789
+                                          Y: =76
+                                    - entradaComplementos:
+                                        Control: TextInput@0.0.54
+                                        Properties:
+                                          BasePaletteColor: =cor.tema
+                                          DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                          OnChange: |-
+                                            =Notify(
+                                                "Salvando...",
+                                                NotificationType.Information
+                                            );
+
+                                            Patch(
+                                                SAVe_Identificacao_endereco,
+                                                {ID: ThisItem.ID},
+                                                {Complemento: Self.Value}
+                                            );
+
+                                            Notify(
+                                                "Salvo! ✅",
+                                                NotificationType.Success,
+                                                2000
+                                            )
+                                          TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                          Value: =ThisItem.Complemento
+                                          Width: =249
+                                          X: =907
+                                          Y: =74
+                                    - tituloBairro:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Right
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =27
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Bairro:"
+                                          Width: =73
+                                          X: =68
+                                          Y: =116
+                                    - entradaBairro:
+                                        Control: TextInput@0.0.54
+                                        Properties:
+                                          BasePaletteColor: =cor.tema
+                                          DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                          OnChange: |-
+                                            =Notify(
+                                                "Salvando...",
+                                                NotificationType.Information
+                                            );
+
+                                            Patch(
+                                                SAVe_Identificacao_endereco,
+                                                {ID: ThisItem.ID},
+                                                {Bairro: Self.Value}
+                                            );
+
+                                            Notify(
+                                                "Salvo! ✅",
+                                                NotificationType.Success,
+                                                2000
+                                            )
+                                          TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                          Value: =ThisItem.Bairro
+                                          Width: =405
+                                          X: =146
+                                          Y: =114
+                                    - tituloCidade:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =27
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Cidade:"
+                                          Width: =69
+                                          X: =566
+                                          Y: =116
+                                    - entradaCidade:
+                                        Control: TextInput@0.0.54
+                                        Properties:
+                                          BasePaletteColor: =cor.tema
+                                          DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                          OnChange: |-
+                                            =Notify(
+                                                "Salvando...",
+                                                NotificationType.Information
+                                            );
+
+                                            Patch(
+                                                SAVe_Identificacao_endereco,
+                                                {ID: ThisItem.ID},
+                                                {Cidade: Self.Value}
+                                            );
+
+                                            Notify(
+                                                "Salvo! ✅",
+                                                NotificationType.Success,
+                                                2000
+                                            )
+                                          TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                          Value: =ThisItem.Cidade
+                                          Width: =219
+                                          X: =629
+                                          Y: =114
+                                    - tituloUF:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =27
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="UF:"
+                                          Width: =32
+                                          X: =871
+                                          Y: =116
+                                    - entradaUF:
+                                        Control: TextInput@0.0.54
+                                        Properties:
+                                          BasePaletteColor: =cor.tema
+                                          DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                          OnChange: |-
+                                            =Notify(
+                                                "Salvando...",
+                                                NotificationType.Information
+                                            );
+
+                                            Patch(
+                                                SAVe_Identificacao_endereco,
+                                                {ID: ThisItem.ID},
+                                                {UF: Self.Value}
+                                            );
+
+                                            Notify(
+                                                "Salvo! ✅",
+                                                NotificationType.Success,
+                                                2000
+                                            )
+                                          TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                          Value: =ThisItem.UF
+                                          Width: =100
+                                          X: =907
+                                          Y: =114
+                                    - tituloCEP:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =27
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="CEP:"
+                                          Width: =46
+                                          X: =1017
+                                          Y: =116
+                                    - entradaCEP:
+                                        Control: TextInput@0.0.54
+                                        Properties:
+                                          BasePaletteColor: =cor.tema
+                                          DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                          OnChange: |-
+                                            =Notify(
+                                                "Salvando...",
+                                                NotificationType.Information
+                                            );
+
+                                            Patch(
+                                                SAVe_Identificacao_endereco,
+                                                {ID: ThisItem.ID},
+                                                {CEP: Self.Value}
+                                            );
+
+                                            Notify(
+                                                "Salvo! ✅",
+                                                NotificationType.Success,
+                                                2000
+                                            )
+                                          TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                          Value: =ThisItem.CEP
+                                          Width: =101
+                                          X: =1055
+                                          Y: =114
+                                    - Label2_112:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoSecundaria
+                                          Font: =Font.'Open Sans'
+                                          Height: =27
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: =" Informado em "&ThisItem.Modificado
+                                          Width: =entradaEndereco.Width
+                                          X: =13
+                                          Y: =4
+                                    - BotaoApagarEndereco:
+                                        Control: Button@0.0.45
+                                        Properties:
+                                          Appearance: ='ButtonCanvas.Appearance'.Transparent
+                                          DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                          Icon: ="Delete"
+                                          Layout: ='ButtonCanvas.Layout'.IconOnly
+                                          OnSelect: |-
+                                            =Remove(SAVe_Identificacao_endereco, {ID: ThisItem.ID})
+                                          Text: =
+                                          Width: =32
+                                          X: =1156
+                                          Y: =8
+                                    - tituloSituacaoEndereco_1:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =27
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Situação:"
+                                          Width: |
+                                            =400
+                                          X: =64
+                                          Y: =33
+                                    - entradaSituacaoEndereco_1:
+                                        Control: Radio@0.0.25
+                                        Properties:
+                                          BasePaletteColor: =cor.tema
+                                          DefaultSelectedItems: |-
+                                            =If(
+                                                IsBlankOrError(
+                                                    ThisItem.Moradia_Situacao
+                                                ),
+                                                Blank(),
+                                                [
+                                                    {
+                                                        Value: ThisItem.Moradia_Situacao
+                                                    }
+                                                ]
+                                            )
+                                          DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                          FontColor: =cor.textoPrincipal
+                                          Height: =48
+                                          Items: =["Casa própria","Aluguel","Em situação de rua","Outro"]
+                                          Layout: ='RadioGroupCanvas.Layout'.Horizontal
+                                          OnChange: |
+                                            =Notify(
+                                                "Salvando...",
+                                                NotificationType.Information
+                                            );
+
+                                            Patch(
+                                                SAVe_Identificacao_endereco,
+                                                LookUp(
+                                                    SAVe_Identificacao_endereco,
+                                                    ID = ThisItem.ID
+                                                ),
+                                                {Moradia_Situacao: Self.Selected.Value}
+                                            );
+
+                                            Notify(
+                                                "Salvo! ✅",
+                                                NotificationType.Success,
+                                                2000
+                                            );
+                                          RadioSize: =20
+                                          Width: =500
+                                          X: =137
+                                          Y: =23
+                  - DataCard7:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =Container2_3.Height+15
+                        Width: =1346
+                        X: =0
+                        Y: =3
+                      Children:
+                        - Container2_3:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Regular
+                              Height: |-
+                                =If(
+                                    galTelefones.AllItemsCount > galEmails.AllItemsCount,
+                                    galTelefones.Height + 80,
+                                    galEmails.Height + 80
+                                )
+
+                                /*If(galTelefones.AllItemsCount > 3 || galEmails.AllItemsCount > 3;
+                                    235;
+                                    If(
+                                        galTelefones.AllItemsCount > galEmails.AllItemsCount;
+                                        galTelefones.Height + 80;
+                                        galEmails.Height + 80
+                                    )
+                                )*/
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1316
+                              X: =10
+                              Y: =5
+                            Children:
+                              - Label2_73:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Telefones de contato"
+                                    Width: |+
+                                      =500
+                                    X: =10
+                                    Y: =10
+                              - Button4:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =ColorFade(Self.Fill, -15%)
+                                    BorderThickness: =0
+                                    Color: =cor.tema
+                                    DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Fill: =ColorFade(Self.Color,80%)
+                                    FocusedBorderThickness: =0
+                                    Font: =Font.'Open Sans'
+                                    Height: =30
+                                    HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                                    HoverColor: =RGBA(255, 255, 255, 1)
+                                    HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                                    OnSelect: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao_telefone,
+                                          Defaults(SAVe_Identificacao_telefone),
+                                          {
+                                              ID_Caso: ItemAtual.ID_Caso
+                                          }
+                                      );
+
+                                      ClearCollect(
+                                          _telefonesDeContato,
+                                          Filter(
+                                              SAVe_Identificacao_telefone,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          )
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    PressedBorderColor: =Self.Fill
+                                    PressedColor: =Self.Fill
+                                    PressedFill: =Self.Color
+                                    RadiusBottomLeft: =5
+                                    RadiusBottomRight: =5
+                                    RadiusTopLeft: =5
+                                    RadiusTopRight: =5
+                                    Size: =12
+                                    Text: ="Incluir telefone"
+                                    Width: =139
+                                    X: =371
+                                    Y: =galTelefones.Y+galTelefones.Height-Self.Height-8
+                              - Label2_74:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="E-mails"
+                                    Width: |+
+                                      =500
+                                    X: =661
+                                    Y: =7
+                              - tituloTelefoneAtualizadoEm:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =20
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Atualizado em"
+                                    Width: =135
+                                    X: =10
+                                    Y: =42
+                              - tituloTelefone:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =20
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Telefone com DDD"
+                                    Width: =195
+                                    X: =160
+                                    Y: =42
+                              - galTelefones:
+                                  Control: Gallery@2.15.0
+                                  Variant: Vertical
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Height: =Self.AllItemsCount*Self.TemplateHeight
+                                    Items: |-
+                                      =//SAVe_Identificacao_telefone
+                                      Filter(SAVe_Identificacao_telefone, ID_Caso = ItemAtual.ID_Caso)
+                                    ShowNavigation: =true
+                                    TemplatePadding: =0
+                                    TemplateSize: =38
+                                    Width: =396
+                                    X: =10
+                                    Y: =72
+                                  Children:
+                                    - entradaTelefone:
+                                        Control: TextInput@0.0.54
+                                        Properties:
+                                          AccessibleLabel: =
+                                          Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                          BasePaletteColor: =cor.tema
+                                          DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                          Fill: =Color.Transparent
+                                          FontColor: =cor.textoPrincipal
+                                          OnChange: |-
+                                            =Notify(
+                                                "Salvando...",
+                                                NotificationType.Information
+                                            );
+
+                                            Patch(
+                                                SAVe_Identificacao_telefone,
+                                                {ID: ThisItem.ID},
+                                                {
+                                                    TelefoneDDD: Self.Value,
+                                                    Atualizado: Today()
+                                                }
+                                            );
+
+                                            ClearCollect(
+                                                _telefonesDeContato,
+                                                Filter(
+                                                    SAVe_Identificacao_telefone,
+                                                    ID_Caso = ItemAtual.ID_Caso
+                                                )
+                                            );
+
+                                            Notify(
+                                                "Salvo! ✅",
+                                                NotificationType.Success,
+                                                2000
+                                            )
+                                          Placeholder: ="(00) 0000-0000"
+                                          Value: =ThisItem.TelefoneDDD
+                                          Width: =198
+                                          X: =150
+                                    - entradaTelefoneAtualizadoEm:
+                                        Control: DatePicker@0.0.46
+                                        Properties:
+                                          DisplayMode: =DisplayMode.View
+                                          Format: ="dd/mm/yyyy"
+                                          OnChange: |-
+                                            =Notify(
+                                                "Salvando...",
+                                                NotificationType.Information
+                                            );
+
+                                            Patch(
+                                                SAVe_Identificacao_telefone,
+                                                ThisItem,
+                                                {Atualizado: Self.SelectedDate}
+                                            );
+
+                                            Notify(
+                                                "Salvo! ✅",
+                                                NotificationType.Success,
+                                                2000
+                                            )
+                                          Placeholder: ="data atualização"
+                                          SelectedDate: =ThisItem.Atualizado
+                                          Width: =135
+                                    - Button5_2:
+                                        Control: Classic/Button@2.2.0
+                                        Properties:
+                                          BorderColor: =ColorFade(Self.Fill, -15%)
+                                          BorderThickness: =0
+                                          Color: =cor.textoSecundaria
+                                          DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                                          Fill: =ColorFade(Self.Color,60%)
+                                          FocusedBorderThickness: =0
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Bold
+                                          Height: =24
+                                          HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                                          HoverColor: =Self.Color
+                                          HoverFill: =ColorFade(Self.Fill,20%)
+                                          OnSelect: |-
+                                            =//RemoveIf(_telefonesDeContato;lctime=ThisItem.lctime);;
+                                            RemoveIf(SAVe_Identificacao_telefone, ID=ThisItem.ID);
+                                          PaddingBottom: =3
+                                          PaddingTop: =0
+                                          PressedBorderColor: =Self.Fill
+                                          PressedColor: =ColorFade(Self.Color,20%)
+                                          PressedFill: =ColorFade(Self.Fill,40%)
+                                          RadiusBottomLeft: =200
+                                          RadiusBottomRight: =200
+                                          RadiusTopLeft: =200
+                                          RadiusTopRight: =200
+                                          Text: ="x"
+                                          Visible: |-
+                                            =true
+                                            //Parent.AllItemsCount>1
+                                          Width: =24
+                                          X: =319
+                                          Y: =4
+                              - Button4_1:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =ColorFade(Self.Fill, -15%)
+                                    BorderThickness: =0
+                                    Color: =cor.tema
+                                    DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Fill: =ColorFade(Self.Color,80%)
+                                    FocusedBorderThickness: =0
+                                    Font: =Font.'Open Sans'
+                                    Height: =30
+                                    HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                                    HoverColor: =RGBA(255, 255, 255, 1)
+                                    HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                                    OnSelect: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao_email,
+                                          Defaults(SAVe_Identificacao_email),
+                                          {
+                                              ID_Caso: ItemAtual.ID_Caso
+                                          }
+                                      );
+
+                                      ClearCollect(
+                                          _emails,
+                                          Filter(
+                                              SAVe_Identificacao_email,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          )
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    PressedBorderColor: =Self.Fill
+                                    PressedColor: =Self.Fill
+                                    PressedFill: =Self.Color
+                                    RadiusBottomLeft: =5
+                                    RadiusBottomRight: =5
+                                    RadiusTopLeft: =5
+                                    RadiusTopRight: =5
+                                    Size: =12
+                                    Text: ="Incluir e-mail"
+                                    Width: =139
+                                    X: =1160
+                                    Y: =galEmails.Y+galEmails.Height-Self.Height-8
+                              - tituloEmailAtualizadoEm:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =20
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Atualizado em"
+                                    Width: =135
+                                    X: =661
+                                    Y: =42
+                              - tituloEmail:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =20
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="E-mail"
+                                    Width: =331
+                                    X: =811
+                                    Y: =42
+                              - galEmails:
+                                  Control: Gallery@2.15.0
+                                  Variant: Vertical
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Height: =Self.AllItemsCount*Self.TemplateHeight
+                                    Items: |-
+                                      =//SAVe_Identificacao_email
+                                      Filter(SAVe_Identificacao_email, ID_Caso = ItemAtual.ID_Caso)
+                                    ShowScrollbar: =false
+                                    TemplatePadding: =0
+                                    TemplateSize: =38
+                                    Width: =494
+                                    X: =661
+                                    Y: =72
+                                  Children:
+                                    - entradaEmail:
+                                        Control: TextInput@0.0.54
+                                        Properties:
+                                          AccessibleLabel: =
+                                          Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                          BasePaletteColor: =cor.tema
+                                          DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                          Fill: =Color.Transparent
+                                          FontColor: =cor.textoPrincipal
+                                          OnChange: |-
+                                            =Notify(
+                                                "Salvando...",
+                                                NotificationType.Information
+                                            );
+
+                                            Patch(
+                                                SAVe_Identificacao_email,
+                                                {ID: ThisItem.ID},
+                                                {
+                                                    'E-mail': Self.Value,
+                                                    Atualizado: Today()
+                                                }
+                                            );
+
+                                            ClearCollect(
+                                                _emails,
+                                                Filter(
+                                                    SAVe_Identificacao_email,
+                                                    ID_Caso = ItemAtual.ID_Caso
+                                                )
+                                            );
+
+                                            Notify(
+                                                "Salvo! ✅",
+                                                NotificationType.Success,
+                                                2000
+                                            )
+                                          Placeholder: ="exemplo@gmail.com"
+                                          Value: |+
+                                            =ThisItem.'E-mail'
+                                          Width: =333
+                                          X: =150
+                                    - entradaEmailAtualizadoEm:
+                                        Control: DatePicker@0.0.46
+                                        Properties:
+                                          DisplayMode: =DisplayMode.View
+                                          Format: ="dd/mm/yyyy"
+                                          OnChange: |-
+                                            =//Patch(_emails; ThisItem; {atualizadoEm: Self.SelectedDate})
+                                            /*Patch(
+                                                SAVe_Identificacao_email;
+                                                ThisItem;
+                                                {Atualizado: Self.SelectedDate}
+                                            )*/
+                                          Placeholder: ="data atualização"
+                                          SelectedDate: =ThisItem.Atualizado
+                                          Width: =135
+                                    - Button5_3:
+                                        Control: Classic/Button@2.2.0
+                                        Properties:
+                                          BorderColor: =ColorFade(Self.Fill, -15%)
+                                          BorderThickness: =0
+                                          Color: =cor.textoSecundaria
+                                          DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                                          Fill: =ColorFade(Self.Color,60%)
+                                          FocusedBorderThickness: =0
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Bold
+                                          Height: =24
+                                          HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                                          HoverColor: =Self.Color
+                                          HoverFill: =ColorFade(Self.Fill,20%)
+                                          OnSelect: |-
+                                            =//RemoveIf(_emails;lctime=ThisItem.lctime);;
+                                            RemoveIf(SAVe_Identificacao_email, ID=ThisItem.ID);
+                                          PaddingBottom: =3
+                                          PaddingTop: =0
+                                          PressedBorderColor: =Self.Fill
+                                          PressedColor: =ColorFade(Self.Color,20%)
+                                          PressedFill: =ColorFade(Self.Fill,40%)
+                                          RadiusBottomLeft: =200
+                                          RadiusBottomRight: =200
+                                          RadiusTopLeft: =200
+                                          RadiusTopRight: =200
+                                          Text: ="x"
+                                          Visible: |-
+                                            =true
+                                            //Parent.AllItemsCount>1
+                                          Width: =24
+                                          X: =454
+                                          Y: =4
+                  - DataCard8:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =Container2_5.Height+15
+                        Width: =1346
+                        X: =0
+                        Y: =4
+                      Children:
+                        - Container2_5:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Regular
+                              Height: =121
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1316
+                              X: =10
+                              Y: =3
+                            Children:
+                              - tituloPessoaConfiancaNome:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Nome:"
+                                    Width: =250
+                                    X: =10
+                                    Y: =47
+                              - entradaPessoaConfiancaNome:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso),
+                                          {
+                                              CC_Nome:Self.Value
+                                          }
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                    Value: "=//_dadosSocioIdentificacao.Pessoa_Confianca_Nome\r\nIf(\r\n    IsBlankOrError(\r\n        LookUp(\r\n            SAVe_Identificacao,\r\n            ID_Caso = ItemAtual.ID_Caso,\r\n            CC_Nome\r\n        )\r\n    ),\r\n    Blank(),\r\n   \r\n    LookUp(\r\n        SAVe_Identificacao,\r\n        ID_Caso = ItemAtual.ID_Caso,\r\n        CC_Nome\r\n    )\r\n)\r\n"
+                                    Width: =428
+                                    X: =10
+                                    Y: =74
+                              - tituloPessoaConfiancaTelefone:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Telefone com DDD:"
+                                    Width: =250
+                                    X: =450
+                                    Y: =47
+                              - entradaPessoaConfiancaTelefone:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso),
+                                          {
+                                              CC_telefoneDDD:Self.Value
+                                          }
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                    Value: "=If(\r\n    IsBlankOrError(\r\n        LookUp(\r\n            SAVe_Identificacao,\r\n            ID_Caso = ItemAtual.ID_Caso,\r\n            CC_telefoneDDD\r\n        )\r\n    ),\r\n    Blank(),\r\n   \r\n    LookUp(\r\n        SAVe_Identificacao,\r\n        ID_Caso = ItemAtual.ID_Caso,\r\n        CC_telefoneDDD\r\n    )\r\n)\r\n"
+                                    Width: =250
+                                    X: =450
+                                    Y: =74
+                              - tituloPessoaConfiancaVinculo:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Vínculo"
+                                    Width: =250
+                                    X: =720
+                                    Y: =47
+                              - entradaPessoaConfiancaVinculo:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso),
+                                          {
+                                              CC_vinculo: Self.Value
+                                          }
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TriggerOutput: ='TextInputCanvas.TriggerOutput'.FocusOut
+                                    Value: "=If(\r\n    IsBlankOrError(\r\n        LookUp(\r\n            SAVe_Identificacao,\r\n            ID_Caso = ItemAtual.ID_Caso,\r\n            CC_vinculo\r\n        )\r\n    ),\r\n    Blank(),\r\n   \r\n    LookUp(\r\n        SAVe_Identificacao,\r\n        ID_Caso = ItemAtual.ID_Caso,\r\n        CC_vinculo\r\n    )\r\n)\r\n"
+                                    Width: =343
+                                    X: =720
+                                    Y: =74
+                              - Label2_75:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Contato de pessoa de confiança"
+                                    Width: |+
+                                      =500
+                                    X: =10
+                                    Y: =10
+                  - DataCard9:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =205
+                        Width: =1346
+                        X: =0
+                        Y: =5
+                      Children:
+                        - Container2_6:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Regular
+                              Height: =187
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1316
+                              X: =10
+                              Y: =5
+                            Children:
+                              - Label2_76:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Perfil Pessoal e Social"
+                                    Width: |+
+                                      =500
+                                    X: =10
+                                    Y: =10
+                              - tituloIdentidadeSexual:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Orientação sexual:"
+                                    Width: =319
+                                    X: =881
+                                    Y: =47
+                              - tituloSexo:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Sexo"
+                                    Width: =319
+                                    X: =10
+                                    Y: =47
+                              - entradaSexo:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =//[{Value: _dadosSocioIdentificacao.Sexo}]
+                                      If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  SAVe_Identificacao,
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  PPS_Sexo
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      SAVe_Identificacao,
+                                                      ID_Caso = ItemAtual.ID_Caso,
+                                                      PPS_Sexo
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: =["Feminino","Masculino","Intersexo","Não informado"]
+                                    OnChange: |+
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso),
+                                          {PPS_Sexo: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Width: =424
+                                    X: =10
+                                    Y: =74
+                              - entradaIdentidadeSexual:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  SAVe_Identificacao,
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  PPS_orientacao_sexual
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      SAVe_Identificacao,
+                                                      ID_Caso = ItemAtual.ID_Caso,
+                                                      PPS_orientacao_sexual
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: |+
+                                      =["Heterossexual","Homossexual - Lésbica","Homossexual - Gay","Bissexual","Pansexual","Assexual","Queer","Outra","Não informado"]
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso),
+                                          {PPS_orientacao_sexual: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Width: =424
+                                    X: =879
+                                    Y: =74
+                              - tituloIdentidadeDeGenero:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Identidade de gênero:"
+                                    Width: =319
+                                    X: =444
+                                    Y: =47
+                              - entradaIdentidadeDeGenero:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  SAVe_Identificacao,
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  PPS_idgenero
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      SAVe_Identificacao,
+                                                      ID_Caso = ItemAtual.ID_Caso,
+                                                      PPS_idgenero
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: |+
+                                      =["Homem cisgênero","Mulher cisgênero","Homem trans","Mulher trans","Travesti","Não binária","Outra","Não informado"]
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso),
+                                          {PPS_idgenero: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Width: =424
+                                    X: =444
+                                    Y: =74
+                              - tituloEstadoCivil:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Estado Civil:"
+                                    Width: =319
+                                    X: =880
+                                    Y: =116
+                              - tituloRacaCorEtnia:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Raça/ cor/ etnia:"
+                                    Width: =319
+                                    X: =9
+                                    Y: =116
+                              - entradaRacaCorEtnia:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  SAVe_Identificacao,
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  PPS_Raca_cor_etnia
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      SAVe_Identificacao,
+                                                      ID_Caso = ItemAtual.ID_Caso,
+                                                      PPS_Raca_cor_etnia
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: =["Amarelo","Branco","Indígena","Pardo","Preto","Outro"]
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso),
+                                          {PPS_Raca_cor_etnia: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Width: =424
+                                    X: =9
+                                    Y: =143
+                              - entradaEstadoCivil:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  SAVe_Identificacao,
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  PPS_estado_civil
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      SAVe_Identificacao,
+                                                      ID_Caso = ItemAtual.ID_Caso,
+                                                      PPS_estado_civil
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: =["Solteira (o)","Casada (o)","Divorciada (o)","Separada (o)","União estável c/ declaração","União estável s/ declaração","Viuvo"]
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso),
+                                          {PPS_estado_civil: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Width: =424
+                                    X: =878
+                                    Y: =143
+                              - tituloReligiao:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Religião:"
+                                    Width: =319
+                                    X: =443
+                                    Y: =116
+                              - entradaReligiao:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  SAVe_Identificacao,
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  PPS_religiao
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      SAVe_Identificacao,
+                                                      ID_Caso = ItemAtual.ID_Caso,
+                                                      PPS_religiao
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: |+
+                                      =["Católica","Evangélica","Espírita","Umbanda","Candomblé","Testemunha de Jeová","Outro","Sem religião","Não informado"]
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Identificacao,
+                                          LookUp(SAVe_Identificacao, ID_Caso = ItemAtual.ID_Caso),
+                                          {PPS_religiao: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Width: =424
+                                    X: =443
+                                    Y: =143
+                  - DataCard2:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =245
+                        Width: =1346
+                        X: =0
+                        Y: =6
+                      Children:
+                        - ControleAnexos_2:
+                            Control: CanvasComponent
+                            ComponentName: ControleAnexos
+                            Properties:
+                              EntrataItemAtual: =ItemAtual
+                              Height: =250
+                              NavegarAnexos: |-
+                                =Set(_telaAnexo, App.ActiveScreen);
+                                Navigate(Tela_Anexos);
+                              Width: =Parent.Width - 10
+                              telaAnexo: =App.ActiveScreen
+                  - DataCard24:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =100
+                        Width: =1346
+                        X: =0
+                        Y: =7
+                      Children:
+                        - botaoSalvarPasso1_3:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =ColorFade(Self.Fill, -15%)
+                              BorderThickness: =0
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.Disabled, DisplayMode.Edit)
+                              Fill: =cor.tema
+                              Font: =Font.'Open Sans'
+                              HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              OnSelect: =MenuPassos_2.NavegarProximo()
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: =Self.Color
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Size: =13
+                              Text: ="Próximo"
+                              Width: =194
+                              X: =botaoSalvarPasso1.X
+                              Y: =botaoSalvarPasso1.Y
+                        - botaoSalvarPasso1_15:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =ColorFade(Self.Fill, -15%)
+                              BorderThickness: =0
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              Fill: =cor.tema
+                              Font: =Font.'Open Sans'
+                              HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              OnSelect: =MenuPassos_2.NavegarAnterior()
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: =Self.Color
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Size: =13
+                              Text: ="Voltar"
+                              Width: =194
+                              X: =17
+                              Y: =16
+            - MenuPassos_2:
+                Control: CanvasComponent
+                ComponentName: MenuPassos
+                Properties:
+                  GaleriaAbas: "=With(\r\n    {\r\n        menu: If(_FormCompleto, \r\n        [\r\n            {\r\n                idMenu: 1,\r\n                largura: 120,\r\n                nome: \"Dados de Entrada\",\r\n                descricao: \"\",\r\n                pagina: Tela_Dados_Entrada\r\n            },\r\n            {\r\n                idMenu: 2,\r\n                largura: 120,//150\r\n                nome: \"Sócio identificação\",\r\n                descricao: \"\",\r\n                pagina: Tela_Socio_Identificacao\r\n            },\r\n            {\r\n                idMenu: 3,\r\n                largura: 120,//180\r\n                nome: \"Ensino - trab - renda\",\r\n                descricao: \"\",\r\n                pagina: Tela_Ensino_Trab_Renda\r\n            },\r\n            \r\n            {\r\n                idMenu: 4,\r\n                largura: 60,\r\n                nome: \"Assistência\",\r\n                descricao: \"\",\r\n                pagina: Tela_Assistencia\r\n            },\r\n            {\r\n                idMenu: 5,\r\n                largura: 90,\r\n                nome: \"Território\",\r\n                descricao: \"\",\r\n                pagina: Tela_Territorio\r\n            },\r\n            {\r\n                idMenu: 6,\r\n                largura: 80,\r\n                nome: \"Saúde\",\r\n                descricao: \"\",\r\n                pagina: Tela_Saude\r\n            },\r\n            {\r\n                idMenu: 7,\r\n                largura: 85,\r\n                nome: \"Vínculos\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vinculos\r\n            },\r\n            {\r\n                idMenu: 8,\r\n                largura: 120,//200\r\n                nome: \"Situação Jurídica\",\r\n                descricao: \"\",\r\n                pagina: Tela_SitJuridica\r\n            },\r\n            {\r\n                idMenu: 9,\r\n                largura: 110,\r\n                nome: \"Agressor\",\r\n                descricao: \"\",\r\n                pagina: Tela_Agressor\r\n            },\r\n            {\r\n                idMenu: 10,\r\n                largura: 120,//180\r\n                nome: \"Proteção-segurança\",\r\n                descricao: \"\",\r\n                pagina: Tela_Protecao_Seguranca\r\n            },\r\n            {\r\n                idMenu: 11,\r\n                largura: 120,\r\n                nome: \"Vitimização secundária e terciária\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vitimizacao\r\n            },\r\n            {\r\n                idMenu: 12,\r\n                largura: 120,\r\n                nome: \"Síntese Analítica\",\r\n                descricao: \"\",\r\n                pagina: Tela_Sintese_Analitica\r\n            },\r\n            {\r\n                idMenu: 13,\r\n                largura: 120,//170\r\n                nome: \"Acompanhamentos\",\r\n                descricao: \"\",\r\n                pagina: Tela_Acompanhamento\r\n            },\r\n            /*{\r\n                idMenu: 14;\r\n                largura: 120;//200\r\n                nome: \"Relato de Atendimento\";\r\n                descricao: \"\";\r\n                pagina: Tela_Relato_De_Atendimento\r\n            };*/\r\n            {\r\n                idMenu: 14,\r\n                largura: 120,//135\r\n                nome: \"Encerramento\",\r\n                descricao: \"\",\r\n                pagina: Tela_Encerramento\r\n            },\r\n            /*{\r\n                idMenu: 15;\r\n                largura: 120;//132\r\n                nome: \"Matriz de risco\";\r\n                descricao: \"\";\r\n                pagina: Tela_Matriz_De_Risco\r\n            };*/\r\n            {\r\n                idMenu: 15,\r\n                largura: 120,//135\r\n                nome: \"Referências\",\r\n                descricao: \"\",\r\n                pagina: Tela_Referencias\r\n            }\r\n        ], //dados de entrada, socioidentificação, situação juridica maior e menor, proteção-segurança e vitimização \r\n        [\r\n            {\r\n                idMenu: 1,\r\n                largura: 170,\r\n                nome: \"Dados de Entrada\",\r\n                descricao: \"\",\r\n                pagina: Tela_Dados_Entrada\r\n            },\r\n            {\r\n                idMenu: 2,\r\n                largura: 150,\r\n                nome: \"Sócio identificação\",\r\n                descricao: \"\",\r\n                pagina: Tela_Socio_Identificacao\r\n            },\r\n            {\r\n                idMenu: 3,\r\n                largura: 200,\r\n                nome: \"Situação Jurídica\",\r\n                descricao: \"\",\r\n                pagina: Tela_SitJuridica\r\n            },\r\n            {\r\n                idMenu: 4,\r\n                largura: 180,\r\n                nome: \"Proteção-segurança\",\r\n                descricao: \"\",\r\n                pagina: Tela_Protecao_Seguranca\r\n            },\r\n            {\r\n                idMenu: 5,\r\n                largura: 240,\r\n                nome: \"Vitimização secundária e terciária\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vitimizacao\r\n            }\r\n        ]\r\n        )\r\n    },\r\n    With(\r\n        {\r\n            // Acrescenta a coluna \"larguraCalc\" conforme regra:\r\n            // Se o item for o selecionado (_passoAtual.idMenu), usa a largura definida;\r\n// Senão, divide o espaço restante igualmente entre os demais itens.\r\nmenuCalc: AddColumns(\r\n                menu,\r\n                larguraCalc,\r\n                If(\r\n                    pagina = MenuPassos_2.TelaAtual,\r\n                    largura,\r\n                    If(pagina = Tela_Vitimizacao, largura,\r\n                    ((Self.Width - 100) - LookUp(\r\n                        menu,\r\n                        pagina = MenuPassos_2.TelaAtual,\r\n                        largura\r\n                    )) / (CountRows(menu) - 1))\r\n                )\r\n            )\r\n        },\r\n        // Ordena os itens pelo idMenu e calcula a posição \"distancia\" de cada item\r\n// somando as larguras calculadas dos itens anteriores.\r\n        AddColumns(\r\n            SortByColumns(\r\n                menuCalc,\r\n                \"idMenu\",\r\n                SortOrder.Ascending\r\n            ) As m1,\r\n            distancia,\r\n            Sum(\r\n                Filter(\r\n                    menuCalc,\r\n                    idMenu < m1.idMenu\r\n                ),\r\n                larguraCalc\r\n            )\r\n        )\r\n    )\r\n)"
+                  Height: =100
+                  TelaAtual: =App.ActiveScreen
+                  Width: =App.Width
+      - MenuSuperior_2:
+          Control: CanvasComponent
+          ComponentName: MenuSuperior
+          Properties:
+            Height: =60
+            Width: =1346
+            X: =10
+            Y: =10

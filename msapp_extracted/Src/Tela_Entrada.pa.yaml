@@ -1,0 +1,234 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  Tela_Entrada:
+    Properties:
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+    Children:
+      - ContainerFundoEntrada:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            Fill: =ColorFade(cor.tema, 70%)
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Center
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: |-
+              =If(
+                  _meuCargo = "Administrador",
+                  20,
+                  40
+              )
+            PaddingBottom: =10
+            PaddingLeft: =10
+            PaddingRight: =10
+            PaddingTop: =10
+            Width: =Parent.Width
+          Children:
+            - TituloEntrada:
+                Control: Text@0.0.51
+                Properties:
+                  Align: ='TextCanvas.Align'.Center
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Font: =Font.Lato
+                  Height: =60
+                  Size: =30
+                  Text: ="Bem-vindo ao aplicativo SAVe, " & User().FullName & "!"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Weight: ='TextCanvas.Weight'.Bold
+            - ImagemPerfilEntrada:
+                Control: Image@2.2.3
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Image: =User().Image
+                  RadiusBottomLeft: =20
+                  RadiusBottomRight: =20
+                  RadiusTopLeft: =20
+                  RadiusTopRight: =20
+            - IntroducaoEntrada:
+                Control: Text@0.0.51
+                Properties:
+                  Align: ='TextCanvas.Align'.Center
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Font: =Font.Lato
+                  Height: =60
+                  Size: =30
+                  Text: ="O que deseja fazer a seguir?"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Weight: ='TextCanvas.Weight'.Regular
+            - EntradaAcessarCasos:
+                Control: Button@0.0.45
+                Properties:
+                  BasePaletteColor: =cor.tema
+                  BorderRadius: =10
+                  OnSelect: =Navigate(Tela_Buscar_Casos)
+                  Text: |-
+                    =If(
+                        _meuCargo = "Administrador",
+                        "Acessar Casos",
+                        "Acessar Meus Casos"
+                    )
+                  Width: =200
+            - EntradaCriarNovoCaso:
+                Control: Button@0.0.45
+                Properties:
+                  BasePaletteColor: =cor.tema
+                  BorderRadius: =10
+                  OnSelect: |-
+                    =///Concurrent(
+                        //Set(_dadosEntrada; Blank());
+                        ////Set(_dadosSocioIdentificacao; Blank());
+                        ////Set(_dadosEnsinoTrabRenda; Blank());
+                        //Set(_dadosAssistencia; Blank());
+                        //Set(_dadosTerritorio; Blank());
+                        ////Set(_dadosSaude; Blank());
+                        ////Set(_dadosVinculos; Blank());
+                        ////Set(_dadosSitJuridica; Blank());
+                        //Set(_dadosAgressor; Blank());
+                        //Set(_dadosProtecaoSeguranca; Blank());
+                        //Set(_dadosVitimizacao; Blank());
+                        Set(_dadosMatriz, Blank());
+                        //Set(_dadosAcompanhamento; Blank());
+                        //Set(_dadosRelato; Blank());
+                        //Set(_dadosEncerramento; Blank())
+                    //);;
+                    Set(ItemAtual, Blank());
+                    Refresh(SAVe_Geral);
+                    Navigate(Tela_Selecao_Form)
+                  Text: ="Criar Novo Caso"
+                  Width: =200
+            - EntradaUsuarios:
+                Control: Button@0.0.45
+                Properties:
+                  BasePaletteColor: =cor.tema
+                  BorderRadius: =10
+                  OnSelect: =Navigate(Tela_Gestao_Usuarios)
+                  Text: ="Gestão de Usuários"
+                  Visible: =_meuCargo = "Administrador"
+                  Width: =200
+            - EntradaDashboard:
+                Control: Button@0.0.45
+                Properties:
+                  BasePaletteColor: =cor.tema
+                  BorderRadius: =10
+                  OnSelect: =Navigate(Tela_Dashboards)
+                  Text: ="Dashboards"
+                  Visible: =_meuCargo = "Administrador"
+                  Width: =200
+            - AlterarTema:
+                Control: Button@0.0.45
+                Properties:
+                  BasePaletteColor: =cor.tema
+                  BorderRadius: =10
+                  OnSelect: =Set(_alterarTema,!_alterarTema)
+                  Text: ="Alterar Tema"
+                  Width: =200
+            - Gallery1_5:
+                Control: Gallery@2.15.0
+                Variant: BrowseLayout_Horizontal_TwoTextOneImageVariant_ver5.0
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DelayItemLoading: =false
+                  FillPortions: =0
+                  Height: =50
+                  Items: |-
+                    =[
+                        {color: ColorValue("#242424"), desc: "Preto", curt: "Blk"},
+                        {color: ColorValue("#d61717"), desc: "Vermelho", curt: "Red"},
+                        {color: ColorValue("#d6178c"), desc: "Rosa", curt: "Pink"},
+                        {color: ColorValue("#7517d6"), desc: "Roxo", curt: "Prpl"},
+                        {color: ColorValue("#1748d6"), desc: "Azul", curt: "Blue"},
+                        {color: ColorValue("#007cbe"), desc: "Azul Claro", curt: "LtBlue"},
+                        {color: ColorValue("#607356"), desc: "Verde", curt: "Grn"},
+                        {color: ColorValue("#77d710"), desc: "Verde Limão", curt: "LmGrn"},
+                        {color: ColorValue("#fad400"), desc: "Amarelo", curt: "Ylw"},
+                        {color: ColorValue("#fa9300"), desc: "Laranja", curt: "Orng"}
+                    ]
+                  LoadingSpinner: =LoadingSpinner.None
+                  TemplateSize: =25
+                  Visible: =_alterarTema
+                  Width: =128
+                  WrapCount: =2
+                  X: =3
+                  Y: =3
+                Children:
+                  - btnCorTema_3:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =ColorFade(Self.Fill, -15%)
+                        BorderThickness: =0
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                        Fill: =ThisItem.color
+                        FocusedBorderThickness: =0
+                        Font: =Font.'Open Sans'
+                        Height: =22
+                        HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =ColorFade(Self.Fill,-40%)
+                        OnSelect: |
+                          =Set(
+                              cor,
+                              Patch(
+                                  cor,
+                                  {tema: Self.Fill}
+                              )
+                          );
+                          Patch(
+                              SAVe_Usuarios,
+                              LookUp(SAVe_Usuarios, Usuario.Email = User().Email),
+                              {Tema: JSON(cor)}
+                          );
+                          Set(
+                              _alterarTema,
+                              false
+                          );
+                        PaddingRight: =6.59
+                        PaddingTop: =6.59
+                        PressedBorderColor: =Self.Fill
+                        PressedColor: =Self.Fill
+                        PressedFill: =ColorFade(Self.Fill,20%)
+                        RadiusBottomLeft: =3
+                        RadiusBottomRight: =3
+                        RadiusTopLeft: =3
+                        RadiusTopRight: =3
+                        Size: =19.77
+                        Text: =""
+                        Tooltip: =ThisItem.desc
+                        Width: =22
+      - LogoMPEntrada:
+          Control: Image@2.2.3
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =45
+            Image: ='logo-mp'
+            ImagePosition: =ImagePosition.Fill
+            Width: =230
+            X: =LogoSavEEntrada.X + LogoSavEEntrada.Width
+            Y: =680
+      - LogoCasaLilianEntrada:
+          Control: Image@2.2.3
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =45
+            Image: ='logo-01'
+            ImagePosition: =ImagePosition.Fill
+            Width: =230
+            X: =LogoSavEEntrada.X - Self.Width
+            Y: =682
+      - LogoSavEEntrada:
+          Control: Image@2.2.3
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Image: ='Logo-SavE'
+            ImagePosition: =ImagePosition.Fill
+            Width: =500
+            X: =Parent.Width/2 - Self.Width/2
+            Y: =650

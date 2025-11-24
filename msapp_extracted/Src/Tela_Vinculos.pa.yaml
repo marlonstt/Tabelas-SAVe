@@ -1,0 +1,1702 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  Tela_Vinculos:
+    Properties:
+      Fill: =RGBA(245, 246, 248, 1)
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+      OnVisible: |-
+        =If(!IsBlankOrError(ItemAtual.ID_Caso),
+            If(
+                !(App.ActiveScreen.Name in _paginasVisitadas),
+                Collect(
+                    _paginasVisitadas,
+                    App.ActiveScreen.Name
+                );
+                Patch(
+                    SAVe_Geral,
+                    {ID: ItemAtual.ID_Caso},
+                    {Paginas_Visitadas: JSON(_paginasVisitadas)}
+                )
+            );
+            If(
+                IsBlankOrError(
+                    LookUp(
+                        SAVe_Vinculos,
+                        ID_Caso = ItemAtual.ID_Caso
+                    )
+                ),
+                Patch(
+                    SAVe_Vinculos,
+                    Defaults(SAVe_Vinculos),
+                    {ID_Caso: ItemAtual.ID_Caso}
+                )
+            )
+        )
+    Children:
+      - Container1_13:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =Parent.Height-Self.Y-10
+            RadiusBottomLeft: =8
+            RadiusBottomRight: =8
+            RadiusTopLeft: =8
+            RadiusTopRight: =8
+            Width: =1346
+            X: =10
+            Y: =80
+          Children:
+            - Canvas2_6:
+                Control: FluidGrid@2.3.0
+                Properties:
+                  BorderThickness: =0
+                  Height: =583
+                  Width: =Parent.Width
+                  Y: =95
+                Children:
+                  - DataCard2_6:
+                      Control: DataCard@1.0.2
+                      Properties:
+                        DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                        Height: =Container2_28.Y+Container2_28.Height+10
+                        Width: =Parent.Width
+                        X: =0
+                        Y: =0
+                      Children:
+                        - Container2_28:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Regular
+                              Height: =158
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1316
+                              X: =10
+                              Y: =5
+                            Children:
+                              - entradaQuantidadePessoasGrupoFamiliar:
+                                  Control: NumberInput@2.9.12
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    Max: =99
+                                    Min: =0
+                                    OnChange: |+
+                                      =
+                                      Patch(
+                                          SAVe_Vinculos,
+                                          LookUp(
+                                              SAVe_Vinculos,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Qtd_Pessoas_Fam: Self.Value}
+                                      );
+
+                                    Precision: ='NumberInput.Precision'.'0'
+                                    Value: |-
+                                      =LookUp(
+                                          SAVe_Vinculos,
+                                          ID_Caso = ItemAtual.ID_Caso,
+                                          Qtd_Pessoas_Fam
+                                      )
+                                    Width: =330
+                                    X: =10
+                                    Y: =37
+                              - entradaQuantidadeFilhosEnteados:
+                                  Control: NumberInput@2.9.12
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    Max: =99
+                                    Min: =0
+                                    OnChange: |+
+                                      =
+                                      Patch(
+                                          SAVe_Vinculos,
+                                          LookUp(
+                                              SAVe_Vinculos,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Qtd_Filhos_Ent: Self.Value}
+                                      );
+
+                                    Precision: ='NumberInput.Precision'.'0'
+                                    Value: |-
+                                      =LookUp(
+                                          SAVe_Vinculos,
+                                          ID_Caso = ItemAtual.ID_Caso,
+                                          Qtd_Filhos_Ent
+                                      )
+                                    Width: =330
+                                    X: =362
+                                    Y: =37
+                              - Label2_192:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Quantidade de pessoas no grupo familiar:"
+                                    Width: =330
+                                    X: =10
+                                    Y: =10
+                              - Label2_195:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Quantidade de filhas/os ou enteadas/os:"
+                                    Width: =330
+                                    X: =362
+                                    Y: =10
+                              - entradaQuantidadeFilhosDependentes:
+                                  Control: NumberInput@2.9.12
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    Max: =99
+                                    Min: =0
+                                    OnChange: |+
+                                      =
+
+                                      Patch(
+                                          SAVe_Vinculos,
+                                          LookUp(
+                                              SAVe_Vinculos,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Num_Filhos_Dep: Self.Value}
+                                      );
+
+                                    Precision: ='NumberInput.Precision'.'0'
+                                    Value: |-
+                                      =LookUp(
+                                          SAVe_Vinculos,
+                                          ID_Caso = ItemAtual.ID_Caso,
+                                          Num_Filhos_Dep
+                                      )
+                                    Width: =280
+                                    X: =714
+                                    Y: =37
+                              - Label2_196:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Nº de filhas/os dependentes: "
+                                    Width: =280
+                                    X: =714
+                                    Y: =10
+                              - entradaQuantidadeEnteadosDependentes:
+                                  Control: NumberInput@2.9.12
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    Max: =99
+                                    Min: =0
+                                    OnChange: |+
+                                      =Patch(
+                                          SAVe_Vinculos,
+                                          LookUp(
+                                              SAVe_Vinculos,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Num_Enteados_Dep: Self.Value}
+                                      );
+                                    Precision: ='NumberInput.Precision'.'0'
+                                    Value: |-
+                                      =LookUp(
+                                          SAVe_Vinculos,
+                                          ID_Caso = ItemAtual.ID_Caso,
+                                          Num_Enteados_Dep
+                                      )
+                                    Width: =280
+                                    X: =1016
+                                    Y: =37
+                              - Label2_197:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Nº de enteadas/os dependentes: "
+                                    Width: =280
+                                    X: =1016
+                                    Y: =10
+                              - entradaRendaTotalFamilia:
+                                  Control: NumberInput@2.9.12
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    Max: =999999
+                                    Min: =0
+                                    OnChange: |+
+                                      =
+                                      Patch(
+                                          SAVe_Vinculos,
+                                          LookUp(
+                                              SAVe_Vinculos,
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Renda_Total_Conv: Self.Value}
+                                      );
+
+                                    Precision: ='NumberInput.Precision'.'5'
+                                    Step: =0
+                                    Value: |-
+                                      =LookUp(
+                                          SAVe_Vinculos,
+                                          ID_Caso = ItemAtual.ID_Caso,
+                                          Renda_Total_Conv
+                                      )
+                                    Width: =330
+                                    X: =10
+                                    Y: =113
+                              - Label2_198:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Renda total (grupo de convivência):"
+                                    Width: =330
+                                    X: =10
+                                    Y: =86
+                  - DataCard6_4:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                        Height: =Container2_30.Y+Container2_30.Height+10
+                        Width: =1346
+                        X: =0
+                        Y: =1
+                      Children:
+                        - Container2_30:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Regular
+                              Height: =Gallery5_1.Y+Gallery5_1.Height+50
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1316
+                              X: =10
+                              Y: =5
+                            Children:
+                              - Gallery5_1:
+                                  Control: Gallery@2.15.0
+                                  Variant: Vertical
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Height: =Self.AllItemsCount*Self.TemplateHeight
+                                    Items: =Filter(SAVe_Vinculos_Apoio, ID_Caso = ItemAtual.ID_Caso)
+                                    TemplatePadding: =0
+                                    TemplateSize: =40
+                                    Width: =1316
+                                    Y: =55
+                                  Children:
+                                    - Container6:
+                                        Control: GroupContainer@1.3.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          DropShadow: =DropShadow.None
+                                          Height: =40
+                                          LayoutDirection: =LayoutDirection.Horizontal
+                                          LayoutGap: =3
+                                          Width: =Parent.TemplateWidth
+                                        Children:
+                                          - Label2_280:
+                                              Control: Label@2.5.1
+                                              Properties:
+                                                Align: =Align.Center
+                                                BorderColor: =RGBA(0, 18, 107, 1)
+                                                Color: =cor.textoSecundaria
+                                                Font: =Font.'Open Sans'
+                                                FontWeight: =FontWeight.Semibold
+                                                Height: =Parent.Height
+                                                PaddingBottom: =0
+                                                PaddingLeft: =0
+                                                PaddingRight: =0
+                                                PaddingTop: =0
+                                                Size: =11
+                                                Text: =ThisItem.ID_Caso
+                                                Width: =lblHeader_01.Width
+                                                X: =lblHeader_01.X
+                                          - TextInputCanvas1_112:
+                                              Control: TextInput@0.0.54
+                                              Properties:
+                                                Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                                BasePaletteColor: =cor.tema
+                                                FontColor: =cor.textoPrincipal
+                                                OnChange: |-
+                                                  =Notify(
+                                                      "Salvando...",
+                                                      NotificationType.Information
+                                                  );
+                                                  Patch(
+                                                      SAVe_Vinculos_Apoio,
+                                                      ThisItem,
+                                                      {AVF_Grau_Parentesco: Self.Value}
+                                                  );
+                                                  Notify(
+                                                      "Salvo! ✅",
+                                                      NotificationType.Success,
+                                                      2000
+                                                  )
+                                                PaddingLeft: =1
+                                                PaddingRight: =1
+                                                Value: =ThisItem.AVF_Grau_Parentesco
+                                                Width: =lblHeader_02.Width-3
+                                                X: =10
+                                                Y: =74
+                                          - TextInputCanvas1_113:
+                                              Control: TextInput@0.0.54
+                                              Properties:
+                                                Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                                BasePaletteColor: =cor.tema
+                                                FontColor: =cor.textoPrincipal
+                                                OnChange: |-
+                                                  =Notify(
+                                                      "Salvando...",
+                                                      NotificationType.Information
+                                                  );
+                                                  Patch(
+                                                      SAVe_Vinculos_Apoio,
+                                                      ThisItem,
+                                                      {AVF_Nome: Self.Value}
+                                                  );
+                                                  Notify(
+                                                      "Salvo! ✅",
+                                                      NotificationType.Success,
+                                                      2000
+                                                  )
+                                                PaddingLeft: =1
+                                                PaddingRight: =1
+                                                Value: =ThisItem.AVF_Nome
+                                                Width: =lblHeader_03.Width-3
+                                                X: =10
+                                                Y: =74
+                                          - DatePickerCanvas1:
+                                              Control: DatePicker@0.0.46
+                                              Properties:
+                                                Format: ="dd/mm/yyyy"
+                                                OnChange: |-
+                                                  =Notify(
+                                                      "Salvando...",
+                                                      NotificationType.Information
+                                                  );
+
+                                                  Patch(
+                                                      SAVe_Vinculos_Apoio,
+                                                      {ID: ThisItem.ID},
+                                                      {
+                                                          AVF_Data_Nasc: Self.SelectedDate,
+                                                          AVF_Idade: If(
+                                                              Month(Today()) < Month(Self.SelectedDate) || (Month(Today()) = Month(Self.SelectedDate) && Day(Today()) < Day(Self.SelectedDate)),
+                                                              DateDiff(
+                                                                  Text(Year(Self.SelectedDate)),
+                                                                  Today(),
+                                                                  TimeUnit.Years
+                                                              ) - 1,
+                                                              DateDiff(
+                                                                  Text(Year(Self.SelectedDate)),
+                                                                  Today(),
+                                                                  TimeUnit.Years
+                                                              )
+                                                          )
+                                                      }
+                                                  );
+
+                                                  Notify(
+                                                      "Salvo! ✅",
+                                                      NotificationType.Success,
+                                                      2000
+                                                  )
+                                                SelectedDate: |-
+                                                  =ThisItem.AVF_Data_Nasc
+                                                  /*LookUp(
+                                                      SAVe_Vinculos_Apoio;
+                                                      ID_Caso = ItemAtual.ID_Caso;
+                                                      AVF_Data_Nasc
+                                                  )*/
+                                                Width: =130
+                                                X: =40
+                                                Y: =40
+                                          - Label2_281:
+                                              Control: Label@2.5.1
+                                              Properties:
+                                                Align: =Align.Center
+                                                BorderColor: =RGBA(0, 18, 107, 1)
+                                                Color: =cor.textoSecundaria
+                                                Font: =Font.'Open Sans'
+                                                Height: =Parent.Height
+                                                PaddingBottom: =0
+                                                PaddingLeft: =0
+                                                PaddingRight: =0
+                                                PaddingTop: =0
+                                                Size: =11
+                                                Text: |-
+                                                  =If(
+                                                      Month(Today()) < Month(DatePickerCanvas1.SelectedDate) ||
+                                                      (Month(Today()) = Month(DatePickerCanvas1.SelectedDate) && Day(Today()) < Day(DatePickerCanvas1.SelectedDate)),
+                                                      DateDiff(Text(Year(DatePickerCanvas1.SelectedDate)), Today(), TimeUnit.Years) - 1,
+                                                      DateDiff(Text(Year(DatePickerCanvas1.SelectedDate)), Today(), TimeUnit.Years)
+                                                  )
+
+                                                  /*If(Len(TextInputCanvas1_114.Value) = 10;
+                                                  With(
+                                                      {DataNascimento: DateValue(TextInputCanvas1_114.Value)};
+                                                      If(
+                                                          IsBlank(DataNascimento) || 
+                                                          Not(IsNumeric(Year(DataNascimento))) || 
+                                                          Year(DataNascimento) > Year(Today()) ||
+                                                          Not(IsMatch(TextInputCanvas1_114.Value; "\d{2}/\d{2}/\d{4}"));
+                                                          Blank();
+                                                          (Year(Today()) - Year(DataNascimento)) & " anos"
+                                                      )
+                                                  )
+                                                  )*/
+                                                  /*
+                                                  If(
+                                                      Len(DatePickerCanvas1.SelectedDate) = 10;
+                                                      With(
+                                                          {DataNascimento: DatePickerCanvas1.SelectedDate};
+                                                          If(
+                                                              IsBlank(DataNascimento) || 
+                                                              Not(IsMatch(DatePickerCanvas1.SelectedDate; "\d{2}/\d{2}/\d{4}"));
+                                                              Blank();
+                                                              If(
+                                                                  Month(Today()) < Month(DataNascimento) || 
+                                                                  (Month(Today()) = Month(DataNascimento) && Day(Today()) < Day(DataNascimento));
+                                                                  DateDiff(DataNascimento; Today(); TimeUnit.Years) - 1;
+                                                                  DateDiff(DataNascimento; Today(); TimeUnit.Years)
+                                                              ) & " anos"
+                                                          )
+                                                      )
+                                                  )
+                                                  */
+
+                                                  /*
+                                                  If(
+                                                      Len(dataNascimentoTelaVinculo.Text) = 10;
+                                                      With(
+                                                          {DataNascimento: dataNascimentoTelaVinculo.Text};
+                                                          If(
+                                                              IsBlank(DataNascimento) || 
+                                                              Not(IsMatch(dataNascimentoTelaVinculo.Text; "\d{2}/\d{2}/\d{4}"));
+                                                              Blank();
+                                                              If(
+                                                                  Month(Today()) < Month(DataNascimento) || 
+                                                                  (Month(Today()) = Month(DataNascimento) && Day(Today()) < Day(DataNascimento));
+                                                                  DateDiff(DataNascimento; Today(); TimeUnit.Years) - 1;
+                                                                  DateDiff(DataNascimento; Today(); TimeUnit.Years)
+                                                              ) & " anos"
+                                                          )
+                                                      )
+                                                  )
+                                                  */
+                                                Width: =lblHeader_05.Width-3
+                                                X: =lblHeader_01.X
+                                          - TextInputCanvas1_116:
+                                              Control: TextInput@0.0.54
+                                              Properties:
+                                                Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                                BasePaletteColor: =cor.tema
+                                                FontColor: =cor.textoPrincipal
+                                                OnChange: |-
+                                                  =Notify(
+                                                      "Salvando...",
+                                                      NotificationType.Information
+                                                  );
+                                                  Patch(
+                                                      SAVe_Vinculos_Apoio,
+                                                      ThisItem,
+                                                      {AVF_Escolaridade: Self.Value}
+                                                  );
+                                                  Notify(
+                                                      "Salvo! ✅",
+                                                      NotificationType.Success,
+                                                      2000
+                                                  )
+                                                PaddingLeft: =1
+                                                PaddingRight: =1
+                                                Value: =ThisItem.AVF_Escolaridade
+                                                Width: =lblHeader_06.Width-3
+                                                X: =10
+                                                Y: =74
+                                          - TextInputCanvas1_117:
+                                              Control: TextInput@0.0.54
+                                              Properties:
+                                                Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                                FontColor: =cor.textoPrincipal
+                                                OnChange: |-
+                                                  =Notify(
+                                                      "Salvando...",
+                                                      NotificationType.Information
+                                                  );
+                                                  Patch(SAVe_Vinculos_Apoio, ThisItem, {AVF_Ocupacao: Self.Value});
+                                                  Notify(
+                                                      "Salvo! ✅",
+                                                      NotificationType.Success,
+                                                      2000
+                                                  )
+                                                PaddingLeft: =1
+                                                PaddingRight: =1
+                                                Value: =ThisItem.AVF_Ocupacao
+                                                Width: =lblHeader_07.Width-3
+                                                X: =10
+                                                Y: =74
+                                          - TextInputCanvas1_118:
+                                              Control: TextInput@0.0.54
+                                              Properties:
+                                                Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                                FontColor: =cor.textoPrincipal
+                                                OnChange: |+
+                                                  =Notify(
+                                                      "Salvando...",
+                                                      NotificationType.Information
+                                                  );
+                                                  Patch(SAVe_Vinculos_Apoio, ThisItem, {AVF_Renda: Self.Value});
+                                                  Notify(
+                                                      "Salvo! ✅",
+                                                      NotificationType.Success,
+                                                      2000
+                                                  )
+                                                PaddingLeft: =1
+                                                PaddingRight: =1
+                                                Value: =ThisItem.AVF_Renda
+                                                Width: =lblHeader_08.Width-3
+                                                X: =10
+                                                Y: =74
+                                          - Toggle2:
+                                              Control: Toggle@1.1.5
+                                              Properties:
+                                                AlignInContainer: =AlignInContainer.Center
+                                                Checked: =ThisItem.AVF_Mora_Com_Vitima
+                                                Label: =
+                                                LabelPosition: ='Toggle.LabelPosition'.After
+                                                OnSelect: |+
+                                                  =Notify(
+                                                      "Salvando...",
+                                                      NotificationType.Information
+                                                  );
+                                                  Patch(SAVe_Vinculos_Apoio, ThisItem, {AVF_Mora_Com_Vitima: Self.Checked});
+                                                  Notify(
+                                                      "Salvo! ✅",
+                                                      NotificationType.Success,
+                                                      2000
+                                                  )
+                                                Width: =lblHeader_09.Width-3
+                                          - Toggle2_1:
+                                              Control: Toggle@1.1.5
+                                              Properties:
+                                                AlignInContainer: =AlignInContainer.Center
+                                                Checked: =ThisItem.AVF_Presenciou_Violencia
+                                                Label: =
+                                                LabelPosition: ='Toggle.LabelPosition'.After
+                                                OnSelect: |+
+                                                  =Notify(
+                                                      "Salvando...",
+                                                      NotificationType.Information
+                                                  );
+                                                  Patch(SAVe_Vinculos_Apoio, ThisItem, {AVF_Presenciou_Violencia: Self.Checked});
+                                                  Notify(
+                                                      "Salvo! ✅",
+                                                      NotificationType.Success,
+                                                      2000
+                                                  )
+                                                Width: =lblHeader_10.Width-3
+                                          - Toggle2_2:
+                                              Control: Toggle@1.1.5
+                                              Properties:
+                                                AlignInContainer: =AlignInContainer.Center
+                                                Checked: =ThisItem.AVF_Conhecimento_Fato
+                                                Label: =
+                                                LabelPosition: ='Toggle.LabelPosition'.After
+                                                OnSelect: |+
+                                                  =Notify(
+                                                      "Salvando...",
+                                                      NotificationType.Information
+                                                  );
+                                                  Patch(SAVe_Vinculos_Apoio, ThisItem, {AVF_Conhecimento_Fato: Self.Checked});
+                                                  Notify(
+                                                      "Salvo! ✅",
+                                                      NotificationType.Success,
+                                                      2000
+                                                  )
+
+                                                Width: =lblHeader_11.Width-3
+                                          - TextInputCanvas1_119:
+                                              Control: TextInput@0.0.54
+                                              Properties:
+                                                Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                                                BasePaletteColor: =cor.tema
+                                                FontColor: =cor.textoPrincipal
+                                                OnChange: |-
+                                                  =Notify(
+                                                      "Salvando...",
+                                                      NotificationType.Information
+                                                  );
+                                                  Patch(
+                                                      SAVe_Vinculos_Apoio,
+                                                      ThisItem,
+                                                      {AVF_Alt_Vinculo_Pos_Violencia: Self.Value}
+                                                  );
+                                                  Notify(
+                                                      "Salvo! ✅",
+                                                      NotificationType.Success,
+                                                      2000
+                                                  )
+                                                PaddingLeft: =1
+                                                PaddingRight: =1
+                                                Value: =ThisItem.AVF_Alt_Vinculo_Pos_Violencia
+                                                Width: =lblHeader_12.Width-3
+                                                X: =10
+                                                Y: =74
+                                          - Toggle2_3:
+                                              Control: Toggle@1.1.5
+                                              Properties:
+                                                AlignInContainer: =AlignInContainer.Center
+                                                Checked: =ThisItem.AVF_Rede_Apoio
+                                                Label: =
+                                                LabelPosition: ='Toggle.LabelPosition'.After
+                                                OnSelect: |-
+                                                  =Notify(
+                                                      "Salvando...",
+                                                      NotificationType.Information
+                                                  );
+                                                  Patch(SAVe_Vinculos_Apoio, ThisItem, {AVF_Rede_Apoio: Self.Checked});
+                                                  Notify(
+                                                      "Salvo! ✅",
+                                                      NotificationType.Success,
+                                                      2000
+                                                  )
+                                                Width: =60
+                                          - Button5_9:
+                                              Control: Classic/Button@2.2.0
+                                              Properties:
+                                                AlignInContainer: =AlignInContainer.Start
+                                                BorderColor: =ColorFade(Self.Fill, -15%)
+                                                BorderThickness: =0
+                                                Color: =cor.textoSecundaria
+                                                DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                                                Fill: =ColorFade(Self.Color,60%)
+                                                FocusedBorderThickness: =0
+                                                Font: =Font.'Open Sans'
+                                                FontWeight: =FontWeight.Bold
+                                                Height: =25
+                                                HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                                                HoverColor: =Self.Color
+                                                HoverFill: =ColorFade(Self.Fill,20%)
+                                                OnSelect: =RemoveIf(SAVe_Vinculos_Apoio,ID=ThisItem.ID);
+                                                PaddingBottom: =3
+                                                PaddingLeft: =4
+                                                PaddingTop: =0
+                                                PressedBorderColor: =Self.Fill
+                                                PressedColor: =ColorFade(Self.Color,20%)
+                                                PressedFill: =ColorFade(Self.Fill,40%)
+                                                RadiusBottomLeft: =200
+                                                RadiusBottomRight: =200
+                                                RadiusTopLeft: =200
+                                                RadiusTopRight: =200
+                                                Size: =10
+                                                Text: ="x"
+                                                Visible: =Gallery5_1.AllItemsCount > 1
+                                                Width: =25
+                                                X: =468
+                                                Y: =4
+                              - Container5:
+                                  Control: GroupContainer@1.3.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    Height: =52
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    Width: =1316
+                                  Children:
+                                    - lblHeader_01:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          LineHeight: =1.1
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Nº"
+                                          Width: |+
+                                            =30
+                                          X: =65
+                                          Y: =40
+                                    - lblHeader_02:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          LineHeight: =1.1
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Grau de parentesco/ vínculo afetivo*"
+                                          Width: =120
+                                          X: =65
+                                          Y: =40
+                                    - lblHeader_03:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          LineHeight: =1.1
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Nome"
+                                          Width: =160
+                                          X: =65
+                                          Y: =40
+                                    - lblHeader_04:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          LineHeight: =1.1
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =10
+                                          Text: ="Data de nascimento"
+                                          Width: =130
+                                          X: =65
+                                          Y: =40
+                                    - lblHeader_05:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          LineHeight: =1.1
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Idade"
+                                          Width: =50
+                                          X: =65
+                                          Y: =40
+                                    - lblHeader_06:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          LineHeight: =1.1
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Escolaridade"
+                                          Width: |+
+                                            =120
+                                          X: =65
+                                          Y: =40
+                                    - lblHeader_07:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          LineHeight: =1.1
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Ocupação"
+                                          Width: |+
+                                            =100
+                                          X: =65
+                                          Y: =40
+                                    - lblHeader_08:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          LineHeight: =1.1
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Renda"
+                                          Width: =90
+                                          X: =65
+                                          Y: =40
+                                    - lblHeader_09:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          LineHeight: =1.1
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =9
+                                          Text: |-
+                                            ="Mora com
+                                            a vítima?"
+                                          Width: =80
+                                          X: =65
+                                          Y: =40
+                                    - lblHeader_10:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          LineHeight: =1.1
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =9
+                                          Text: |-
+                                            ="Presenciou
+                                            a violência?"
+                                          Width: =80
+                                          X: =65
+                                          Y: =40
+                                    - lblHeader_11:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          LineHeight: =1.1
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =9
+                                          Text: ="Conhecimento do fato?"
+                                          Width: =90
+                                          X: =65
+                                          Y: =40
+                                    - lblHeader_12:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          LineHeight: =1.1
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =11
+                                          Text: ="Alteração de vínculo pós violência"
+                                          Width: =160
+                                          X: =65
+                                          Y: =40
+                                    - lblHeader_13:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 18, 107, 1)
+                                          Color: =cor.textoPrincipal
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          LineHeight: =1.1
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =9
+                                          Text: ="É rede de apoio?"
+                                          Width: =63
+                                          X: =65
+                                          Y: =40
+                              - Button4_4:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =ColorFade(Self.Fill, -15%)
+                                    BorderThickness: =0
+                                    Color: =cor.tema
+                                    DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                                    Fill: =ColorFade(Self.Color,80%)
+                                    FocusedBorderThickness: =0
+                                    Font: =Font.'Open Sans'
+                                    Height: =32
+                                    HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                                    HoverColor: =Self.Color
+                                    HoverFill: =ColorFade(Self.Fill,20%)
+                                    OnSelect: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Vinculos_Apoio,
+                                          Defaults(SAVe_Vinculos_Apoio),
+                                          {ID_Caso: ItemAtual.ID_Caso}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+
+                                      ClearCollect(
+                                          _grupoFamiliar,
+                                          AddColumns(
+                                              Filter(
+                                                  SAVe_Vinculos_Apoio,
+                                                  ID_Caso = ItemAtual.ID_Caso
+                                              ),
+                                              lctime, Created,
+                                              num, CountRows(_grupoFamiliar)+1,
+                                              grauParentesco, AVF_Grau_Parentesco,
+                                              nome, AVF_Nome,
+                                              dataNasc, AVF_Data_Nasc,
+                                              escolaridade, AVF_Escolaridade,
+                                              ocupacao, AVF_Ocupacao,
+                                              renda, AVF_Renda,
+                                              seMoraComVitima, AVF_Mora_Com_Vitima,
+                                              sePresenciouVioencia, AVF_Presenciou_Violencia,
+                                              seConheceFato, AVF_Conhecimento_Fato,
+                                              alteracaoPosViolencia, AVF_Alt_Vinculo_Pos_Violencia,
+                                              seRedeDeApoio, AVF_Rede_Apoio
+                                          )
+                                      );
+
+
+                                      /*Collect(
+                                          _grupoFamiliar;
+                                          {
+                                              lctime: Now();
+                                              num: CountRows(_grupoFamiliar)+1;
+                                              grauParentesco: "";
+                                              nome:"";
+                                              dataNasc:"";
+                                              escolaridade:"";
+                                              ocupacao:"";
+                                              renda:"";
+                                              seMoraComVitima:Blank();
+                                              sePresenciouVioencia:Blank();
+                                              seConheceFato:Blank();
+                                              alteracaoPosViolencia:"";
+                                              seRedeDeApoio:Blank()
+                                          }
+                                      );;
+                                      */
+                                    PressedBorderColor: =Self.Fill
+                                    PressedFill: =ColorFade(Self.Fill,40%)
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Size: =12
+                                    Text: ="Incluir pessoa"
+                                    Width: =151
+                                    X: =7
+                                    Y: =Parent.Height-Self.Height-10
+                  - DataCard8_4:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                        Height: =190
+                        Width: =1346
+                        X: =0
+                        Y: =2
+                      Children:
+                        - Container2_29:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Regular
+                              Height: =172
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1316
+                              X: =10
+                              Y: =5
+                            Children:
+                              - Label2_249:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =35
+                                    LineHeight: =1.1
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Houve alterações no sistema familiar e comunitário em razão da vitimização ou a ela relacionadas?"
+                                    Width: =380
+                                    X: =13
+                                    Y: =10
+                              - entradaHouveAlteracaoSistemaFamiliarEmRazaoVitimizacao:
+                                  Control: Radio@0.0.25
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  SAVe_Vinculos,
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Alt_Fam_Com_Vitim
+                                              )
+                                          ),
+                                          [{Value: "Não"}],
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      SAVe_Vinculos,
+                                                      ID_Caso = ItemAtual.ID_Caso,
+                                                      Alt_Fam_Com_Vitim
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    FontColor: =cor.textoPrincipal
+                                    Height: =46
+                                    Items: =["Sim","Não"]
+                                    Layout: ='RadioGroupCanvas.Layout'.Horizontal
+                                    OnChange: |
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      If(
+                                          entradaHouveAlteracaoSistemaFamiliarEmRazaoVitimizacao.Selected.Value = "Sim",
+                                          Patch(
+                                              SAVe_Vinculos,
+                                              LookUp(
+                                                  SAVe_Vinculos,
+                                                  ID_Caso = ItemAtual.ID_Caso
+                                              ),
+                                              {Alt_Fam_Com_Vitim: Self.Selected.Value}
+                                          ),
+                                          Patch(
+                                              SAVe_Vinculos,
+                                              LookUp(
+                                                  SAVe_Vinculos,
+                                                  ID_Caso = ItemAtual.ID_Caso
+                                              ),
+                                              {
+                                                  Alt_Fam_Com_Vitim: Self.Selected.Value,
+                                                  Alt_Fam_Com_Vitim_Descr: Blank()
+                                              }
+                                          )
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    RadioSize: =20
+                                    Width: =187
+                                    X: =5
+                                    Y: =37
+                              - Label2_251:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Descreva:"
+                                    Width: =880
+                                    X: =415
+                                    Y: =10
+                              - entradaDescrevaAlteracaoSistemaFamiliarEmRazaoVitimizacao:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Vinculos,
+                                          LookUp(
+                                              SAVe_Vinculos,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Alt_Fam_Com_Vitim_Descr: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Value: |-
+                                      =LookUp(
+                                          SAVe_Vinculos,
+                                          ID_Caso = ItemAtual.ID_Caso,
+                                          Alt_Fam_Com_Vitim_Descr
+                                      )
+                                    Width: =880
+                                    X: =415
+                                    Y: =40
+                              - Label2_252:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =35
+                                    LineHeight: =1.1
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Foi identificada vulnerabilidade relacionada aos vínculos familiares e comunitários?		"
+                                    Width: =380
+                                    X: =13
+                                    Y: =90
+                              - entradaFoiIdentificadaVulnerabilidadeVinculosFamiliares:
+                                  Control: Radio@0.0.25
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  SAVe_Vinculos,
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Vulnerab_Vinculos_Fam
+                                              )
+                                          ),
+                                          [{Value: "Não"}],
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      SAVe_Vinculos,
+                                                      ID_Caso = ItemAtual.ID_Caso,
+                                                      Vulnerab_Vinculos_Fam
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    FontColor: =cor.textoPrincipal
+                                    Height: =46
+                                    Items: =["Sim","Não"]
+                                    Layout: ='RadioGroupCanvas.Layout'.Horizontal
+                                    OnChange: |+
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      If(
+                                          entradaFoiIdentificadaVulnerabilidadeVinculosFamiliares.Selected.Value = "Sim",
+                                          Patch(
+                                              SAVe_Vinculos,
+                                              LookUp(
+                                                  SAVe_Vinculos,
+                                                  ID_Caso = ItemAtual.ID_Caso
+                                              ),
+                                              {Vulnerab_Vinculos_Fam: Self.Selected.Value}
+                                          ),
+                                          Patch(
+                                              SAVe_Vinculos,
+                                              LookUp(
+                                                  SAVe_Vinculos,
+                                                  ID_Caso = ItemAtual.ID_Caso
+                                              ),
+                                              {
+                                                  Vulnerab_Vinculos_Fam: Self.Selected.Value,
+                                                  Vulnerab_Vinculos_Fam_Descr: Blank()
+                                              }
+                                          )
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    RadioSize: =20
+                                    Width: =187
+                                    X: =5
+                                    Y: =117
+                              - Label2_253:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Descreva:"
+                                    Width: =880
+                                    X: =415
+                                    Y: =90
+                              - entradaDescrevaVulnerabilidadeVinculosFamiliares:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Vinculos,
+                                          LookUp(
+                                              SAVe_Vinculos,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Vulnerab_Vinculos_Fam_Descr: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Value: |-
+                                      =LookUp(
+                                          SAVe_Vinculos,
+                                          ID_Caso = ItemAtual.ID_Caso,
+                                          Vulnerab_Vinculos_Fam_Descr
+                                      )
+                                    Width: =880
+                                    X: =415
+                                    Y: =120
+                  - DataCard9_4:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                        Height: =105
+                        Width: =1346
+                        X: =0
+                        Y: =3
+                      Children:
+                        - Container2_31:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Regular
+                              Height: =93
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1316
+                              X: =10
+                              Y: =5
+                            Children:
+                              - Label2_254:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =35
+                                    LineHeight: =1.1
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Vítima identificada como vulnerável à vitimização secundária e terciária?"
+                                    Width: =300
+                                    X: =8
+                                    Y: =10
+                              - entradaVitimaIdentificadaComoVulneravelVitmizacaoSecundariaTerciaria:
+                                  Control: Radio@0.0.25
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  SAVe_Vinculos,
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Vulnerab_Vitim_Sec_Ter
+                                              )
+                                          ),
+                                          [{Value: "Não"}],
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      SAVe_Vinculos,
+                                                      ID_Caso = ItemAtual.ID_Caso,
+                                                      Vulnerab_Vitim_Sec_Ter
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    FontColor: =cor.textoPrincipal
+                                    Height: =46
+                                    Items: =["Sim","Não"]
+                                    Layout: ='RadioGroupCanvas.Layout'.Horizontal
+                                    OnChange: |+
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      If(
+                                          entradaVitimaIdentificadaComoVulneravelVitmizacaoSecundariaTerciaria.Selected.Value = "Sim",
+                                          Patch(
+                                              SAVe_Vinculos,
+                                              LookUp(
+                                                  SAVe_Vinculos,
+                                                  ID_Caso = ItemAtual.ID_Caso
+                                              ),
+                                              {Vulnerab_Vitim_Sec_Ter: Self.Selected.Value}
+                                          ),
+                                          Patch(
+                                              SAVe_Vinculos,
+                                              LookUp(
+                                                  SAVe_Vinculos,
+                                                  ID_Caso = ItemAtual.ID_Caso
+                                              ),
+                                              {
+                                                  Vulnerab_Vitim_Sec_Ter: Self.Selected.Value,
+                                                  Tipo_Vitim: Blank(),
+                                                  Tipo_Vitim_Descr: Blank()
+                                              }
+                                          )
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    RadioSize: =20
+                                    Width: =187
+                                    Y: =40
+                              - Label2_200:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Descreva:"
+                                    Visible: =entradaVitimaIdentificadaComoVulneravelVitmizacaoSecundariaTerciaria.Selected.Value="Sim"
+                                    Width: =650
+                                    X: =640
+                                    Y: =10
+                              - entradaDescricaoVulnerabilidadeVitimizacaoSecundariaTerciaria:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Vinculos,
+                                          LookUp(
+                                              SAVe_Vinculos,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Tipo_Vitim_Descr: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Value: |-
+                                      =LookUp(
+                                          SAVe_Vinculos,
+                                          ID_Caso = ItemAtual.ID_Caso,
+                                          Tipo_Vitim_Descr
+                                      )
+                                    Visible: =entradaVitimaIdentificadaComoVulneravelVitmizacaoSecundariaTerciaria.Selected.Value="Sim"
+                                    Width: =650
+                                    X: =640
+                                    Y: =40
+                              - Label2_199:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Qual é o tipo de vitimização?"
+                                    Visible: =entradaVitimaIdentificadaComoVulneravelVitmizacaoSecundariaTerciaria.Selected.Value="Sim"
+                                    Width: =250
+                                    X: =354
+                                    Y: =10
+                              - entradaQualTipoVitimizacaoVulneravel:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          !IsBlank(LookUp(SAVe_Vinculos,ID_Caso=ItemAtual.ID_Caso, Tipo_Vitim)),
+                                          [{Value: LookUp(SAVe_Vinculos,ID_Caso=ItemAtual.ID_Caso, Tipo_Vitim)}]
+                                      )
+                                    Items: =["Secundária","Terciária"]
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Vinculos,
+                                          LookUp(
+                                              SAVe_Vinculos,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Tipo_Vitim: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Visible: =entradaVitimaIdentificadaComoVulneravelVitmizacaoSecundariaTerciaria.Selected.Value="Sim"
+                                    Width: =250
+                                    X: =354
+                                    Y: =40
+                  - DataCard2_7:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =215
+                        Width: =1346
+                        X: =0
+                        Y: =4
+                      Children:
+                        - ControleAnexos_7:
+                            Control: CanvasComponent
+                            ComponentName: ControleAnexos
+                            Properties:
+                              EntrataItemAtual: =ItemAtual
+                              Height: =250
+                              NavegarAnexos: |-
+                                =Set(_telaAnexo, App.ActiveScreen);
+                                Navigate(Tela_Anexos);
+                              Width: =Parent.Width - 10
+                              telaAnexo: =App.ActiveScreen
+                  - DataCard36:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =100
+                        Width: =1346
+                        X: =0
+                        Y: =5
+                      Children:
+                        - botaoSalvarPasso1_9:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =ColorFade(Self.Fill, -15%)
+                              BorderThickness: =0
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.Disabled, DisplayMode.Edit)
+                              Fill: =cor.tema
+                              Font: =Font.'Open Sans'
+                              HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              OnSelect: =MenuPassos_6.NavegarProximo()
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: =Self.Color
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Size: =13
+                              Text: ="Próximo"
+                              Width: =194
+                              X: =1132
+                              Y: =16
+                        - botaoSalvarPasso1_20:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =ColorFade(Self.Fill, -15%)
+                              BorderThickness: =0
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              Fill: =cor.tema
+                              Font: =Font.'Open Sans'
+                              HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              OnSelect: =MenuPassos_6.NavegarAnterior()
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: =Self.Color
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Size: =13
+                              Text: ="Voltar"
+                              Width: =194
+                              X: =36
+                              Y: =16
+            - MenuPassos_6:
+                Control: CanvasComponent
+                ComponentName: MenuPassos
+                Properties:
+                  GaleriaAbas: "=With(\r\n    {\r\n        menu: If(_FormCompleto, \r\n        [\r\n            {\r\n                idMenu: 1,\r\n                largura: 120,\r\n                nome: \"Dados de Entrada\",\r\n                descricao: \"\",\r\n                pagina: Tela_Dados_Entrada\r\n            },\r\n            {\r\n                idMenu: 2,\r\n                largura: 120,//150\r\n                nome: \"Sócio identificação\",\r\n                descricao: \"\",\r\n                pagina: Tela_Socio_Identificacao\r\n            },\r\n            {\r\n                idMenu: 3,\r\n                largura: 120,//180\r\n                nome: \"Ensino - trab - renda\",\r\n                descricao: \"\",\r\n                pagina: Tela_Ensino_Trab_Renda\r\n            },\r\n            \r\n            {\r\n                idMenu: 4,\r\n                largura: 60,\r\n                nome: \"Assistência\",\r\n                descricao: \"\",\r\n                pagina: Tela_Assistencia\r\n            },\r\n            {\r\n                idMenu: 5,\r\n                largura: 90,\r\n                nome: \"Território\",\r\n                descricao: \"\",\r\n                pagina: Tela_Territorio\r\n            },\r\n            {\r\n                idMenu: 6,\r\n                largura: 80,\r\n                nome: \"Saúde\",\r\n                descricao: \"\",\r\n                pagina: Tela_Saude\r\n            },\r\n            {\r\n                idMenu: 7,\r\n                largura: 85,\r\n                nome: \"Vínculos\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vinculos\r\n            },\r\n            {\r\n                idMenu: 8,\r\n                largura: 120,//200\r\n                nome: \"Situação Jurídica\",\r\n                descricao: \"\",\r\n                pagina: Tela_SitJuridica\r\n            },\r\n            {\r\n                idMenu: 9,\r\n                largura: 110,\r\n                nome: \"Agressor\",\r\n                descricao: \"\",\r\n                pagina: Tela_Agressor\r\n            },\r\n            {\r\n                idMenu: 10,\r\n                largura: 120,//180\r\n                nome: \"Proteção-segurança\",\r\n                descricao: \"\",\r\n                pagina: Tela_Protecao_Seguranca\r\n            },\r\n            {\r\n                idMenu: 11,\r\n                largura: 120,\r\n                nome: \"Vitimização secundária e terciária\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vitimizacao\r\n            },\r\n            {\r\n                idMenu: 12,\r\n                largura: 120,\r\n                nome: \"Síntese Analítica\",\r\n                descricao: \"\",\r\n                pagina: Tela_Sintese_Analitica\r\n            },\r\n            {\r\n                idMenu: 13,\r\n                largura: 120,//170\r\n                nome: \"Acompanhamentos\",\r\n                descricao: \"\",\r\n                pagina: Tela_Acompanhamento\r\n            },\r\n            /*{\r\n                idMenu: 14;\r\n                largura: 120;//200\r\n                nome: \"Relato de Atendimento\";\r\n                descricao: \"\";\r\n                pagina: Tela_Relato_De_Atendimento\r\n            };*/\r\n            {\r\n                idMenu: 14,\r\n                largura: 120,//135\r\n                nome: \"Encerramento\",\r\n                descricao: \"\",\r\n                pagina: Tela_Encerramento\r\n            },\r\n            /*{\r\n                idMenu: 15;\r\n                largura: 120;//132\r\n                nome: \"Matriz de risco\";\r\n                descricao: \"\";\r\n                pagina: Tela_Matriz_De_Risco\r\n            };*/\r\n            {\r\n                idMenu: 15,\r\n                largura: 120,//135\r\n                nome: \"Referências\",\r\n                descricao: \"\",\r\n                pagina: Tela_Referencias\r\n            }\r\n        ], //dados de entrada, socioidentificação, situação juridica maior e menor, proteção-segurança e vitimização \r\n        [\r\n            {\r\n                idMenu: 1,\r\n                largura: 170,\r\n                nome: \"Dados de Entrada\",\r\n                descricao: \"\",\r\n                pagina: Tela_Dados_Entrada\r\n            },\r\n            {\r\n                idMenu: 2,\r\n                largura: 150,\r\n                nome: \"Sócio identificação\",\r\n                descricao: \"\",\r\n                pagina: Tela_Socio_Identificacao\r\n            },\r\n            {\r\n                idMenu: 3,\r\n                largura: 200,\r\n                nome: \"Situação Jurídica\",\r\n                descricao: \"\",\r\n                pagina: Tela_SitJuridica\r\n            },\r\n            {\r\n                idMenu: 4,\r\n                largura: 180,\r\n                nome: \"Proteção-segurança\",\r\n                descricao: \"\",\r\n                pagina: Tela_Protecao_Seguranca\r\n            },\r\n            {\r\n                idMenu: 5,\r\n                largura: 240,\r\n                nome: \"Vitimização secundária e terciária\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vitimizacao\r\n            }\r\n        ]\r\n        )\r\n    },\r\n    With(\r\n        {\r\n            // Acrescenta a coluna \"larguraCalc\" conforme regra:\r\n            // Se o item for o selecionado (_passoAtual.idMenu), usa a largura definida;\r\n// Senão, divide o espaço restante igualmente entre os demais itens.\r\nmenuCalc: AddColumns(\r\n                menu,\r\n                larguraCalc,\r\n                If(\r\n                    pagina = MenuPassos_6.TelaAtual,\r\n                    largura,\r\n                    If(pagina = Tela_Vitimizacao, largura,\r\n                    ((Self.Width - 100) - LookUp(\r\n                        menu,\r\n                        pagina = MenuPassos_6.TelaAtual,\r\n                        largura\r\n                    )) / (CountRows(menu) - 1))\r\n                )\r\n            )\r\n        },\r\n        // Ordena os itens pelo idMenu e calcula a posição \"distancia\" de cada item\r\n// somando as larguras calculadas dos itens anteriores.\r\n        AddColumns(\r\n            SortByColumns(\r\n                menuCalc,\r\n                \"idMenu\",\r\n                SortOrder.Ascending\r\n            ) As m1,\r\n            distancia,\r\n            Sum(\r\n                Filter(\r\n                    menuCalc,\r\n                    idMenu < m1.idMenu\r\n                ),\r\n                larguraCalc\r\n            )\r\n        )\r\n    )\r\n)"
+                  Height: =95
+                  TelaAtual: =App.ActiveScreen
+                  Width: =App.Width
+      - MenuSuperior_8:
+          Control: CanvasComponent
+          ComponentName: MenuSuperior
+          Properties:
+            Height: =60
+            Width: =1346
+            X: =10
+            Y: =10

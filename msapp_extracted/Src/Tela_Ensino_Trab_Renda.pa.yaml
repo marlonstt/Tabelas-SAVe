@@ -1,0 +1,1686 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  Tela_Ensino_Trab_Renda:
+    Properties:
+      Fill: =RGBA(245, 246, 248, 1)
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+      OnVisible: "=If(!IsBlankOrError(ItemAtual.ID_Caso),\n    If(\n        !(App.ActiveScreen.Name in _paginasVisitadas),\n        Collect(\n            _paginasVisitadas,\n            App.ActiveScreen.Name\n        );\n        Patch(\n            SAVe_Geral,\n            {ID: ItemAtual.ID_Caso},\n            {Paginas_Visitadas: JSON(_paginasVisitadas)}\n        )\n    );\n    \n    If(\n        IsBlankOrError(\n            LookUp(\n                'SAVe_Ensino-trab-renda',\n                ID_Caso = ItemAtual.ID_Caso\n            )\n        ),\n        Patch(\n            'SAVe_Ensino-trab-renda',\n            Defaults('SAVe_Ensino-trab-renda'),\n            {ID_Caso: ItemAtual.ID_Caso}\n        )\n    )\n)"
+    Children:
+      - Container1_9:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =Parent.Height-Self.Y-10
+            RadiusBottomLeft: =8
+            RadiusBottomRight: =8
+            RadiusTopLeft: =8
+            RadiusTopRight: =8
+            Width: =1346
+            X: =10
+            Y: =80
+          Children:
+            - Canvas2_3:
+                Control: FluidGrid@2.3.0
+                Properties:
+                  BorderThickness: =0
+                  Height: =583
+                  Width: =Parent.Width
+                  Y: =95
+                Children:
+                  - DataCard2_3:
+                      Control: DataCard@1.0.2
+                      Properties:
+                        Height: =105
+                        Width: =Parent.Width
+                        X: =0
+                        Y: =0
+                      Children:
+                        - Container2_7:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Semilight
+                              Height: =91
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1316
+                              X: =10
+                              Y: =5
+                            Children:
+                              - tituloGrauEscolaridade:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Grau de escolaridade:"
+                                    Width: =entradaGrauEscolaridade.Width
+                                    X: =10
+                                    Y: =10
+                              - tituloTipoInstituicao:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Tipo de instituição:"
+                                    Visible: =entradaEstudaAtualmente.Selected.Value="Sim"
+                                    Width: =224
+                                    X: =613
+                                    Y: =10
+                              - tituloNomeInstituicao:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Nome da instituição:"
+                                    Visible: =entradaEstudaAtualmente.Selected.Value="Sim"
+                                    Width: =400
+                                    X: =853
+                                    Y: =10
+                              - entradaNomeInstituicao:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Nome_instituicao: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Value: |-
+                                      =//_dadosEnsinoTrabRenda.Nome_Instituicao
+                                      LookUp(
+                                          'SAVe_Ensino-trab-renda',
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          Nome_instituicao
+                                      )
+                                    Visible: =entradaEstudaAtualmente.Selected.Value="Sim"
+                                    Width: =440
+                                    X: =853
+                                    Y: =40
+                              - entradaGrauEscolaridade:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =//[{Value: _dadosEnsinoTrabRenda.Grau_Escolaridade}]
+                                      If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Grau_escolaridade
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      'SAVe_Ensino-trab-renda',
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      Grau_escolaridade
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: |-
+                                      =[
+                                          "Analfabeto",
+                                          "Analfabeto Funcional",
+                                          "E. Fund. Incompleto",
+                                          "E. Fund. Completo",
+                                          "E. Médio Incompleto",
+                                          "E. Médio Completo",
+                                          "Superior Incompleto",
+                                          "Superior Completo",
+                                          "Pós graduação",
+                                          "Curso profissionalizante ou treinamento"
+                                      ]
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Grau_escolaridade: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Width: =400
+                                    X: =10
+                                    Y: =40
+                              - Label2_137:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    LineHeight: =1.1
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Estuda atualmente?"
+                                    Width: =240
+                                    X: =439
+                                    Y: =10
+                              - entradaEstudaAtualmente:
+                                  Control: Radio@0.0.25
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |+
+                                      =//If(!IsBlank(_dadosEnsinoTrabRenda.Estuda_Atualmente);[{Value: _dadosEnsinoTrabRenda.Estuda_Atualmente}])
+                                      If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Estuda_atualmente
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      'SAVe_Ensino-trab-renda',
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      Estuda_atualmente
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    Height: =46
+                                    Items: =["Sim","Não"]
+                                    Layout: ='RadioGroupCanvas.Layout'.Horizontal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Estuda_atualmente: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    RadioSize: =20
+                                    Width: =187
+                                    X: =434
+                                    Y: =32
+                              - Label2_142:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    LineHeight: =1.1
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Deseja retornar aos estudos?"
+                                    Visible: =entradaEstudaAtualmente.Selected.Value="Não"
+                                    Width: =375
+                                    X: =627
+                                    Y: =10
+                              - RadioGroupCanvas1_9:
+                                  Control: Radio@0.0.25
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    Height: =46
+                                    Items: =["Sim","Não"]
+                                    Layout: ='RadioGroupCanvas.Layout'.Horizontal
+                                    OnChange: |+
+                                      =Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Retorno_estudos: Self.Selected.Value}
+                                      )
+                                    RadioSize: =20
+                                    Visible: =entradaEstudaAtualmente.Selected.Value="Não"
+                                    Width: =278
+                                    X: =622
+                                    Y: =32
+                              - entradaTipoInstituicao:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Tipo_instituicao
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      'SAVe_Ensino-trab-renda',
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      Tipo_instituicao
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: =["Privada","Pública"]
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Tipo_instituicao: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Visible: =entradaEstudaAtualmente.Selected.Value="Sim"
+                                    Width: =224
+                                    X: =613
+                                    Y: =40
+                  - DataCard5_1:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =106
+                        Width: =1346
+                        X: =0
+                        Y: =1
+                      Children:
+                        - Container2_8:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Semilight
+                              Height: =91
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1316
+                              X: =10
+                              Y: =5
+                            Children:
+                              - tituloSituacaoOcupacionalTrabalho:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Situação ocupacional de trabalho:"
+                                    Width: =entradaSituacaoOcupacionalTrabalho.Width
+                                    X: =10
+                                    Y: =10
+                              - tituloMotivoAfastamento:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Motivo do afastamento:"
+                                    Visible: =entradaAfastadoTrabalho.Selected.Value="Sim"
+                                    Width: =191
+                                    X: =646
+                                    Y: =10
+                              - tituloEspecificarMotivoAfastamento:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Especificar motivo do afastamento:"
+                                    Visible: =!IsBlankOrError(entradaMotivoAfastamento.Selected.Value) && entradaMotivoAfastamento.Selected.Value="Outro" && entradaAfastadoTrabalho.Selected.Value="Sim"
+                                    Width: =343
+                                    X: =909
+                                    Y: =10
+                              - entradaEspecificarMotivoAfastamento:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |+
+                                      =Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Motivo_Afastamento_Detalhado: Self.Value}
+                                      )
+                                    Value: |-
+                                      =LookUp(
+                                          'SAVe_Ensino-trab-renda',
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          Motivo_Afastamento_Detalhado
+                                      )
+                                    Visible: =!IsBlankOrError(entradaMotivoAfastamento.Selected.Value) && entradaMotivoAfastamento.Selected.Value="Outro" && entradaAfastadoTrabalho.Selected.Value="Sim"
+                                    Width: =379
+                                    X: =909
+                                    Y: =40
+                              - entradaSituacaoOcupacionalTrabalho:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Situacao_trabalho
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      'SAVe_Ensino-trab-renda',
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      Situacao_trabalho
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: |
+                                      =["Trabalhador/a formal", "Desempregado/a", "Trabalhador/a informal", "Inativo/a", "Trabalhador/a doméstico/a", "Aposentado/a", "Servidor/a público/a", "Estudante/Mestrando/Doutorando/Bolsista"]
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Situacao_trabalho: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Width: =400
+                                    X: =10
+                                    Y: =40
+                              - tituloAfastadoTrabalho:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    LineHeight: =1.1
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Está afastado do trabalho?"
+                                    Width: =240
+                                    X: =439
+                                    Y: =10
+                              - entradaAfastadoTrabalho:
+                                  Control: Radio@0.0.25
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Esta_Afastado
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      'SAVe_Ensino-trab-renda',
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      Esta_Afastado
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    Height: =46
+                                    Items: =["Sim","Não"]
+                                    Layout: ='RadioGroupCanvas.Layout'.Horizontal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Esta_Afastado: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    RadioSize: =20
+                                    Width: =187
+                                    X: =434
+                                    Y: =32
+                              - entradaMotivoAfastamento:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Motivo_afastamento
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      'SAVe_Ensino-trab-renda',
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      Motivo_afastamento
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: =["Afastamento Médico","Afastamento por Motivo Pessoal ou Profissional","Outro"]
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Motivo_afastamento: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Visible: =entradaAfastadoTrabalho.Selected.Value="Sim"
+                                    Width: =253
+                                    X: =645
+                                    Y: =40
+                              - tituloMotivoDetalhadoAfastamento:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Motivo detalhado do afastamento:"
+                                    Visible: =!IsBlankOrError(entradaMotivoAfastamento.Selected.Value) && entradaMotivoAfastamento.Selected.Value<>"Outro" && entradaAfastadoTrabalho.Selected.Value="Sim"
+                                    Width: =378
+                                    X: =910
+                                    Y: =10
+                              - entradaMotivoDetalhadoAfastamento:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =[{Value: LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso, Motivo_Afastamento_Detalhado)}]
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: |-
+                                      =If(
+                                          entradaMotivoAfastamento.Selected.Value = "Afastamento Médico",
+                                          [
+                                              "Afastamento por Incapacidade Temporária",
+                                              "Licença Médica",
+                                              "Afastamento por Acidente de Trabalho"
+                                          ],
+                                          entradaMotivoAfastamento.Selected.Value = "Afastamento por Motivo Pessoal ou Profissional",
+                                          [
+                                              "Licença por Motivo de Interesse Particular (LIP) Servidor/a",
+                                              "Licença-Maternidade/Paternidade",
+                                              "Licença por Motivo de Saúde Familiar",
+                                              "Afastamento para Capacitação ou Estudos"
+                                          ]
+                                      )
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Motivo_Afastamento_Detalhado: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Visible: =!IsBlankOrError(entradaMotivoAfastamento.Selected.Value) && entradaMotivoAfastamento.Selected.Value<>"Outro" && entradaAfastadoTrabalho.Selected.Value="Sim"
+                                    Width: =390
+                                    X: =909
+                                    Y: =40
+                  - DataCard7_1:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =Container2_10.Height + 10
+                        Width: =1346
+                        X: =0
+                        Y: =2
+                      Children:
+                        - Container2_10:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Semilight
+                              Height: =560
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1316
+                              X: =10
+                              Y: =5
+                            Children:
+                              - tituloTipoPrejuizoVidaEscolar:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Prejuízo:"
+                                    Visible: =entradaFatoPrejuVidaEscolar.Selected.Value="Sim"
+                                    Width: =191
+                                    X: =327
+                                    Y: =340
+                              - tituloDescricaoPrejuVidaEscolar:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Descrição do prejuízo na vida escolar ou acadêmica:"
+                                    Visible: '= entradaFatoPrejuVidaEscolar.Selected.Value="Sim" // && "Outras" in DropdownCanvas1_58.Selected.Value '
+                                    Width: =500
+                                    X: =609
+                                    Y: =340
+                              - entradaDescricaoPrejuVidaEscolar:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {VE_descricao_pe: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Value: |-
+                                      =LookUp(
+                                          'SAVe_Ensino-trab-renda',
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          VE_descricao_pe
+                                      )
+                                    Visible: '= entradaFatoPrejuVidaEscolar.Selected.Value="Sim" // && "Outras" in DropdownCanvas1_58.Selected.Value '
+                                    Width: =700
+                                    X: =609
+                                    Y: =370
+                              - tituloFatoPrejuVidaEscolar:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =32
+                                    LineHeight: =1.1
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: |-
+                                      ="O fato vitimizante gerou prejuízo na
+                                      vida escolar ou acadêmica da vítima?"
+                                    Width: =300
+                                    X: =13
+                                    Y: =338
+                              - entradaFatoPrejuVidaEscolar:
+                                  Control: Radio@0.0.25
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  VE_prejuizo_escolar
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      'SAVe_Ensino-trab-renda',
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      VE_prejuizo_escolar
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    Height: =46
+                                    Items: =["Sim","Não"]
+                                    Layout: ='RadioGroupCanvas.Layout'.Horizontal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      SetFocus(entradaTipoPrejuizoVidaEscolar);
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {VE_prejuizo_escolar: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    RadioSize: =20
+                                    Width: =187
+                                    X: =4
+                                    Y: =365
+                              - entradaTipoPrejuizoVidaEscolar:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  VE_tipo_PE
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      'SAVe_Ensino-trab-renda',
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      VE_tipo_PE
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: |-
+                                      =["Afastamento escolar",
+                                      "Evasão escolar",
+                                      "Discriminação ou bullying",
+                                      "Outras formas de violência"]
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {VE_tipo_PE: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Visible: =entradaFatoPrejuVidaEscolar.Selected.Value="Sim"
+                                    Width: =253
+                                    X: =327
+                                    Y: =370
+                              - Label2_115:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoSecundaria
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Vida Escolar"
+                                    Width: =191
+                                    X: =13
+                                    Y: =310
+                              - tituloTipoPrejuTrabalho:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Prejuízo:"
+                                    Visible: =entradaPrejuTrabalho.Selected.Value="Sim"
+                                    Width: =191
+                                    X: =320
+                                    Y: =135
+                              - tituloDescricaoPrejuTrabalho:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Descrição do prejuízo no trabalho e renda:"
+                                    Visible: '= entradaPrejuTrabalho.Selected.Value="Sim" // && "Outras" in DropdownCanvas1_58.Selected.Value '
+                                    Width: =500
+                                    X: =602
+                                    Y: =135
+                              - entradaDescricaoPrejuTrabalho:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |+
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {TR_descricao_prejuizo: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Value: |-
+                                      =LookUp(
+                                          'SAVe_Ensino-trab-renda',
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          TR_descricao_prejuizo
+                                      )
+                                    Visible: '= entradaPrejuTrabalho.Selected.Value="Sim" // && "Outras" in DropdownCanvas1_58.Selected.Value '
+                                    Width: =700
+                                    X: =602
+                                    Y: =165
+                              - tituloPrejuTrabalho:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =32
+                                    LineHeight: =1.1
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: |-
+                                      ="Houve prejuízo ao trabalho e/ou
+                                      renda em razão da vitimização?"
+                                    Width: =300
+                                    X: =13
+                                    Y: =138
+                              - entradaPrejuTrabalho:
+                                  Control: Radio@0.0.25
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  TR_Prejuizo_trabalho
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      'SAVe_Ensino-trab-renda',
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      TR_Prejuizo_trabalho
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    Height: =46
+                                    Items: =["Sim","Não"]
+                                    Layout: ='RadioGroupCanvas.Layout'.Horizontal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      SetFocus(entradaTipoPrejuTrabalho);
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {TR_Prejuizo_trabalho: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    RadioSize: =20
+                                    Width: =187
+                                    X: =4
+                                    Y: =165
+                              - entradaTipoPrejuTrabalho:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  TR_tipo_prejuizo
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      'SAVe_Ensino-trab-renda',
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      TR_tipo_prejuizo
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: =["Afastamento do trabalho","Desemprego","Redução ou perda salarial/renda","Discriminação ou bullyng","Outras formas de violência"]
+                                    OnChange: |+
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {TR_tipo_prejuizo: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Visible: =entradaPrejuTrabalho.Selected.Value="Sim"
+                                    Width: =253
+                                    X: =320
+                                    Y: =165
+                              - Label2_118:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoSecundaria
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Trabalho e Renda"
+                                    Width: =191
+                                    X: =13
+                                    Y: =110
+                              - tituloDescricaoHouvePerdaOrdemPatrimonial:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Descrição do prejuízo no patrimônio:"
+                                    Visible: '= entradaHouvePerdaOrdemPatrimonial.Selected.Value="Sim" // && "Outras" in DropdownCanvas1_58.Selected.Value '
+                                    Width: =500
+                                    X: =320
+                                    Y: =248
+                              - entradaDescricaoHouvePerdaOrdemPatrimonial:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {PT_Descricao_pp: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Value: |-
+                                      =LookUp(
+                                          'SAVe_Ensino-trab-renda',
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          PT_Descricao_pp
+                                      )
+                                    Visible: '= entradaHouvePerdaOrdemPatrimonial.Selected.Value="Sim" // && "Outras" in DropdownCanvas1_58.Selected.Value '
+                                    Width: =982
+                                    X: =320
+                                    Y: =271
+                              - tituloHouvePerdaOrdemPatrimonial:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =32
+                                    LineHeight: =1.1
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: |-
+                                      ="Houve perda de ordem patrimonial ou
+                                      material decorrente do fato vitimizante?"
+                                    Width: =300
+                                    X: =13
+                                    Y: =241
+                              - entradaHouvePerdaOrdemPatrimonial:
+                                  Control: Radio@0.0.25
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  PT_prejuizo_patrimonio
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      'SAVe_Ensino-trab-renda',
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      PT_prejuizo_patrimonio
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    Height: =46
+                                    Items: =["Sim","Não"]
+                                    Layout: ='RadioGroupCanvas.Layout'.Horizontal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      SetFocus(entradaTipoPrejuTrabalho);
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {PT_prejuizo_patrimonio: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    RadioSize: =20
+                                    Width: =187
+                                    X: =4
+                                    Y: =268
+                              - Label2_120:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoSecundaria
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Patrimônio"
+                                    Width: =191
+                                    X: =13
+                                    Y: =213
+                              - entradaDemandasEducacionais:
+                                  Control: Classic/Toggle@2.1.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =cor.textoPrincipal
+                                    Default: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Demanda_educacional
+                                              )
+                                          ),
+                                          false,
+                                          LookUp(
+                                              'SAVe_Ensino-trab-renda',
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                              Demanda_educacional
+                                          )
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FalseFill: =RGBA(214, 221, 224, 1)
+                                    FalseText: ="Demandas educacionais"
+                                    Font: =Font.Lato
+                                    Height: =30
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Demanda_educacional: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TrueFill: =cor.tema
+                                    TrueText: ="Demandas educacionais"
+                                    Width: =280
+                                    X: =13
+                                    Y: =437
+                              - entradaDemandasTrabalhistas:
+                                  Control: Classic/Toggle@2.1.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =cor.textoPrincipal
+                                    Default: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Demanda_trabalhista
+                                              )
+                                          ),
+                                          false,
+                                          LookUp(
+                                              'SAVe_Ensino-trab-renda',
+                                              ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                              Demanda_trabalhista
+                                          )
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FalseFill: =RGBA(214, 221, 224, 1)
+                                    FalseText: ="Demandas trabalhistas"
+                                    Font: =Font.Lato
+                                    Height: =30
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Demanda_trabalhista: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    TrueFill: =cor.tema
+                                    TrueText: ="Demandas trabalhistas"
+                                    Width: =280
+                                    X: =13
+                                    Y: =513
+                              - tituloDemandasEducacionais:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoSecundaria
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Demandas educacionais"
+                                    Width: =310
+                                    X: =13
+                                    Y: =412
+                              - tituloDemandasTrabalhistas:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoSecundaria
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Demandas trabalhistas"
+                                    Width: =310
+                                    X: =13
+                                    Y: =481
+                              - tituloDescricaoDemandaEducacional:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Descreva a demanda educacional:"
+                                    Visible: =entradaDemandasEducacionais.Value = true
+                                    Width: =500
+                                    X: =323
+                                    Y: =407
+                              - entradaDescricaoDemandaEducacional:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |+
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Desc_demanda_educacional: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Value: |-
+                                      =LookUp(
+                                          'SAVe_Ensino-trab-renda',
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          Desc_demanda_educacional
+                                      )
+                                    Visible: =entradaDemandasEducacionais.Value = true
+                                    Width: =982
+                                    X: =323
+                                    Y: =437
+                              - tituloDescricaoDemandaTrabalhista:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Descreva a demanda trabalhista:"
+                                    Visible: =entradaDemandasTrabalhistas.Value = true
+                                    Width: =500
+                                    X: =327
+                                    Y: =481
+                              - entradaDescricaoDemandaTrabalhista:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Desc_demanda_trabalhista: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Value: |-
+                                      =LookUp(
+                                          'SAVe_Ensino-trab-renda',
+                                          ItemAtual.ID_Caso = ID_Caso,
+                                          Desc_demanda_trabalhista
+                                      )
+                                    Visible: =entradaDemandasTrabalhistas.Value = true
+                                    Width: =982
+                                    X: =327
+                                    Y: =511
+                              - tituloTipoRenda:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Valor da Renda:"
+                                    Width: =191
+                                    X: =13
+                                    Y: =32
+                              - entradaValorRenda:
+                                  Control: DropDown@0.0.45
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DefaultSelectedItems: |-
+                                      =If(
+                                          IsBlankOrError(
+                                              LookUp(
+                                                  'SAVe_Ensino-trab-renda',
+                                                  ID_Caso = ItemAtual.ID_Caso,
+                                                  Valor_renda
+                                              )
+                                          ),
+                                          Blank(),
+                                          [
+                                              {
+                                                  Value: LookUp(
+                                                      'SAVe_Ensino-trab-renda',
+                                                      ThisRecord.ID_Caso = ItemAtual.ID_Caso,
+                                                      Valor_renda
+                                                  )
+                                              }
+                                          ]
+                                      )
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    Items: |-
+                                      =["Menos de um salário mínimo",
+                                      "de 1 a 2 salários mínimos",
+                                      "de 2 a 5 salários mínimos",
+                                      "de 5 a 10 salários mínimos",
+                                      "Acima de 10 salaríos mínimos",
+                                      "Outro valor"]
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Valor_renda: Self.Selected.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Width: =270
+                                    X: =13
+                                    Y: =62
+                              - Label2_116:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoSecundaria
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Renda"
+                                    Width: =191
+                                    X: =13
+                                    Y: =7
+                              - tituloDescricaoRenda:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Especifique o valor:"
+                                    Visible: =entradaValorRenda.Selected.Value = "Outro valor"
+                                    Width: =300
+                                    X: =320
+                                    Y: =34
+                              - entradaEspecifiqueValor:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Patch(
+                                          'SAVe_Ensino-trab-renda',
+                                          LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso),
+                                          {Valor_renda_esp: Self.Value}
+                                      )
+                                    Value: =LookUp('SAVe_Ensino-trab-renda', ID_Caso = ItemAtual.ID_Caso,  Valor_renda_esp)
+                                    Visible: =entradaValorRenda.Selected.Value = "Outro valor"
+                                    Width: =253
+                                    X: =320
+                                    Y: =64
+                  - DataCard23:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =220
+                        Width: =1346
+                        X: =0
+                        Y: =3
+                      Children:
+                        - ControleAnexos_3:
+                            Control: CanvasComponent
+                            ComponentName: ControleAnexos
+                            Properties:
+                              EntrataItemAtual: =ItemAtual
+                              Height: =250
+                              NavegarAnexos: |-
+                                =Set(_telaAnexo, App.ActiveScreen);
+                                Navigate(Tela_Anexos);
+                              Width: =Parent.Width - 10
+                              telaAnexo: =App.ActiveScreen
+                  - DataCard42:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =100
+                        Width: =1346
+                        X: =0
+                        Y: =4
+                      Children:
+                        - botaoSalvarPasso1_2:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =ColorFade(Self.Fill, -15%)
+                              BorderThickness: =0
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.Disabled, DisplayMode.Edit)
+                              Fill: =cor.tema
+                              Font: =Font.'Open Sans'
+                              HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              OnSelect: =MenuPassos_3.NavegarProximo()
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: =Self.Color
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Size: =13
+                              Text: ="Próximo"
+                              Width: =194
+                              X: =botaoSalvarPasso1.X
+                              Y: =botaoSalvarPasso1.Y
+                        - botaoSalvarPasso1_16:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =ColorFade(Self.Fill, -15%)
+                              BorderThickness: =0
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              Fill: =cor.tema
+                              Font: =Font.'Open Sans'
+                              HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              OnSelect: =MenuPassos_3.NavegarAnterior()
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: =Self.Color
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Size: =13
+                              Text: ="Voltar"
+                              Width: =194
+                              X: =41
+                              Y: =16
+            - MenuPassos_3:
+                Control: CanvasComponent
+                ComponentName: MenuPassos
+                Properties:
+                  GaleriaAbas: "=With(\r\n    {\r\n        menu: If(_FormCompleto, \r\n        [\r\n            {\r\n                idMenu: 1,\r\n                largura: 120,\r\n                nome: \"Dados de Entrada\",\r\n                descricao: \"\",\r\n                pagina: Tela_Dados_Entrada\r\n            },\r\n            {\r\n                idMenu: 2,\r\n                largura: 120,//150\r\n                nome: \"Sócio identificação\",\r\n                descricao: \"\",\r\n                pagina: Tela_Socio_Identificacao\r\n            },\r\n            {\r\n                idMenu: 3,\r\n                largura: 120,//180\r\n                nome: \"Ensino - trab - renda\",\r\n                descricao: \"\",\r\n                pagina: Tela_Ensino_Trab_Renda\r\n            },\r\n            \r\n            {\r\n                idMenu: 4,\r\n                largura: 60,\r\n                nome: \"Assistência\",\r\n                descricao: \"\",\r\n                pagina: Tela_Assistencia\r\n            },\r\n            {\r\n                idMenu: 5,\r\n                largura: 90,\r\n                nome: \"Território\",\r\n                descricao: \"\",\r\n                pagina: Tela_Territorio\r\n            },\r\n            {\r\n                idMenu: 6,\r\n                largura: 80,\r\n                nome: \"Saúde\",\r\n                descricao: \"\",\r\n                pagina: Tela_Saude\r\n            },\r\n            {\r\n                idMenu: 7,\r\n                largura: 85,\r\n                nome: \"Vínculos\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vinculos\r\n            },\r\n            {\r\n                idMenu: 8,\r\n                largura: 120,//200\r\n                nome: \"Situação Jurídica\",\r\n                descricao: \"\",\r\n                pagina: Tela_SitJuridica\r\n            },\r\n            {\r\n                idMenu: 9,\r\n                largura: 110,\r\n                nome: \"Agressor\",\r\n                descricao: \"\",\r\n                pagina: Tela_Agressor\r\n            },\r\n            {\r\n                idMenu: 10,\r\n                largura: 120,//180\r\n                nome: \"Proteção-segurança\",\r\n                descricao: \"\",\r\n                pagina: Tela_Protecao_Seguranca\r\n            },\r\n            {\r\n                idMenu: 11,\r\n                largura: 120,\r\n                nome: \"Vitimização secundária e terciária\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vitimizacao\r\n            },\r\n            {\r\n                idMenu: 12,\r\n                largura: 120,\r\n                nome: \"Síntese Analítica\",\r\n                descricao: \"\",\r\n                pagina: Tela_Sintese_Analitica\r\n            },\r\n            {\r\n                idMenu: 13,\r\n                largura: 120,//170\r\n                nome: \"Acompanhamentos\",\r\n                descricao: \"\",\r\n                pagina: Tela_Acompanhamento\r\n            },\r\n            /*{\r\n                idMenu: 14;\r\n                largura: 120;//200\r\n                nome: \"Relato de Atendimento\";\r\n                descricao: \"\";\r\n                pagina: Tela_Relato_De_Atendimento\r\n            };*/\r\n            {\r\n                idMenu: 14,\r\n                largura: 120,//135\r\n                nome: \"Encerramento\",\r\n                descricao: \"\",\r\n                pagina: Tela_Encerramento\r\n            },\r\n            /*{\r\n                idMenu: 15;\r\n                largura: 120;//132\r\n                nome: \"Matriz de risco\";\r\n                descricao: \"\";\r\n                pagina: Tela_Matriz_De_Risco\r\n            };*/\r\n            {\r\n                idMenu: 15,\r\n                largura: 120,//135\r\n                nome: \"Referências\",\r\n                descricao: \"\",\r\n                pagina: Tela_Referencias\r\n            }\r\n        ], //dados de entrada, socioidentificação, situação juridica maior e menor, proteção-segurança e vitimização \r\n        [\r\n            {\r\n                idMenu: 1,\r\n                largura: 170,\r\n                nome: \"Dados de Entrada\",\r\n                descricao: \"\",\r\n                pagina: Tela_Dados_Entrada\r\n            },\r\n            {\r\n                idMenu: 2,\r\n                largura: 150,\r\n                nome: \"Sócio identificação\",\r\n                descricao: \"\",\r\n                pagina: Tela_Socio_Identificacao\r\n            },\r\n            {\r\n                idMenu: 3,\r\n                largura: 200,\r\n                nome: \"Situação Jurídica\",\r\n                descricao: \"\",\r\n                pagina: Tela_SitJuridica\r\n            },\r\n            {\r\n                idMenu: 4,\r\n                largura: 180,\r\n                nome: \"Proteção-segurança\",\r\n                descricao: \"\",\r\n                pagina: Tela_Protecao_Seguranca\r\n            },\r\n            {\r\n                idMenu: 5,\r\n                largura: 240,\r\n                nome: \"Vitimização secundária e terciária\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vitimizacao\r\n            }\r\n        ]\r\n        )\r\n    },\r\n    With(\r\n        {\r\n            // Acrescenta a coluna \"larguraCalc\" conforme regra:\r\n            // Se o item for o selecionado (_passoAtual.idMenu), usa a largura definida;\r\n// Senão, divide o espaço restante igualmente entre os demais itens.\r\nmenuCalc: AddColumns(\r\n                menu,\r\n                larguraCalc,\r\n                If(\r\n                    pagina = MenuPassos_3.TelaAtual,\r\n                    largura,\r\n                    If(pagina = Tela_Vitimizacao, largura,\r\n                    ((Self.Width - 100) - LookUp(\r\n                        menu,\r\n                        pagina = MenuPassos_3.TelaAtual,\r\n                        largura\r\n                    )) / (CountRows(menu) - 1))\r\n                )\r\n            )\r\n        },\r\n        // Ordena os itens pelo idMenu e calcula a posição \"distancia\" de cada item\r\n// somando as larguras calculadas dos itens anteriores.\r\n        AddColumns(\r\n            SortByColumns(\r\n                menuCalc,\r\n                \"idMenu\",\r\n                SortOrder.Ascending\r\n            ) As m1,\r\n            distancia,\r\n            Sum(\r\n                Filter(\r\n                    menuCalc,\r\n                    idMenu < m1.idMenu\r\n                ),\r\n                larguraCalc\r\n            )\r\n        )\r\n    )\r\n)"
+                  Height: =100
+                  TelaAtual: =App.ActiveScreen
+                  Width: =App.Width
+      - MenuSuperior_3:
+          Control: CanvasComponent
+          ComponentName: MenuSuperior
+          Properties:
+            Height: =60
+            Width: =1346
+            X: =10
+            Y: =10

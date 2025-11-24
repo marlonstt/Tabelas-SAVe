@@ -1,0 +1,1533 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  Tela_Encerramento:
+    Properties:
+      Fill: =RGBA(245, 246, 248, 1)
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+      OnVisible: |-
+        =If(!IsBlankOrError(ItemAtual.ID_Caso),
+            If(
+                !(App.ActiveScreen.Name in _paginasVisitadas),
+                Collect(
+                    _paginasVisitadas,
+                    App.ActiveScreen.Name
+                );
+                Patch(
+                    SAVe_Geral,
+                    {ID: ItemAtual.ID_Caso},
+                    {Paginas_Visitadas: JSON(_paginasVisitadas)}
+                )
+            );
+
+            If(
+                IsBlankOrError(
+                    LookUp(
+                        SAVe_Encerramento,
+                        ID_Caso = ItemAtual.ID_Caso
+                    )
+                ),
+                Patch(
+                    SAVe_Encerramento,
+                    Defaults(SAVe_Encerramento),
+                    {ID_Caso: ItemAtual.ID_Caso}
+                )
+            );
+            //Variável de contexto dos CheckBoxs
+            UpdateContext(
+                {
+                    varEncerramentoTotais: Coalesce(
+                        LookUp(
+                            SAVe_Encerramento,
+                            ID_Caso = ItemAtual.ID_Caso
+                        ).Forma_Encerramento_Caso,
+                        ""
+                    )
+                }
+            );
+        )
+    Children:
+      - Container1_29:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =Parent.Height-Self.Y-10
+            RadiusBottomLeft: =8
+            RadiusBottomRight: =8
+            RadiusTopLeft: =8
+            RadiusTopRight: =8
+            Width: =1346
+            X: =10
+            Y: =80
+          Children:
+            - Canvas2_16:
+                Control: FluidGrid@2.3.0
+                Properties:
+                  BorderThickness: =0
+                  Height: =583
+                  Width: =Parent.Width
+                  Y: =95
+                Children:
+                  - DataCard16_5:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.View, DisplayMode.Edit)
+                        Height: |+
+                          =Container2_57.Height+15
+
+                        Width: =1346
+                        X: =0
+                        Y: =0
+                      Children:
+                        - Container2_57:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =RGBA(217, 217, 217, 1)
+                              BorderThickness: =2
+                              DropShadow: =DropShadow.Regular
+                              Height: =450
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =1321
+                              X: =5
+                              Y: =10
+                            Children:
+                              - Label2_504:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoSecundaria
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="ENCERRAMENTO"
+                                    Width: =350
+                                    X: =12
+                                    Y: =3
+                              - Check_TD:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    CheckboxSize: =20
+                                    Checked: |-
+                                      ="Tratamento das demandas" in varEncerramentoTotais
+                                      /*If(
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso;
+                                              Forma_Encerramento_Caso
+                                          ) = "Tratamento das demandas";
+                                          true;
+                                          false
+                                      )*/
+                                    DisplayMode: |-
+                                      =//DisplayMode.Edit
+                                      If(
+                                          varBloqueio,
+                                          DisplayMode.Disabled,
+                                          DisplayMode.Edit
+                                      )
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =55
+                                    Label: ="Tratamento das demandas"
+                                    OnCheck: |-
+                                      =Reset(VEV_02);
+                                      Reset(VEV_01);
+                                      Set(UA_VEV, 3);
+
+                                      UpdateContext({varBloqueio: true});
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext({
+                                          varEncerramentoTotais:
+                                              If(
+                                                  !IsBlank(varEncerramentoTotais) && 
+                                                  !IsBlank(Find("Tratamento das demandas", varEncerramentoTotais)),
+                                                  varEncerramentoTotais,
+                                                  TrimEnds(
+                                                      Concatenate(
+                                                          varEncerramentoTotais &
+                                                          If(!IsBlank(varEncerramentoTotais), ";") &
+                                                          "Tratamento das demandas"
+                                                      )
+                                                  )
+                                              )
+                                      });
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              varEncerramentoTotais,
+                                                              ";;",
+                                                              ";"
+                                                          ),
+                                                          "  ",
+                                                          " "
+                                                      )
+                                                  )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(SAVe_Encerramento, ID_Caso = ItemAtual.ID_Caso),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+
+                                      /*
+                                      Notify(
+                                          "Salvando...";
+                                          NotificationType.Information
+                                      );;
+
+                                      Patch(
+                                          SAVe_Encerramento;
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          );
+                                          {Forma_Encerramento_Caso: "Tratamento das demandas"}
+                                      );;
+
+                                      Notify(
+                                          "Salvo! ✅";
+                                          NotificationType.Success;
+                                          2000
+                                      )*/
+                                    OnUncheck: |-
+                                      =UpdateContext({varBloqueio: true});
+
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              Substitute(
+                                                                  Substitute(
+                                                                      varEncerramentoTotais,
+                                                                      "Tratamento das demandas;;", ";"
+                                                                  ),
+                                                                  "; Tratamento das demandas", ""
+                                                              ),
+                                                              "Tratamento das demandas;", ""
+                                                          ),
+                                                          "Tratamento das demandas", ""
+                                                      )
+                                                  )
+                                          }
+                                      );
+
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              varEncerramentoTotais,
+                                                              ";;",
+                                                              ";"
+                                                          ),
+                                                          "  ",
+                                                          " "
+                                                      )
+                                                  )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(SAVe_Encerramento, ID_Caso = ItemAtual.ID_Caso),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+                                    Width: =455
+                                    X: =12
+                                    Y: =65
+                              - Check_IR:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    CheckboxSize: =20
+                                    Checked: |-
+                                      ="Inserção na rede" in varEncerramentoTotais
+                                      /*
+                                      If(
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso;
+                                              Forma_Encerramento_Caso
+                                          ) = "Inserção na rede";
+                                          true;
+                                          false
+                                      )*/
+                                    DisplayMode: |-
+                                      =//DisplayMode.Edit
+                                      If(
+                                          varBloqueio,
+                                          DisplayMode.Disabled,
+                                          DisplayMode.Edit
+                                      )
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =48
+                                    Label: ="Inserção na rede"
+                                    OnCheck: |-
+                                      =Reset(VEV_02);
+                                      Reset(VEV_01);
+                                      Set(UA_VEV, 3);
+
+                                      UpdateContext({varBloqueio: true});
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext({
+                                          varEncerramentoTotais:
+                                              If(
+                                                  !IsBlank(varEncerramentoTotais) && 
+                                                  !IsBlank(Find("Inserção na rede", varEncerramentoTotais)),
+                                                  varEncerramentoTotais,
+                                                  TrimEnds(
+                                                      Concatenate(
+                                                          varEncerramentoTotais &
+                                                          If(!IsBlank(varEncerramentoTotais), ";") &
+                                                          "Inserção na rede"
+                                                      )
+                                                  )
+                                              )
+                                      });
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              varEncerramentoTotais,
+                                                              ";;",
+                                                              ";"
+                                                          ),
+                                                          "  ",
+                                                          " "
+                                                      )
+                                                  )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(SAVe_Encerramento, ID_Caso = ItemAtual.ID_Caso),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+
+                                      /*
+                                      Notify(
+                                          "Salvando...";
+                                          NotificationType.Information
+                                      );;
+
+                                      Patch(
+                                          SAVe_Encerramento;
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          );
+                                          {Forma_Encerramento_Caso: "Inserção na rede"}
+                                      );;
+
+                                      Notify(
+                                          "Salvo! ✅";
+                                          NotificationType.Success;
+                                          2000
+                                      )*/
+                                    OnUncheck: |-
+                                      =UpdateContext({varBloqueio: true});
+
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              Substitute(
+                                                                  Substitute(
+                                                                      varEncerramentoTotais,
+                                                                      "Inserção na rede;;", ";"
+                                                                  ),
+                                                                  "; Inserção na rede", ""
+                                                              ),
+                                                              "Inserção na rede;", ""
+                                                          ),
+                                                          "Inserção na rede", ""
+                                                      )
+                                                  )
+                                          }
+                                      );
+
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              varEncerramentoTotais,
+                                                              ";;",
+                                                              ";"
+                                                          ),
+                                                          "  ",
+                                                          " "
+                                                      )
+                                                  )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(SAVe_Encerramento, ID_Caso = ItemAtual.ID_Caso),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+                                    Width: =416
+                                    X: =12
+                                    Y: =120
+                              - Check_VRA:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    CheckboxSize: =20
+                                    Checked: |-
+                                      ="Voluntariedade/Recusa de atendimento" in varEncerramentoTotais
+                                      /*If(
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso;
+                                              Forma_Encerramento_Caso
+                                          ) = "Voluntariedade/Recusa de atendimento";
+                                          true;
+                                          false
+                                      )*/
+                                    DisplayMode: |-
+                                      =//DisplayMode.Edit
+                                      If(
+                                          varBloqueio,
+                                          DisplayMode.Disabled,
+                                          DisplayMode.Edit
+                                      )
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =55
+                                    Label: ="Voluntariedade/Recusa de atendimento"
+                                    OnCheck: |-
+                                      =Reset(VEV_02);
+                                      Reset(VEV_01);
+                                      Set(UA_VEV, 3);
+
+                                      UpdateContext({varBloqueio: true});
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext({
+                                          varEncerramentoTotais:
+                                              If(
+                                                  !IsBlank(varEncerramentoTotais) && 
+                                                  !IsBlank(Find("Voluntariedade/Recusa de atendimento", varEncerramentoTotais)),
+                                                  varEncerramentoTotais,
+                                                  TrimEnds(
+                                                      Concatenate(
+                                                          varEncerramentoTotais &
+                                                          If(!IsBlank(varEncerramentoTotais), ";") &
+                                                          "Voluntariedade/Recusa de atendimento"
+                                                      )
+                                                  )
+                                              )
+                                      });
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              varEncerramentoTotais,
+                                                              ";;",
+                                                              ";"
+                                                          ),
+                                                          "  ",
+                                                          " "
+                                                      )
+                                                  )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(SAVe_Encerramento, ID_Caso = ItemAtual.ID_Caso),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+                                      /*
+                                      Notify(
+                                          "Salvando...";
+                                          NotificationType.Information
+                                      );;
+
+                                      Patch(
+                                          SAVe_Encerramento;
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          );
+                                          {Forma_Encerramento_Caso: "Voluntariedade/Recusa de atendimento"}
+                                      );;
+
+                                      Notify(
+                                          "Salvo! ✅";
+                                          NotificationType.Success;
+                                          2000
+                                      )*/
+                                    OnUncheck: |-
+                                      =UpdateContext({varBloqueio: true});
+
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              Substitute(
+                                                                  Substitute(
+                                                                      varEncerramentoTotais,
+                                                                      "Voluntariedade/Recusa de atendimento;;", ";"
+                                                                  ),
+                                                                  "; Voluntariedade/Recusa de atendimento", ""
+                                                              ),
+                                                              "Voluntariedade/Recusa de atendimento;", ""
+                                                          ),
+                                                          "Voluntariedade/Recusa de atendimento", ""
+                                                      )
+                                                  )
+                                          }
+                                      );
+
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              varEncerramentoTotais,
+                                                              ";;",
+                                                              ";"
+                                                          ),
+                                                          "  ",
+                                                          " "
+                                                      )
+                                                  )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(SAVe_Encerramento, ID_Caso = ItemAtual.ID_Caso),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+                                    Width: =455
+                                    X: =12
+                                    Y: =168
+                              - Check_Morte:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    CheckboxSize: =20
+                                    Checked: |-
+                                      ="Morte" in varEncerramentoTotais
+                                      /*If(
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso;
+                                              Forma_Encerramento_Caso
+                                          ) = "Morte";
+                                          true;
+                                          false
+                                      )*/
+                                    DisplayMode: |-
+                                      =//DisplayMode.Edit
+                                      If(
+                                          varBloqueio,
+                                          DisplayMode.Disabled,
+                                          DisplayMode.Edit
+                                      )
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =55
+                                    Label: ="Morte"
+                                    OnCheck: |-
+                                      =Reset(VEV_02);
+                                      Reset(VEV_01);
+                                      Set(UA_VEV, 3);
+
+                                      UpdateContext({varBloqueio: true});
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext({
+                                          varEncerramentoTotais:
+                                              If(
+                                                  !IsBlank(varEncerramentoTotais) && 
+                                                  !IsBlank(Find("Morte", varEncerramentoTotais)),
+                                                  varEncerramentoTotais,
+                                                  TrimEnds(
+                                                      Concatenate(
+                                                          varEncerramentoTotais &
+                                                          If(!IsBlank(varEncerramentoTotais), ";") &
+                                                          "Morte"
+                                                      )
+                                                  )
+                                              )
+                                      });
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              varEncerramentoTotais,
+                                                              ";;",
+                                                              ";"
+                                                          ),
+                                                          "  ",
+                                                          " "
+                                                      )
+                                                  )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(SAVe_Encerramento, ID_Caso = ItemAtual.ID_Caso),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+
+                                      /*Notify(
+                                          "Salvando...";
+                                          NotificationType.Information
+                                      );;
+
+                                      Patch(
+                                          SAVe_Encerramento;
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          );
+                                          {Forma_Encerramento_Caso: "Morte"}
+                                      );;
+
+                                      Notify(
+                                          "Salvo! ✅";
+                                          NotificationType.Success;
+                                          2000
+                                      )*/
+                                    OnUncheck: |-
+                                      =UpdateContext({varBloqueio: true});
+
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              Substitute(
+                                                                  Substitute(
+                                                                      varEncerramentoTotais,
+                                                                      "Morte;;", ";"
+                                                                  ),
+                                                                  "; Morte", ""
+                                                              ),
+                                                              "Morte;", ""
+                                                          ),
+                                                          "Morte", ""
+                                                      )
+                                                  )
+                                          }
+                                      );
+
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              varEncerramentoTotais,
+                                                              ";;",
+                                                              ";"
+                                                          ),
+                                                          "  ",
+                                                          " "
+                                                      )
+                                                  )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(SAVe_Encerramento, ID_Caso = ItemAtual.ID_Caso),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+                                    Width: =455
+                                    X: =12
+                                    Y: =333
+                              - Check_ML:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    CheckboxSize: =20
+                                    Checked: |-
+                                      ="Mudança de localidade" in varEncerramentoTotais
+                                      /*If(
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso;
+                                              Forma_Encerramento_Caso
+                                          ) = "Mudança de localidade";
+                                          true;
+                                          false
+                                      )*/
+                                    DisplayMode: |-
+                                      =//DisplayMode.Edit
+                                      If(
+                                          varBloqueio,
+                                          DisplayMode.Disabled,
+                                          DisplayMode.Edit
+                                      )
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =55
+                                    Label: ="Mudança de localidade"
+                                    OnCheck: |-
+                                      =Reset(VEV_02);
+                                      Reset(VEV_01);
+                                      Set(
+                                          UA_VEV,
+                                          3
+                                      );
+                                      UpdateContext({varBloqueio: true});
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais: If(
+                                                  !IsBlank(varEncerramentoTotais) && !IsBlank(
+                                                      Find(
+                                                          "Mudança de localidade",
+                                                          varEncerramentoTotais
+                                                      )
+                                                  ),
+                                                  varEncerramentoTotais,
+                                                  TrimEnds(
+                                                      Concatenate(
+                                                          varEncerramentoTotais & If(
+                                                              !IsBlank(varEncerramentoTotais),
+                                                              ";"
+                                                          ) & "Mudança de localidade"
+                                                      )
+                                                  )
+                                              )
+                                          }
+                                      );
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais: Trim(
+                                                  Substitute(
+                                                      Substitute(
+                                                          varEncerramentoTotais,
+                                                          ";;",
+                                                          ";"
+                                                      ),
+                                                      "  ",
+                                                      " "
+                                                  )
+                                              )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(
+                                              SAVe_Encerramento,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+                                      /*Notify(
+                                          "Salvando...";
+                                          NotificationType.Information
+                                      );;
+
+                                      Patch(
+                                          SAVe_Encerramento;
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          );
+                                          {Forma_Encerramento_Caso: "Mudança de localidade"}
+                                      );;
+
+                                      Notify(
+                                          "Salvo! ✅";
+                                          NotificationType.Success;
+                                          2000
+                                      )*/
+                                    OnUncheck: |-
+                                      =UpdateContext({varBloqueio: true});
+
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              Substitute(
+                                                                  Substitute(
+                                                                      varEncerramentoTotais,
+                                                                      "Mudança de localidade;;", ";"
+                                                                  ),
+                                                                  "; Mudança de localidade", ""
+                                                              ),
+                                                              "Mudança de localidade;", ""
+                                                          ),
+                                                          "Mudança de localidade", ""
+                                                      )
+                                                  )
+                                          }
+                                      );
+
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              varEncerramentoTotais,
+                                                              ";;",
+                                                              ";"
+                                                          ),
+                                                          "  ",
+                                                          " "
+                                                      )
+                                                  )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(SAVe_Encerramento, ID_Caso = ItemAtual.ID_Caso),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+                                    Width: =455
+                                    X: =12
+                                    Y: =278
+                              - Check_PC:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    CheckboxSize: =20
+                                    Checked: |-
+                                      ="Perda de contato" in varEncerramentoTotais
+                                      /*If(
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso;
+                                              Forma_Encerramento_Caso
+                                          ) = "Perda de Contato";
+                                          true;
+                                          false
+                                      )*/
+                                    DisplayMode: |-
+                                      =//DisplayMode.Edit
+                                      If(
+                                          varBloqueio,
+                                          DisplayMode.Disabled,
+                                          DisplayMode.Edit
+                                      )
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =55
+                                    Label: ="Perda de contato"
+                                    OnCheck: |-
+                                      =Reset(VEV_02);
+                                      Reset(VEV_01);
+                                      Set(UA_VEV, 3);
+
+                                      UpdateContext({varBloqueio: true});
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext({
+                                          varEncerramentoTotais:
+                                              If(
+                                                  !IsBlank(varEncerramentoTotais) && 
+                                                  !IsBlank(Find("Perda de contato", varEncerramentoTotais)),
+                                                  varEncerramentoTotais,
+                                                  TrimEnds(
+                                                      Concatenate(
+                                                          varEncerramentoTotais &
+                                                          If(!IsBlank(varEncerramentoTotais), ";") &
+                                                          "Perda de contato"
+                                                      )
+                                                  )
+                                              )
+                                      });
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              varEncerramentoTotais,
+                                                              ";;",
+                                                              ";"
+                                                          ),
+                                                          "  ",
+                                                          " "
+                                                      )
+                                                  )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(SAVe_Encerramento, ID_Caso = ItemAtual.ID_Caso),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+                                      /*
+                                      Notify(
+                                          "Salvando...";
+                                          NotificationType.Information
+                                      );;
+
+                                      Patch(
+                                          SAVe_Encerramento;
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          );
+                                          {Forma_Encerramento_Caso: "Perda de contato"}
+                                      );;
+
+                                      Notify(
+                                          "Salvo! ✅";
+                                          NotificationType.Success;
+                                          2000
+                                      )*/
+                                    OnUncheck: |-
+                                      =UpdateContext({varBloqueio: true});
+
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              Substitute(
+                                                                  Substitute(
+                                                                      varEncerramentoTotais,
+                                                                      "Perda de contato;;", ";"
+                                                                  ),
+                                                                  "; Perda de contato", ""
+                                                              ),
+                                                              "Perda de contato;", ""
+                                                          ),
+                                                          "Perda de contato", ""
+                                                      )
+                                                  )
+                                          }
+                                      );
+
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              varEncerramentoTotais,
+                                                              ";;",
+                                                              ";"
+                                                          ),
+                                                          "  ",
+                                                          " "
+                                                      )
+                                                  )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(SAVe_Encerramento, ID_Caso = ItemAtual.ID_Caso),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+                                    Width: =455
+                                    X: =12
+                                    Y: =223
+                              - Check_Outros:
+                                  Control: CheckBox@0.0.30
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    CheckboxSize: =20
+                                    Checked: |-
+                                      ="Outros" in varEncerramentoTotais
+                                      /*If(
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso;
+                                              Forma_Encerramento_Caso
+                                          ) = "Outros";
+                                          true;
+                                          false
+                                      )*/
+                                    DisplayMode: |-
+                                      =//DisplayMode.Edit
+                                      If(
+                                          varBloqueio,
+                                          DisplayMode.Disabled,
+                                          DisplayMode.Edit
+                                      )
+                                    Font: =Font.Lato
+                                    FontColor: =cor.textoPrincipal
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =55
+                                    Label: ="Outros"
+                                    OnCheck: |-
+                                      =Reset(VEV_02);
+                                      Reset(VEV_01);
+                                      Set(UA_VEV, 3);
+
+                                      UpdateContext({varBloqueio: true});
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext({
+                                          varEncerramentoTotais:
+                                              If(
+                                                  !IsBlank(varEncerramentoTotais) && 
+                                                  !IsBlank(Find("Outros", varEncerramentoTotais)),
+                                                  varEncerramentoTotais,
+                                                  TrimEnds(
+                                                      Concatenate(
+                                                          varEncerramentoTotais &
+                                                          If(!IsBlank(varEncerramentoTotais), ";") &
+                                                          "Outros"
+                                                      )
+                                                  )
+                                              )
+                                      });
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              varEncerramentoTotais,
+                                                              ";;",
+                                                              ";"
+                                                          ),
+                                                          "  ",
+                                                          " "
+                                                      )
+                                                  )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(SAVe_Encerramento, ID_Caso = ItemAtual.ID_Caso),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+                                      /*
+                                      Notify(
+                                          "Salvando...";
+                                          NotificationType.Information
+                                      );;
+
+                                      Patch(
+                                          SAVe_Encerramento;
+                                          LookUp(
+                                              SAVe_Encerramento;
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          );
+                                          {Forma_Encerramento_Caso: "Outros"}
+                                      );;
+
+                                      Notify(
+                                          "Salvo! ✅";
+                                          NotificationType.Success;
+                                          2000
+                                      )*/
+                                    OnUncheck: |-
+                                      =UpdateContext({varBloqueio: true});
+
+                                      Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              Substitute(
+                                                                  Substitute(
+                                                                      varEncerramentoTotais,
+                                                                      "Outros;;", ";"
+                                                                  ),
+                                                                  "; Outros", ""
+                                                              ),
+                                                              "Outros;", ""
+                                                          ),
+                                                          "Outros", ""
+                                                      )
+                                                  )
+                                          }
+                                      );
+
+                                      // Remove espaços e ; duplicados
+                                      UpdateContext(
+                                          {
+                                              varEncerramentoTotais:
+                                                  Trim(
+                                                      Substitute(
+                                                          Substitute(
+                                                              varEncerramentoTotais,
+                                                              ";;",
+                                                              ";"
+                                                          ),
+                                                          "  ",
+                                                          " "
+                                                      )
+                                                  )
+                                          }
+                                      );
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(SAVe_Encerramento, ID_Caso = ItemAtual.ID_Caso),
+                                          {Forma_Encerramento_Caso: varEncerramentoTotais}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      );
+                                      UpdateContext({varBloqueio: false});
+                                    Width: =387
+                                    X: =12
+                                    Y: =388
+                              - tituloDepoimentosRepetitivos_2:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =34
+                                    LineHeight: =1.1
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Forma de encerramento/ desligamento do caso:"
+                                    Width: =400
+                                    X: =12
+                                    Y: =30
+                              - entradaEspecifiqueEncerramento:
+                                  Control: TextInput@0.0.54
+                                  Properties:
+                                    BasePaletteColor: =cor.tema
+                                    FontColor: =cor.textoPrincipal
+                                    OnChange: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(
+                                              SAVe_Encerramento,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Especifique_Outros: Self.Value}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Value: |-
+                                      =LookUp(
+                                          SAVe_Encerramento,
+                                          ID_Caso = ItemAtual.ID_Caso,
+                                          Especifique_Outros
+                                      )
+                                    Visible: =Check_Outros.Checked
+                                    Width: =843
+                                    X: =450
+                                    Y: =411
+                              - tituloEspecifiqueOV_1:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =34
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Especifique:"
+                                    Visible: =Check_Outros.Checked
+                                    Width: =500
+                                    X: =450
+                                    Y: =377
+                              - tituloDataNascimento_1:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =27
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Data:"
+                                    Width: =258
+                                    X: =450
+                                    Y: =19
+                              - tituloTelefoneAtualizadoEm_9:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Color: =cor.textoPrincipal
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =20
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingTop: =0
+                                    Size: =11
+                                    Text: ="Observação:"
+                                    X: =452
+                                    Y: =85
+                              - Container10_4:
+                                  Control: GroupContainer@1.3.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    BorderColor: =RGBA(218, 225, 227, 1)
+                                    BorderThickness: =1
+                                    DropShadow: =DropShadow.None
+                                    Height: =257
+                                    RadiusBottomLeft: =10
+                                    RadiusBottomRight: =10
+                                    RadiusTopLeft: =10
+                                    RadiusTopRight: =10
+                                    Width: =843
+                                    X: =450
+                                    Y: =109
+                                  Children:
+                                    - entradaObservacaoEncerramento:
+                                        Control: RichTextEditor@2.7.0
+                                        Properties:
+                                          BorderColor: =RGBA(0, 0, 0, 0)
+                                          Default: |-
+                                            =LookUp(
+                                                SAVe_Encerramento,
+                                                ID_Caso = ItemAtual.ID_Caso,
+                                                Observacao
+                                            )
+                                          Height: =257
+                                          OnChange: |-
+                                            =Notify(
+                                                "Salvando...",
+                                                NotificationType.Information
+                                            );
+
+                                            Patch(
+                                                SAVe_Encerramento,
+                                                LookUp(
+                                                    SAVe_Encerramento,
+                                                    ID_Caso = ItemAtual.ID_Caso
+                                                ),
+                                                {Observacao: Self.HtmlText}
+                                            );
+
+                                            Notify(
+                                                "Salvo! ✅",
+                                                NotificationType.Success,
+                                                2000
+                                            )
+                                          Width: =843
+                              - DataCampo_13:
+                                  Control: CanvasComponent
+                                  ComponentName: DataCampo
+                                  Properties:
+                                    Ancora: ="tituloDataEncerramento"
+                                    ContextoEntrada: ="Texto"
+                                    DataEntrada: |-
+                                      =LookUp(
+                                          SAVe_Encerramento,
+                                          ID_Caso = ItemAtual.ID_Caso,
+                                          Data
+                                      )
+                                    DataHora: =false
+                                    DataMaxima: =Today()
+                                    DataMinima: =DateTime(1900, 1, 1, 0, 0, 0)
+                                    DataSaida: =LookUp(_tempDataAux, tela = "tituloDataEncerramento", data)
+                                    Height: =30
+                                    ModoEdicao: =true
+                                    SalvarData: |-
+                                      =Notify(
+                                          "Salvando...",
+                                          NotificationType.Information
+                                      );
+
+                                      Patch(
+                                          SAVe_Encerramento,
+                                          LookUp(
+                                              SAVe_Encerramento,
+                                              ID_Caso = ItemAtual.ID_Caso
+                                          ),
+                                          {Data: Self.DataSaida}
+                                      );
+
+                                      Notify(
+                                          "Salvo! ✅",
+                                          NotificationType.Success,
+                                          2000
+                                      )
+                                    Width: =180
+                                    X: =450
+                                    Y: =46
+                  - DataCard27_2:
+                      Control: DataCard@1.0.2
+                      Variant: BlankCard
+                      Properties:
+                        Height: =84
+                        Width: =1346
+                        X: =0
+                        Y: =1
+                      Children:
+                        - botaoSalvarPasso1_14:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =ColorFade(Self.Fill, -15%)
+                              BorderThickness: =0
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              DisplayMode: =If(ItemAtual.Encerrado, DisplayMode.Disabled, DisplayMode.Edit)
+                              Fill: =cor.tema
+                              Font: =Font.'Open Sans'
+                              HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              OnSelect: |-
+                                =Patch(
+                                    SAVe_Geral,
+                                    LookUp(SAVe_Geral, ID_Caso = ItemAtual.ID_Caso),
+                                    {
+                                        Encerrado: true
+                                    }
+                                );
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: =Self.Color
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Size: =13
+                              Text: ="Encerrar o Caso"
+                              Width: =194
+                              X: =1128
+                              Y: =8
+                        - botaoSalvarPasso1_32:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =ColorFade(Self.Fill, -15%)
+                              BorderThickness: =0
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              Fill: =cor.tema
+                              Font: =Font.'Open Sans'
+                              HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              OnSelect: =MenuPassos_15.NavegarAnterior()
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: =Self.Color
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Size: =13
+                              Text: ="Voltar"
+                              Width: =194
+                              X: =41
+                              Y: =8
+            - MenuPassos_15:
+                Control: CanvasComponent
+                ComponentName: MenuPassos
+                Properties:
+                  GaleriaAbas: "=With(\r\n    {\r\n        menu: If(_FormCompleto, \r\n        [\r\n            {\r\n                idMenu: 1,\r\n                largura: 120,\r\n                nome: \"Dados de Entrada\",\r\n                descricao: \"\",\r\n                pagina: Tela_Dados_Entrada\r\n            },\r\n            {\r\n                idMenu: 2,\r\n                largura: 120,//150\r\n                nome: \"Sócio identificação\",\r\n                descricao: \"\",\r\n                pagina: Tela_Socio_Identificacao\r\n            },\r\n            {\r\n                idMenu: 3,\r\n                largura: 120,//180\r\n                nome: \"Ensino - trab - renda\",\r\n                descricao: \"\",\r\n                pagina: Tela_Ensino_Trab_Renda\r\n            },\r\n            \r\n            {\r\n                idMenu: 4,\r\n                largura: 60,\r\n                nome: \"Assistência\",\r\n                descricao: \"\",\r\n                pagina: Tela_Assistencia\r\n            },\r\n            {\r\n                idMenu: 5,\r\n                largura: 90,\r\n                nome: \"Território\",\r\n                descricao: \"\",\r\n                pagina: Tela_Territorio\r\n            },\r\n            {\r\n                idMenu: 6,\r\n                largura: 80,\r\n                nome: \"Saúde\",\r\n                descricao: \"\",\r\n                pagina: Tela_Saude\r\n            },\r\n            {\r\n                idMenu: 7,\r\n                largura: 85,\r\n                nome: \"Vínculos\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vinculos\r\n            },\r\n            {\r\n                idMenu: 8,\r\n                largura: 120,//200\r\n                nome: \"Situação Jurídica\",\r\n                descricao: \"\",\r\n                pagina: Tela_SitJuridica\r\n            },\r\n            {\r\n                idMenu: 9,\r\n                largura: 110,\r\n                nome: \"Agressor\",\r\n                descricao: \"\",\r\n                pagina: Tela_Agressor\r\n            },\r\n            {\r\n                idMenu: 10,\r\n                largura: 120,//180\r\n                nome: \"Proteção-segurança\",\r\n                descricao: \"\",\r\n                pagina: Tela_Protecao_Seguranca\r\n            },\r\n            {\r\n                idMenu: 11,\r\n                largura: 120,\r\n                nome: \"Vitimização secundária e terciária\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vitimizacao\r\n            },\r\n            {\r\n                idMenu: 12,\r\n                largura: 120,\r\n                nome: \"Síntese Analítica\",\r\n                descricao: \"\",\r\n                pagina: Tela_Sintese_Analitica\r\n            },\r\n            {\r\n                idMenu: 13,\r\n                largura: 120,//170\r\n                nome: \"Acompanhamentos\",\r\n                descricao: \"\",\r\n                pagina: Tela_Acompanhamento\r\n            },\r\n            /*{\r\n                idMenu: 14;\r\n                largura: 120;//200\r\n                nome: \"Relato de Atendimento\";\r\n                descricao: \"\";\r\n                pagina: Tela_Relato_De_Atendimento\r\n            };*/\r\n            {\r\n                idMenu: 14,\r\n                largura: 120,//135\r\n                nome: \"Encerramento\",\r\n                descricao: \"\",\r\n                pagina: Tela_Encerramento\r\n            },\r\n            /*{\r\n                idMenu: 15;\r\n                largura: 120;//132\r\n                nome: \"Matriz de risco\";\r\n                descricao: \"\";\r\n                pagina: Tela_Matriz_De_Risco\r\n            };*/\r\n            {\r\n                idMenu: 15,\r\n                largura: 120,//135\r\n                nome: \"Referências\",\r\n                descricao: \"\",\r\n                pagina: Tela_Referencias\r\n            }\r\n        ], //dados de entrada, socioidentificação, situação juridica maior e menor, proteção-segurança e vitimização \r\n        [\r\n            {\r\n                idMenu: 1,\r\n                largura: 170,\r\n                nome: \"Dados de Entrada\",\r\n                descricao: \"\",\r\n                pagina: Tela_Dados_Entrada\r\n            },\r\n            {\r\n                idMenu: 2,\r\n                largura: 150,\r\n                nome: \"Sócio identificação\",\r\n                descricao: \"\",\r\n                pagina: Tela_Socio_Identificacao\r\n            },\r\n            {\r\n                idMenu: 3,\r\n                largura: 200,\r\n                nome: \"Situação Jurídica\",\r\n                descricao: \"\",\r\n                pagina: Tela_SitJuridica\r\n            },\r\n            {\r\n                idMenu: 4,\r\n                largura: 180,\r\n                nome: \"Proteção-segurança\",\r\n                descricao: \"\",\r\n                pagina: Tela_Protecao_Seguranca\r\n            },\r\n            {\r\n                idMenu: 5,\r\n                largura: 240,\r\n                nome: \"Vitimização secundária e terciária\",\r\n                descricao: \"\",\r\n                pagina: Tela_Vitimizacao\r\n            }\r\n        ]\r\n        )\r\n    },\r\n    With(\r\n        {\r\n            // Acrescenta a coluna \"larguraCalc\" conforme regra:\r\n            // Se o item for o selecionado (_passoAtual.idMenu), usa a largura definida;\r\n// Senão, divide o espaço restante igualmente entre os demais itens.\r\nmenuCalc: AddColumns(\r\n                menu,\r\n                larguraCalc,\r\n                If(\r\n                    pagina = MenuPassos_15.TelaAtual,\r\n                    largura,\r\n                    If(pagina = Tela_Vitimizacao, largura,\r\n                    ((Self.Width - 100) - LookUp(\r\n                        menu,\r\n                        pagina = MenuPassos_15.TelaAtual,\r\n                        largura\r\n                    )) / (CountRows(menu) - 1))\r\n                )\r\n            )\r\n        },\r\n        // Ordena os itens pelo idMenu e calcula a posição \"distancia\" de cada item\r\n// somando as larguras calculadas dos itens anteriores.\r\n        AddColumns(\r\n            SortByColumns(\r\n                menuCalc,\r\n                \"idMenu\",\r\n                SortOrder.Ascending\r\n            ) As m1,\r\n            distancia,\r\n            Sum(\r\n                Filter(\r\n                    menuCalc,\r\n                    idMenu < m1.idMenu\r\n                ),\r\n                larguraCalc\r\n            )\r\n        )\r\n    )\r\n)"
+                  Height: =100
+                  TelaAtual: =App.ActiveScreen
+                  Width: =App.Width
+      - MenuSuperior_17:
+          Control: CanvasComponent
+          ComponentName: MenuSuperior
+          Properties:
+            Height: =60
+            Width: =1346
+            X: =10
+            Y: =10

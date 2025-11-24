@@ -1,0 +1,29 @@
+Data Sources Found: ['UsuáriosdoOffice365', 'HTML_para_PDF', 'ComboBoxSample', 'CustomGallerySample', 'PieChartSample', 'LegendSample', 'ListboxSample', 'SAVe_Sintese_Analitica', 'SAVe_Logs_Acesso', 'SAVe_Acompanhamentos', 'SAVe_Responsaveis', 'SAVe_Situacao_Juridica2', 'SAVe_Situacao_Juridica_Incluir_processo', 'SAVe_Situacao_Juridica', 'SAVe_Saude', 'SAVe_protecao_seguranca_ameacadores', 'SAVe_protecao_seguranca_adolescente', 'SAVe_protecao_seguranca', 'SAVe_Perfil_Agressor_Endereco', 'SAVe_Perfil_Agressor', 'SAVe_Identificacao_telefone', 'SAVe_Identificacao_endereco', 'SAVe_Identificacao_email', 'SAVe_Identificacao', 'SAVe_Habitacao_territorio', 'SAVe_Ensino-trab-renda', 'SAVe_Encerramento', 'SAVe_DadosDeEntrada', 'SAVe_Assistencia', 'SAVe_Vinculos', 'SAVe_Vinculos_Apoio', 'SAVe_Vitimizacao', 'SAVe_Geral', 'SAVe_Casos_Vinculados', 'SAVe_Usuarios']
+
+Potential 1:N Tables (Used in Galleries):
+
+ID Usage Summary (Count of .ID references per control file):
+  Controls/52.json: 4
+  Controls/126.json: 5
+  Controls/210.json: 2
+  Controls/278.json: 2
+  Controls/450.json: 15
+  Controls/567.json: 2
+  Controls/681.json: 2
+  Controls/761.json: 2
+  Controls/899.json: 5
+  Controls/1145.json: 16
+  Controls/1239.json: 4
+  Controls/1422.json: 2
+  Controls/1486.json: 8
+  Controls/1552.json: 1
+  Controls/1601.json: 2
+  Controls/1627.json: 2
+  Controls/1645.json: 3
+  Controls/1689.json: 1
+  Controls/1719.json: 4
+  Controls/1742.json: 6
+  Controls/1785.json: 3
+
+ID_Caso Usage Check:
+  Found ID_Caso in Controls/52.json
