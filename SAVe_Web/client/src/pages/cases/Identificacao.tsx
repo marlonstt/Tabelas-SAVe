@@ -94,18 +94,10 @@ export default function Identificacao() {
         }
         setFormData(prev => ({ ...prev, ...data }));
 
-        // Carregar endereço (1:1) - vem dentro de identificacao
-        const enderecoData = response.data.enderecos?.[0] || {};
-        setEndereco({
-          Endereco: enderecoData.Endereco || '',
-          Numero: enderecoData.Numero || '',
-          Complemento: enderecoData.Complemento || '',
-          Bairro: enderecoData.Bairro || '',
-          Cidade: enderecoData.Cidade || '',
-          UF: enderecoData.UF || '',
-          CEP: enderecoData.CEP || '',
-          Moradia_Situacao: enderecoData.Moradia_Situacao || ''
-        });
+        // Carregar endereços (1:N)
+        if (response.data.enderecos) {
+          setEnderecos(response.data.enderecos);
+        }
       }
       // Load telefones e emails (1:N)
       if (response.data.telefones) setTelefones(response.data.telefones);
@@ -123,13 +115,16 @@ export default function Identificacao() {
     }
   };
 
-  const handleSaveEndereco = async (field: string, value: any) => {
-    try {
-      // Endereço é 1:1, salva via upsert na tabela de endereço
-      await api.put(`/cases/${id}/identificacao`, { [field]: value });
-    } catch (error) {
-      console.error('Error saving endereco:', error);
+  const handleDeleteEndereco = async (index: number) => {
+    const endereco = enderecos[index];
+    if (endereco.ID) {
+      try {
+        await api.delete(`/cases/${id}/enderecos/${endereco.ID}`);
+      } catch (error) {
+        console.error('Error deleting endereco:', error);
+      }
     }
+    setEnderecos(enderecos.filter((_, i) => i !== index));
   };
 
   const handleAddTelefone = async () => {
@@ -143,7 +138,8 @@ export default function Identificacao() {
       const response = await api.post(`/cases/${id}/telefones`, { ID_Caso: id });
       setTelefones(prevTelefones => {
         const updated = [...prevTelefones];
-        updated[updated.length - 1] = response.data;
+        const index = updated.length - 1;
+        updated[index] = { ...updated[index], ID: response.data.ID };
         return updated;
       });
     } catch (error) {
@@ -191,7 +187,8 @@ export default function Identificacao() {
       const response = await api.post(`/cases/${id}/emails`, { ID_Caso: id });
       setEmails(prevEmails => {
         const updated = [...prevEmails];
-        updated[updated.length - 1] = response.data;
+        const index = updated.length - 1;
+        updated[index] = { ...updated[index], ID: response.data.ID };
         return updated;
       });
     } catch (error) {
@@ -422,110 +419,156 @@ export default function Identificacao() {
               </div>
             </div>
 
-            {/* Seção 3: Endereço (1:1 - Campos Simples) */}
+            {/* Seção 3: Endereço (1:N - Galeria) */}
             <div className="bg-white rounded-lg shadow p-6 border-2 border-gray-200">
-              <h3 className="text-sm font-semibold mb-4 text-gray-700">Endereço</h3>
+              <h3 className="text-sm font-semibold mb-4 text-gray-700">Endereços</h3>
 
-              <div className="mb-4">
-                <label className="block text-sm font-semibold mb-2 text-gray-700">Situação da Moradia:</label>
-                <div className="flex items-center space-x-4">
-                  {['Casa própria', 'Aluguel', 'Em situação de rua', 'Outro'].map(opt => (
-                    <label key={opt} className="flex items-center">
-                      <input
-                        type="radio"
-                        name="moradia_situacao"
-                        value={opt}
-                        checked={endereco.Moradia_Situacao === opt}
-                        onChange={(e) => {
-                          setEndereco({ ...endereco, Moradia_Situacao: e.target.value });
-                          handleSaveEndereco('Moradia_Situacao', e.target.value);
-                        }}
-                        className="mr-2"
-                      />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-              </div>
+              <div className="space-y-6">
+                {enderecos.map((endereco, index) => (
+                  <div key={endereco.ID || index} className="p-4 border border-gray-200 rounded-lg bg-gray-50 relative">
+                    <button
+                      onClick={() => handleDeleteEndereco(index)}
+                      className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                      title="Excluir endereço"
+                    >
+                      ✕
+                    </button>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold mb-1 text-gray-700">Endereço:</label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded"
-                    value={endereco.Endereco}
-                    onBlur={(e) => handleSaveEndereco('Endereco', e.target.value)}
-                    onChange={(e) => setEndereco({ ...endereco, Endereco: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1 text-gray-700">Nº:</label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded"
-                    value={endereco.Numero}
-                    onBlur={(e) => handleSaveEndereco('Numero', e.target.value)}
-                    onChange={(e) => setEndereco({ ...endereco, Numero: e.target.value })}
-                  />
-                </div>
-              </div>
+                    <div className="mb-4">
+                      <label className="block text-sm font-semibold mb-2 text-gray-700">Situação da Moradia:</label>
+                      <div className="flex items-center space-x-4">
+                        {['Casa própria', 'Aluguel', 'Em situação de rua', 'Outro'].map(opt => (
+                          <label key={opt} className="flex items-center">
+                            <input
+                              type="radio"
+                              name={`moradia_situacao_${index}`}
+                              value={opt}
+                              checked={endereco.Moradia_Situacao === opt}
+                              onChange={(e) => handleUpdateEndereco(index, 'Moradia_Situacao', e.target.value)}
+                              className="mr-2"
+                            />
+                            {opt}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-3">
-                <div>
-                  <label className="block text-sm font-semibold mb-1 text-gray-700">Complemento:</label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded"
-                    value={endereco.Complemento}
-                    onBlur={(e) => handleSaveEndereco('Complemento', e.target.value)}
-                    onChange={(e) => setEndereco({ ...endereco, Complemento: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1 text-gray-700">Bairro:</label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded"
-                    value={endereco.Bairro}
-                    onBlur={(e) => handleSaveEndereco('Bairro', e.target.value)}
-                    onChange={(e) => setEndereco({ ...endereco, Bairro: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1 text-gray-700">Cidade:</label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded"
-                    value={endereco.Cidade}
-                    onBlur={(e) => handleSaveEndereco('Cidade', e.target.value)}
-                    onChange={(e) => setEndereco({ ...endereco, Cidade: e.target.value })}
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-sm font-semibold mb-1 text-gray-700">UF:</label>
-                    <input
-                      type="text"
-                      maxLength={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded"
-                      value={endereco.UF}
-                      onBlur={(e) => handleSaveEndereco('UF', e.target.value)}
-                      onChange={(e) => setEndereco({ ...endereco, UF: e.target.value.toUpperCase() })}
-                    />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-semibold mb-1 text-gray-700">Endereço:</label>
+                        <input
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded"
+                          value={endereco.Endereco}
+                          onBlur={(e) => handleUpdateEndereco(index, 'Endereco', e.target.value)}
+                          onChange={(e) => {
+                            const updated = [...enderecos];
+                            updated[index].Endereco = e.target.value;
+                            setEnderecos(updated);
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-1 text-gray-700">Nº:</label>
+                        <input
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded"
+                          value={endereco.Numero}
+                          onBlur={(e) => handleUpdateEndereco(index, 'Numero', e.target.value)}
+                          onChange={(e) => {
+                            const updated = [...enderecos];
+                            updated[index].Numero = e.target.value;
+                            setEnderecos(updated);
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-3">
+                      <div>
+                        <label className="block text-sm font-semibold mb-1 text-gray-700">Complemento:</label>
+                        <input
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded"
+                          value={endereco.Complemento}
+                          onBlur={(e) => handleUpdateEndereco(index, 'Complemento', e.target.value)}
+                          onChange={(e) => {
+                            const updated = [...enderecos];
+                            updated[index].Complemento = e.target.value;
+                            setEnderecos(updated);
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-1 text-gray-700">Bairro:</label>
+                        <input
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded"
+                          value={endereco.Bairro}
+                          onBlur={(e) => handleUpdateEndereco(index, 'Bairro', e.target.value)}
+                          onChange={(e) => {
+                            const updated = [...enderecos];
+                            updated[index].Bairro = e.target.value;
+                            setEnderecos(updated);
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-1 text-gray-700">Cidade:</label>
+                        <input
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded"
+                          value={endereco.Cidade}
+                          onBlur={(e) => handleUpdateEndereco(index, 'Cidade', e.target.value)}
+                          onChange={(e) => {
+                            const updated = [...enderecos];
+                            updated[index].Cidade = e.target.value;
+                            setEnderecos(updated);
+                          }}
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-sm font-semibold mb-1 text-gray-700">UF:</label>
+                          <input
+                            type="text"
+                            maxLength={2}
+                            className="w-full px-3 py-2 border border-gray-300 rounded"
+                            value={endereco.UF}
+                            onBlur={(e) => handleUpdateEndereco(index, 'UF', e.target.value)}
+                            onChange={(e) => {
+                              const updated = [...enderecos];
+                              updated[index].UF = e.target.value.toUpperCase();
+                              setEnderecos(updated);
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold mb-1 text-gray-700">CEP:</label>
+                          <input
+                            type="text"
+                            className="w-full px-3 py-2 border border-gray-300 rounded"
+                            value={endereco.CEP}
+                            onBlur={(e) => handleUpdateEndereco(index, 'CEP', e.target.value)}
+                            onChange={(e) => {
+                              const updated = [...enderecos];
+                              updated[index].CEP = e.target.value;
+                              setEnderecos(updated);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-semibold mb-1 text-gray-700">CEP:</label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 rounded"
-                      value={endereco.CEP}
-                      onBlur={(e) => handleSaveEndereco('CEP', e.target.value)}
-                      onChange={(e) => setEndereco({ ...endereco, CEP: e.target.value })}
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
+
+              <button
+                onClick={handleAddEndereco}
+                className="mt-4 px-4 py-2 bg-purple-100 text-purple-700 rounded hover:bg-purple-200 text-sm"
+              >
+                Incluir endereço
+              </button>
             </div>
 
             {/* Seção 4: Telefones e E-mails (1:N - Galleries) */}

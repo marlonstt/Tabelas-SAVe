@@ -110,7 +110,7 @@ export const getCaseById = async (req: AuthRequest, res: Response) => {
         ]);
 
         // Buscar tabelas 1:N de Identificação, Vínculos, Proteção e Agressor
-        const [telefones, emails, vinculosApoio, ameacadores, adolescentes, agressores, agressorEnderecos] = await Promise.all([
+        const [telefones, emails, vinculosApoio, ameacadores, adolescentes, agressores, agressorEnderecos, enderecos] = await Promise.all([
             // prisma.sAVe_Identificacao_endereco.findMany({ where: { ID_Caso: caseId } }), // Temporarily disabled
             prisma.sAVe_Identificacao_telefone.findMany({ where: { ID_Caso: caseId } }),
             prisma.sAVe_Identificacao_email.findMany({ where: { ID_Caso: caseId } }),
@@ -118,10 +118,11 @@ export const getCaseById = async (req: AuthRequest, res: Response) => {
             prisma.sAVe_protecao_seguranca_ameacadores.findMany({ where: { ID_Caso: caseId } }),
             prisma.sAVe_protecao_seguranca_adolescente.findMany({ where: { ID_Caso: caseId } }),
             prisma.sAVe_Perfil_Agressor.findMany({ where: { ID_Caso: caseId } }),
-            prisma.sAVe_Perfil_Agressor_Endereco.findMany({ where: { ID_Caso: caseId } })
+            prisma.sAVe_Perfil_Agressor_Endereco.findMany({ where: { ID_Caso: caseId } }),
+            prisma.sAVe_Identificacao_endereco.findMany({ where: { ID_Caso: caseId } })
         ]);
 
-        const enderecos: any[] = []; // Temporary empty array
+
 
         res.json({
             geral,

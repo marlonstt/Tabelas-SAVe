@@ -91,3 +91,4 @@ router.put('/:id/agressores-enderecos/:enderecoId', authMiddleware, updateAgress
 router.delete('/:id/agressores-enderecos/:enderecoId', authMiddleware, deleteAgressorEndereco);
 
 
+export default router;
