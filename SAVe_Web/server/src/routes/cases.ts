@@ -13,7 +13,28 @@ import {
     deleteEmail,
     createEndereco,
     updateEndereco,
-    deleteEndereco
+    deleteEndereco,
+    createProcesso,
+    updateProcesso,
+    deleteProcesso,
+    createVinculoApoio,
+    updateVinculoApoio,
+    deleteVinculoApoio,
+    createAmeacador,
+    updateAmeacador,
+    deleteAmeacador,
+    createAdolescenteAmeacado,
+    updateAdolescenteAmeacado,
+    deleteAdolescenteAmeacado,
+    createAgressor,
+    updateAgressor,
+    deleteAgressor,
+    createAgressorEndereco,
+    updateAgressorEndereco,
+    deleteAgressorEndereco,
+    createAcompanhamento,
+    updateAcompanhamento,
+    deleteAcompanhamento
 } from '../controllers/caseController';
 
 const router = Router();
@@ -38,5 +59,40 @@ router.delete('/:id/telefones/:telefoneId', authMiddleware, deleteTelefone);
 router.post('/:id/emails', authMiddleware, createEmail);
 router.put('/:id/emails/:emailId', authMiddleware, updateEmail);
 router.delete('/:id/emails/:emailId', authMiddleware, deleteEmail);
+
+// Processos (1:N)
+router.post('/:id/processos', authMiddleware, createProcesso);
+router.put('/:id/processos/:processoId', authMiddleware, updateProcesso);
+router.delete('/:id/processos/:processoId', authMiddleware, deleteProcesso);
+
+// Vínculos Apoio (1:N)
+router.post('/:id/vinculos-apoio', authMiddleware, createVinculoApoio);
+router.put('/:id/vinculos-apoio/:vinculoId', authMiddleware, updateVinculoApoio);
+router.delete('/:id/vinculos-apoio/:vinculoId', authMiddleware, deleteVinculoApoio);
+
+// Ameaçadores (1:N)
+router.post('/:id/ameacadores', authMiddleware, createAmeacador);
+router.put('/:id/ameacadores/:ameacadorId', authMiddleware, updateAmeacador);
+router.delete('/:id/ameacadores/:ameacadorId', authMiddleware, deleteAmeacador);
+
+// Adolescentes Ameaçados (1:N)
+router.post('/:id/adolescentes-ameacados', authMiddleware, createAdolescenteAmeacado);
+router.put('/:id/adolescentes-ameacados/:adolescenteId', authMiddleware, updateAdolescenteAmeacado);
+router.delete('/:id/adolescentes-ameacados/:adolescenteId', authMiddleware, deleteAdolescenteAmeacado);
+
+// Agressores (1:N)
+router.post('/:id/agressores', authMiddleware, createAgressor);
+router.put('/:id/agressores/:agressorId', authMiddleware, updateAgressor);
+router.delete('/:id/agressores/:agressorId', authMiddleware, deleteAgressor);
+
+// Endereços de Agressores (1:N)
+router.post('/:id/agressores-enderecos', authMiddleware, createAgressorEndereco);
+router.put('/:id/agressores-enderecos/:enderecoId', authMiddleware, updateAgressorEndereco);
+router.delete('/:id/agressores-enderecos/:enderecoId', authMiddleware, deleteAgressorEndereco);
+
+// Acompanhamentos (1:N)
+router.post('/:id/acompanhamentos', authMiddleware, createAcompanhamento);
+router.put('/:id/acompanhamentos/:acompanhamentoId', authMiddleware, updateAcompanhamento);
+router.delete('/:id/acompanhamentos/:acompanhamentoId', authMiddleware, deleteAcompanhamento);
 
 export default router;

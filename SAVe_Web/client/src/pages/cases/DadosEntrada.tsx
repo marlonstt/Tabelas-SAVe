@@ -44,8 +44,13 @@ export default function DadosEntrada() {
         try {
             const response = await api.get(`/cases/${id}`);
             if (response.data.dadosEntrada) {
-                setFormData(prev => ({ ...prev, ...response.data.dadosEntrada }));
-                setCrimesTotais(response.data.dadosEntrada.Crime_relacionado || '');
+                const data = response.data.dadosEntrada;
+                // Convert Data from ISO to yyyy-MM-dd format
+                if (data.Data) {
+                    data.Data = data.Data.split('T')[0];
+                }
+                setFormData(prev => ({ ...prev, ...data }));
+                setCrimesTotais(data.Crime_relacionado || '');
             }
             // Load casos relacionados from JSON
             if (response.data.casosVinculados) {

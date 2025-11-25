@@ -426,8 +426,8 @@ model SAVe_Situacao_Juridica2 {
   SJ2_Demanda_Tratamento_Digno                  Boolean?
   SJ2_Demanda_Compensacao_Reparacao_Especif_OutraForma String?
   SJ2_Demanda_Tratamento_Digno_OutraForma       String?
-  SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif String?
-  SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif2 String?
+  SJ2_Prot_Nao_Revit_Med_Caut_Especif           String?
+  SJ2_Prot_Nao_Revit_Med_Caut_Especif2          String?
 
   @@map("save_situacao_juridica2")
 }
@@ -487,17 +487,6 @@ model SAVe_Saude {
   IV_Impacto_Saude_Mental_tipos      String?
 
   @@map("save_saude")
-}
-
-model SAVe_Sintese_Analitica {
-  ID_Caso           Int       @id
-  UnidadeAnalitica  String?
-  AvaliacaoDeRiscos String?
-  PlanoDePrevencao  String?
-  DataVencimento    DateTime?
-  Cor               String?
-
-  @@map("save_sintese_analitica")
 }
 
 model SAVe_Habitacao_territorio {
@@ -711,4 +700,15 @@ model SAVe_Logs_Acesso {
   Tema  String?
 
   @@map("save_logs_acesso")
+}
+
+model SAVe_Sintese_Analitica {
+  ID_Caso           Int       @id
+  UnidadeAnalitica  String?
+  AvaliacaoDeRiscos String?
+  PlanoDePrevencao  String?
+  DataVencimento    DateTime?
+  Cor               String?
+
+  @@map("save_sintese_analitica")
 }
