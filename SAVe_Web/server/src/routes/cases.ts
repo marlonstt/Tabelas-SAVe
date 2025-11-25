@@ -90,9 +90,4 @@ router.post('/:id/agressores-enderecos', authMiddleware, createAgressorEndereco)
 router.put('/:id/agressores-enderecos/:enderecoId', authMiddleware, updateAgressorEndereco);
 router.delete('/:id/agressores-enderecos/:enderecoId', authMiddleware, deleteAgressorEndereco);
 
-// Acompanhamentos (1:N)
-router.post('/:id/acompanhamentos', authMiddleware, createAcompanhamento);
-router.put('/:id/acompanhamentos/:acompanhamentoId', authMiddleware, updateAcompanhamento);
-router.delete('/:id/acompanhamentos/:acompanhamentoId', authMiddleware, deleteAcompanhamento);
 
-export default router;

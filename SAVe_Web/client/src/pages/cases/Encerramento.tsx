@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import MainLayout from '../../components/layout/MainLayout';
 import FormNavigation from '../../components/forms/FormNavigation';
-import { formStepsComplete } from '../../config/formSteps';
 import api from '../../services/api';
 import { AlertCircle, CheckCircle, Lock } from 'lucide-react';
 
 export default function Encerramento() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [loading, setLoading] = useState(true);
+
   const [isCaseEncerrado, setIsCaseEncerrado] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -154,7 +153,7 @@ export default function Encerramento() {
   return (
     <MainLayout>
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <FormNavigation steps={formStepsComplete} caseId={id} />
+        <FormNavigation caseId={id} />
 
         <div className="flex-1 overflow-y-auto bg-gray-50 p-8">
           <div className="max-w-7xl mx-auto space-y-6">

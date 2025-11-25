@@ -20,7 +20,7 @@ export const formStepsComplete: FormStep[] = [
     { id: 'protecao', label: 'Proteção e Segurança', path: 'protecao' },
     { id: 'agressor', label: 'Agressor', path: 'agressor' },
     { id: 'vitimizacao', label: 'Vitimização', path: 'vitimizacao' },
-    { id: 'sintese', label: 'Síntese Analítica', path: 'sintese-analitica' },
+    { id: 'sintese', label: 'Síntese Analítica', path: 'sintese' },
     // Acompanhamento route is plural in the router (acompanhamentos)
     { id: 'acompanhamento', label: 'Acompanhamento', path: 'acompanhamentos' },
     { id: 'encerramento', label: 'Encerramento', path: 'encerramento' }
