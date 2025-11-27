@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proteção e Segurança</title>
+    
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f6f8;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+    }
+    .screen-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 20px;
+        min-height: 80vh;
+    }
+    h1 {
+        color: #3860b2;
+        border-bottom: 2px solid #3860b2;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+    h2 {
+        color: #3860b2;
+        font-size: 18px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #444;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    input[type="number"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+    input[type="checkbox"],
+    input[type="radio"] {
+        margin-right: 8px;
+    }
+    .checkbox-group, .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .checkbox-item, .radio-item {
+        display: flex;
+        align-items: center;
+    }
+    button {
+        background-color: #3860b2;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+    button:hover {
+        background-color: #2a4a8b;
+    }
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    .grid-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+    }
+    .section {
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .gallery {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        background-color: #fafafa;
+        margin-top: 10px;
+    }
+    .gallery-item {
+        background: white;
+        border: 1px solid #eee;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+    }
+    .nav-bar {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+</style>
+
+</head>
+<body>
+    <div class="screen-container">
+        <h1>Proteção e Segurança</h1>
+        <form>
+            
+            <div class="section">
+                <h2>Ameaça</h2>
+                <div class="form-group"><label for="natureza_ameaca">Natureza da Ameaça</label><input type="text" id="natureza_ameaca" name="natureza_ameaca"></div><div class="form-group"><label for="meio_ameaca">Meio utilizado</label><select id="meio_ameaca" name="meio_ameaca"><option value="Presencial">Presencial</option><option value="Telefone">Telefone</option><option value="Redes Sociais">Redes Sociais</option><option value="Terceiros">Terceiros</option></select></div><div class="form-group"><label for="arma_fogo">Possui arma de fogo?</label><div class="radio-group"><div class="radio-item"><input type="radio" name="arma_fogo" value="Sim"> Sim</div><div class="radio-item"><input type="radio" name="arma_fogo" value="Não"> Não</div><div class="radio-item"><input type="radio" name="arma_fogo" value="Não sei"> Não sei</div></div></div>
+            </div>
+            
+            <div class="section">
+                <h2>Medidas de Proteção</h2>
+                <div class="form-group"><label for="programa_protecao">Inserido em programa de proteção?</label><div class="radio-group"><div class="radio-item"><input type="radio" name="programa_protecao" value="Sim"> Sim</div><div class="radio-item"><input type="radio" name="programa_protecao" value="Não"> Não</div></div></div><div class="form-group"><label for="estrategias_seguranca">Estratégias de segurança adotadas</label><textarea id="estrategias_seguranca" name="estrategias_seguranca" rows="3"></textarea></div>
+            </div>
+            
+        </form>
+        
+        <div class="nav-bar">
+            <button type="button" onclick="history.back()">Voltar</button>
+            <button type="button" onclick="alert('Salvo!')">Salvar</button>
+        </div>
+    </div>
+</body>
+</html>

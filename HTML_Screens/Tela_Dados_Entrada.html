@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dados de Entrada</title>
+    
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f6f8;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+    }
+    .screen-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 20px;
+        min-height: 80vh;
+    }
+    h1 {
+        color: #3860b2;
+        border-bottom: 2px solid #3860b2;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+    h2 {
+        color: #3860b2;
+        font-size: 18px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #444;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    input[type="number"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+    input[type="checkbox"],
+    input[type="radio"] {
+        margin-right: 8px;
+    }
+    .checkbox-group, .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .checkbox-item, .radio-item {
+        display: flex;
+        align-items: center;
+    }
+    button {
+        background-color: #3860b2;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+    button:hover {
+        background-color: #2a4a8b;
+    }
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    .grid-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+    }
+    .section {
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .gallery {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        background-color: #fafafa;
+        margin-top: 10px;
+    }
+    .gallery-item {
+        background: white;
+        border: 1px solid #eee;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+    }
+    .nav-bar {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+</style>
+
+</head>
+<body>
+    <div class="screen-container">
+        <h1>Dados de Entrada</h1>
+        <form>
+            
+            <div class="section">
+                <h2>Informações Básicas</h2>
+                <div class="form-group"><label for="data_entrada">Data</label><input type="date" id="data_entrada" name="data_entrada"></div><div class="form-group"><label for="comarca">Comarca de Origem</label><select id="comarca" name="comarca"><option value="BELO HORIZONTE">BELO HORIZONTE</option><option value="CONTAGEM">CONTAGEM</option><option value="BETIM">BETIM</option><option value="UBERLANDIA">UBERLANDIA</option><option value="JUIZ DE FORA">JUIZ DE FORA</option><option value="MONTES CLAROS">MONTES CLAROS</option><option value="OUTROS">OUTROS</option></select></div><div class="form-group"><label for="num_procedimento">Nº do Procedimento / Sistema MPE</label><input type="text" id="num_procedimento" name="num_procedimento"></div><div class="form-group"><label for="atendimento_especial">Precisa de atendimento especial?</label><div class="radio-group"><div class="radio-item"><input type="radio" name="atendimento_especial" value="Sim"> Sim</div><div class="radio-item"><input type="radio" name="atendimento_especial" value="Não"> Não</div></div></div><div class="form-group"><label for="tipo_atendimento_especial">Qual tipo de atendimento?</label><input type="text" id="tipo_atendimento_especial" name="tipo_atendimento_especial"></div>
+            </div>
+            
+            <div class="section">
+                <h2>Quem Encaminha</h2>
+                <div class="form-group"><label for="quem_encaminha">Quem encaminha</label><select id="quem_encaminha" name="quem_encaminha"><option value="MPMG">MPMG</option><option value="Polícia Civil">Polícia Civil</option><option value="Polícia Militar">Polícia Militar</option><option value="DPMG">DPMG</option><option value="Outros">Outros</option></select></div><div class="form-group"><label for="pe_nome">Nome do Profissional</label><input type="text" id="pe_nome" name="pe_nome"></div><div class="form-group"><label for="pe_telefone">Telefone</label><input type="text" id="pe_telefone" name="pe_telefone"></div><div class="form-group"><label for="pe_email">E-mail</label><input type="email" id="pe_email" name="pe_email"></div><div class="form-group"><label for="pe_cargo">Cargo/Função</label><input type="text" id="pe_cargo" name="pe_cargo"></div>
+            </div>
+            
+            <div class="section">
+                <h2>Casos Relacionados</h2>
+                <div class="form-group"><label for="possui_relacao">Possui relação com outro caso?</label><div class="radio-group"><div class="radio-item"><input type="radio" name="possui_relacao" value="Sim"> Sim</div><div class="radio-item"><input type="radio" name="possui_relacao" value="Não"> Não</div></div></div>
+        <div class="form-group">
+            <h3>Casos Vinculados</h3>
+            <div class="gallery">
+                <table style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #eee; text-align: left;"><th>ID Caso</th><th>Nome Vítima</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="2" style="padding: 20px; text-align: center; color: #777;">Nenhum item encontrado</td></tr>
+                    </tbody>
+                </table>
+                <button style="margin-top: 10px; font-size: 12px; padding: 5px 10px;">+ Adicionar Item</button>
+            </div>
+        </div>
+        
+            </div>
+            
+        </form>
+        
+        <div class="nav-bar">
+            <button type="button" onclick="history.back()">Voltar</button>
+            <button type="button" onclick="alert('Salvo!')">Salvar</button>
+        </div>
+    </div>
+</body>
+</html>
