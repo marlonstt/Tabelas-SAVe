@@ -1,14 +1,18 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import Login from "./routes/Login.svelte";
+  import TelaEntrada from "./routes/TelaEntrada.svelte";
   import Dashboard from "./routes/Dashboard.svelte";
   import CaseDetail from "./routes/CaseDetail.svelte";
-  import TelaEntrada from "./routes/TelaEntrada.svelte";
-  import { onMount } from "svelte";
+  import TelaGestaoUsuarios from "./routes/TelaGestaoUsuarios.svelte";
+  import UserProfile from "./components/UserProfile.svelte";
 
   let currentPath = window.location.pathname;
   // Initialize synchronously to avoid flash of login screen
   let isAuthenticated = !!localStorage.getItem("token");
   let caseId = "";
+  let user = JSON.parse(localStorage.getItem("user") || "{}");
+  let showProfileMenu = false;
 
   onMount(() => {
     console.log("App mounted. Path:", currentPath, "Auth:", isAuthenticated);
@@ -18,6 +22,18 @@
       currentPath = window.location.pathname;
       console.log("Path changed:", currentPath);
     });
+
+    // Listen for profile image updates
+    window.addEventListener("storage", (e) => {
+      if (e.key === "user") {
+        user = JSON.parse(e.newValue || "{}");
+      }
+    });
+
+    // Listen for custom profile update event
+    window.addEventListener("profileUpdated", ((e: CustomEvent) => {
+      user = e.detail;
+    }) as EventListener);
 
     // Redirect to menu if at root and authenticated
     // if (isAuthenticated && currentPath === "/") {
@@ -48,58 +64,85 @@
 
 {#if currentPath === "/login" || !isAuthenticated}
   <Login />
-{:else if currentPath === "/menu"}
-  <TelaEntrada />
 {:else}
-  <div class="min-h-screen bg-save-surface font-sans flex flex-col">
-    <!-- Global Navbar -->
-    <nav class="bg-save-primary text-white shadow-lg z-50">
-      <div
-        class="container mx-auto px-4 py-3 flex justify-between items-center"
-      >
-        <div class="flex items-center space-x-4">
-          <div
-            class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-save-primary font-bold"
-          >
-            S
-          </div>
-          <div class="font-bold text-xl tracking-tight">SAVe System</div>
-        </div>
+  <div class="min-h-screen bg-gray-100 flex flex-col">
+    <!-- Navbar -->
+    <header class="bg-save-primary text-white shadow-md z-50 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+          <div class="flex items-center space-x-4">
+            <a
+              href="/menu"
+              class="flex items-center hover:opacity-80 transition-opacity"
+            >
+              <img src="/logo_save_real.png" alt="SAVe Logo" class="h-10" />
+            </a>
 
-        <div class="flex items-center space-x-6">
-          <a
-            href="/menu"
-            class="text-blue-100 hover:text-white transition-colors font-medium flex items-center"
-          >
-            <span class="material-icons text-sm mr-1">home</span> Menu
-          </a>
-          <a
-            href="/"
-            class="text-blue-100 hover:text-white transition-colors font-medium flex items-center"
-          >
-            <span class="material-icons text-sm mr-1">dashboard</span> Dashboard
-          </a>
-          <div class="h-4 w-px bg-blue-700"></div>
-          <button
-            on:click={logout}
-            class="px-4 py-1.5 bg-red-600/90 text-white rounded-md hover:bg-red-500 transition-colors text-sm font-medium flex items-center shadow-sm"
-          >
-            <span class="material-icons text-sm mr-1">logout</span> Sair
-          </button>
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex space-x-4 ml-8">
+              <a
+                href="/menu"
+                class="flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium hover:bg-save-secondary transition-colors"
+              >
+                <span class="material-icons text-lg">home</span>
+              </a>
+              <a
+                href="/"
+                class="flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium hover:bg-save-secondary transition-colors"
+              >
+                Casos
+              </a>
+              {#if user.role === "Admin" || user.role === "admin"}
+                <a
+                  href="/admin/users"
+                  class="flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium hover:bg-save-secondary transition-colors"
+                >
+                  Usuários
+                </a>
+              {/if}
+            </nav>
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <div class="relative">
+              <button
+                on:click={() => (showProfileMenu = !showProfileMenu)}
+                class="flex items-center space-x-2 focus:outline-none hover:bg-save-secondary p-2 rounded-lg transition-colors"
+              >
+                <div
+                  class="w-8 h-8 bg-white text-save-primary rounded-full flex items-center justify-center font-bold"
+                >
+                  {user.usuario ? user.usuario.charAt(0).toUpperCase() : "U"}
+                </div>
+                <span class="hidden md:block text-sm font-medium"
+                  >{user.usuario || "Usuário"}</span
+                >
+              </button>
+
+              <UserProfile
+                {user}
+                isOpen={showProfileMenu}
+                on:close={() => (showProfileMenu = false)}
+                on:logout={logout}
+              />
+            </div>
+          </div>
         </div>
       </div>
-    </nav>
+    </header>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col relative">
-      {#if currentPath.startsWith("/case/")}
-        <!-- CaseDetail handles its own layout/container -->
+    <main class="flex-1 overflow-auto">
+      {#if currentPath === "/menu"}
+        <TelaEntrada />
+      {:else if currentPath === "/admin/users"}
+        <TelaGestaoUsuarios />
+      {:else if currentPath === "/"}
+        <Dashboard />
+      {:else if caseId}
         <CaseDetail id={caseId} />
       {:else}
-        <!-- Dashboard Container -->
-        <div class="container mx-auto p-6 flex-1">
-          <Dashboard />
-        </div>
+        <Dashboard />
       {/if}
     </main>
   </div>

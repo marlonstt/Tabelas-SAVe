@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
 	"save-backend/internal/database"
 	"save-backend/internal/handlers"
+	"save-backend/internal/middleware"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -13,6 +15,7 @@ import (
 )
 
 func main() {
+	fmt.Fprintf(os.Stderr, "SERVER STARTING - DEBUG BUILD\n")
 	// Load .env
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
@@ -22,6 +25,12 @@ func main() {
 	database.Connect()
 
 	r := gin.Default()
+
+	// Global Logging Middleware
+	r.Use(func(c *gin.Context) {
+		fmt.Fprintf(os.Stderr, "INCOMING REQUEST: %s %s\n", c.Request.Method, c.Request.URL.Path)
+		c.Next()
+	})
 
 	// CORS
 	r.Use(cors.New(cors.Config{
@@ -37,13 +46,32 @@ func main() {
 	{
 		api.POST("/login", handlers.Login)
 
-		cases := api.Group("/cases")
-		// Add middleware here if needed
+		// Protected routes
+		auth := api.Group("/")
+		auth.Use(middleware.AuthMiddleware())
 		{
-			cases.GET("", handlers.GetAllCases)
-			cases.POST("", handlers.CreateCase)
-			cases.GET("/:id", handlers.GetCaseById)
-			// cases.PUT("/:id/:section", handlers.UpdateCaseSection)
+			auth.POST("/change-password", handlers.ChangePassword)
+			auth.POST("/update-profile-image", handlers.UpdateProfileImage)
+
+			// Admin routes
+			admin := auth.Group("/admin")
+			admin.Use(middleware.AdminMiddleware())
+			{
+				admin.GET("/users", handlers.GetUsers)
+				admin.POST("/users", handlers.Register)
+				admin.PUT("/users/:id", handlers.UpdateUser)
+				admin.DELETE("/users/:id", handlers.DeleteUser)
+			}
+
+			cases := auth.Group("/cases")
+			{
+				cases.GET("", handlers.GetAllCases)
+				cases.POST("", handlers.CreateCase)
+				cases.GET("/:id", handlers.GetCaseById)
+				cases.DELETE("/:id", handlers.DeleteCase)
+				cases.POST("/:id/archive", handlers.ArchiveCase)
+				// cases.PUT("/:id/:section", handlers.UpdateCaseSection)
+			}
 		}
 	}
 

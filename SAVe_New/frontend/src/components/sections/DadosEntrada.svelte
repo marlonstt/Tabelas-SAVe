@@ -20,26 +20,49 @@
             // Ensure arrays exist
             if (!data.casosRelacionados) data.casosRelacionados = [];
             if (!data.crimes) data.crimes = [];
-        } catch (err) {
-            console.warn(
-                "Backend unavailable, using Mock Data for DadosEntrada",
-            );
-            data = {
-                Data: new Date().toISOString().split("T")[0],
-                Comarca_origem: "Belo Horizonte",
-                N_procedimento_MPE: "",
-                Precisa_Atendimento_Esp: "Não",
-                Quem_encaminha: "MPMG",
-                PE_nome: "",
-                PE_telefone: "",
-                PE_email: "",
-                PE_cargo: "",
-                Possui_Relacionado: "Não",
-                casosRelacionados: [],
-                Tipo_Vitima: "",
-                crimes: [], // Will store selected crimes
-                Observacao: "",
-            };
+        } catch (err: any) {
+            if (err.response && err.response.status === 404) {
+                // Case exists but no data for this section yet -> Init empty
+                console.log(
+                    "No data found for this section, initializing empty.",
+                );
+                data = {
+                    Data: new Date().toISOString().split("T")[0],
+                    Comarca_origem: "",
+                    N_procedimento_MPE: "",
+                    Precisa_Atendimento_Esp: "Não",
+                    Quem_encaminha: "",
+                    PE_nome: "",
+                    PE_telefone: "",
+                    PE_email: "",
+                    PE_cargo: "",
+                    Possui_Relacionado: "Não",
+                    casosRelacionados: [],
+                    Tipo_Vitima: "",
+                    crimes: [],
+                    Observacao: "",
+                };
+            } else {
+                console.warn(
+                    "Backend unavailable or error, using Mock Data for DadosEntrada",
+                );
+                data = {
+                    Data: new Date().toISOString().split("T")[0],
+                    Comarca_origem: "Belo Horizonte",
+                    N_procedimento_MPE: "",
+                    Precisa_Atendimento_Esp: "Não",
+                    Quem_encaminha: "MPMG",
+                    PE_nome: "",
+                    PE_telefone: "",
+                    PE_email: "",
+                    PE_cargo: "",
+                    Possui_Relacionado: "Não",
+                    casosRelacionados: [],
+                    Tipo_Vitima: "",
+                    crimes: [], // Will store selected crimes
+                    Observacao: "",
+                };
+            }
         } finally {
             loading = false;
             lastSavedData = JSON.stringify(data);

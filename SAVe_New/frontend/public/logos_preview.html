@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Preview</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background-color: #eee;
+        }
+
+        .logo-container {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 20px;
+            display: inline-block;
+            text-align: center;
+            background-color: white;
+            border-radius: 8px;
+            margin-right: 10px;
+            vertical-align: top;
+        }
+
+        img {
+            max-width: 200px;
+            max-height: 100px;
+            display: block;
+            margin: 0 auto 10px;
+        }
+
+        .transparent-bg {
+            background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Identificação de Logos</h1>
+    <p>Verifique as imagens abaixo. A última mostra uma simulação de remoção de fundo branco via CSS.</p>
+
+    <div class="logo-container">
+        <img src="/extracted_images/image1.png" alt="Image 1">
+        <strong>Image 1</strong>
+    </div>
+
+    <div class="logo-container">
+        <img src="/extracted_images/image2.png" alt="Image 2">
+        <strong>Image 2</strong>
+    </div>
+
+    <div class="logo-container">
+        <img src="/extracted_images/image3.png" alt="Image 3">
+        <strong>Image 3 (Original)</strong>
+    </div>
+
+    <div class="logo-container" style="background-color: #e0e0e0;">
+        <img src="/extracted_images/image3.png" alt="Image 3 Multiply" style="mix-blend-mode: multiply;">
+        <strong>Image 3 (Com CSS Multiply)</strong>
+        <p><small>Simula transparência em fundos claros</small></p>
+    </div>
+</body>
+
+</html>

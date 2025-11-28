@@ -653,17 +653,5 @@ CREATE TABLE "SAVe_Acompanhamentos" (
     "Data" TIMESTAMP,
     "Responsaveis" TEXT
 );
-
--- Table: SAVe_Usuarios
-CREATE TABLE "SAVe_Usuarios" (
-    "ID" SERIAL PRIMARY KEY,
-    "Cargo" TEXT,
-    "Usuario" TEXT
-);
-
--- Table: SAVe_Logs_Acesso
-CREATE TABLE "SAVe_Logs_Acesso" (
-    "ID" SERIAL PRIMARY KEY,
-    "email" TEXT,
     "Tema" TEXT
 );

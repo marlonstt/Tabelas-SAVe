@@ -14,17 +14,30 @@
         try {
             const response = await api.get(`/cases/${caseId}/encerramento`);
             data = response.data || {};
-        } catch (err) {
-            console.warn(
-                "Backend unavailable, using Mock Data for Encerramento",
-            );
-            data = {
-                Data_Encerramento: "",
-                Forma_Encerramento: "",
-                Especifique_Outros: "",
-                Observacao: "",
-                Encaminhamento_Pos_Alta: "",
-            };
+        } catch (err: any) {
+            if (err.response && err.response.status === 404) {
+                console.log(
+                    "No data found for Encerramento, initializing empty.",
+                );
+                data = {
+                    Data_Encerramento: "",
+                    Forma_Encerramento: "",
+                    Especifique_Outros: "",
+                    Observacao: "",
+                    Encaminhamento_Pos_Alta: "",
+                };
+            } else {
+                console.warn(
+                    "Backend unavailable, using Mock Data for Encerramento",
+                );
+                data = {
+                    Data_Encerramento: "",
+                    Forma_Encerramento: "",
+                    Especifique_Outros: "",
+                    Observacao: "",
+                    Encaminhamento_Pos_Alta: "",
+                };
+            }
         } finally {
             loading = false;
             lastSavedData = JSON.stringify(data);
@@ -59,15 +72,17 @@
     async function finalizeCase() {
         if (
             !confirm(
-                "Tem certeza que deseja encerrar este caso? Esta ação pode bloquear edições futuras.",
+                "Tem certeza que deseja encerrar este caso? Esta ação arquivará o caso.",
             )
         ) {
             return;
         }
         try {
-            // await api.put(`/cases/${caseId}/encerramento/finalize`, data);
-            alert("Caso encerrado com sucesso! (Simulação)");
+            await api.post(`/cases/${caseId}/archive`, data);
+            alert("Caso encerrado com sucesso!");
+            window.location.href = "/dashboard";
         } catch (err) {
+            console.error(err);
             alert("Erro ao encerrar caso");
         }
     }

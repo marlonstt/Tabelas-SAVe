@@ -18,15 +18,19 @@
       const response = await api.post("/login", { email, password });
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
+
+      // Force reload to update App state
       window.location.href = "/menu";
-    } catch (err) {
-      console.warn("Backend unavailable, entering Demo Mode");
-      localStorage.setItem("token", "demo-token");
-      localStorage.setItem(
-        "user",
-        JSON.stringify({ name: "Usuário Demo", email: "demo@save.com" }),
-      );
-      window.location.href = "/menu";
+    } catch (err: any) {
+      console.error("Login error:", err);
+      if (err.response) {
+        error = err.response.data.error || "Erro ao fazer login";
+      } else {
+        error = "Erro de conexão com o servidor";
+        // Optional: Demo mode fallback
+        // console.warn("Backend unavailable, entering Demo Mode");
+        // ...
+      }
     } finally {
       loading = false;
     }

@@ -1,11 +1,33 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Link } from "svelte-routing";
   import api from "../lib/api";
 
   let cases: any[] = [];
   let loading = true;
   let error = "";
+  let sortOrder: "asc" | "desc" = "desc";
+
+  let searchId = "";
+  let showArchived = false;
+
+  let user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  // Reactive filtering and sorting
+  $: filteredCases = cases
+    .filter((c) => {
+      const matchesId = searchId
+        ? c.ID_Caso.toString().includes(searchId)
+        : true;
+      // If showArchived is true, show all. If false, show only NOT Encerrado (Encerrado !== "Sim")
+      const isArchived = c.Encerrado === "Sim";
+      const matchesStatus = showArchived ? true : !isArchived;
+      return matchesId && matchesStatus;
+    })
+    .sort((a, b) => {
+      return sortOrder === "asc"
+        ? a.ID_Caso - b.ID_Caso
+        : b.ID_Caso - a.ID_Caso;
+    });
 
   onMount(async () => {
     try {
@@ -46,35 +68,58 @@
       const response = await api.post("/cases", {});
       window.location.href = `/case/${response.data.id}`;
     } catch (err) {
-      // Demo create
-      const newId = cases.length + 1;
-      window.location.href = `/case/${newId}`;
+      console.error(err);
+      alert("Erro ao criar caso. Tente novamente.");
     }
+  }
+
+  async function deleteCase(id: number) {
+    if (
+      !confirm(
+        "Tem certeza que deseja excluir este caso? Esta ação apagará todos os dados relacionados e não pode ser desfeita.",
+      )
+    ) {
+      return;
+    }
+    try {
+      await api.delete(`/cases/${id}`);
+      cases = cases.filter((c) => c.ID_Caso !== id);
+    } catch (err: any) {
+      alert(
+        "Erro ao excluir caso: " + (err.response?.data?.error || err.message),
+      );
+    }
+  }
+
+  function toggleSort() {
+    sortOrder = sortOrder === "asc" ? "desc" : "asc";
+    // Sorting is handled by the reactive statement above
   }
 </script>
 
-<div>
-  <div class="flex justify-between items-center mb-8">
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
     <div>
-      <h1 class="text-3xl font-bold text-gray-800 tracking-tight">
+      <h1 class="text-2xl font-bold text-gray-800 tracking-tight">
         Painel de Casos
       </h1>
-      <p class="text-gray-500 mt-1">
+      <p class="text-sm text-gray-500 mt-1">
         Gerencie os atendimentos e acompanhamentos
       </p>
     </div>
     <button
       on:click={createCase}
-      class="bg-save-primary text-white px-5 py-2.5 rounded-lg hover:bg-save-secondary transition-all shadow-md flex items-center font-medium"
+      class="text-white px-6 py-3 rounded font-medium hover:opacity-90 transition-opacity shadow-sm"
+      style="background-color: #6264A7"
     >
-      <span class="material-icons mr-2 text-sm">add</span> Novo Caso
+      Novo Caso
     </button>
   </div>
 
   {#if loading}
     <div class="flex justify-center p-20">
       <div
-        class="animate-spin rounded-full h-12 w-12 border-b-2 border-save-primary"
+        class="animate-spin rounded-full h-10 w-10 border-b-2 border-save-primary"
       ></div>
     </div>
   {:else if error}
@@ -82,58 +127,146 @@
       {error}
     </div>
   {:else}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {#each cases as c}
-        <div
-          class="bg-white border border-gray-200 p-6 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 group"
-        >
-          <div class="flex justify-between items-start mb-4">
-            <div class="flex items-center">
-              <div
-                class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-save-primary font-bold mr-3 group-hover:bg-save-primary group-hover:text-white transition-colors"
+    <div
+      class="bg-white rounded-lg shadow overflow-hidden border border-gray-200"
+    >
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
+                on:click={toggleSort}
               >
-                {c.ID_Caso}
-              </div>
-              <div>
-                <h3
-                  class="text-lg font-bold text-gray-800 group-hover:text-save-primary transition-colors"
+                <div class="flex items-center space-x-1">
+                  <span>ID</span>
+                  <span class="text-xs text-gray-500">
+                    {sortOrder === "asc" ? "▲" : "▼"}
+                  </span>
+                </div>
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Vítima
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Data
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Tipo
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Status
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Ações
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            {#each filteredCases as c (c.ID_Caso)}
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
                 >
-                  Caso #{c.ID_Caso}
-                </h3>
-              </div>
-            </div>
-            <span
-              class={`px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${c.Encerrado === "Sim" ? "bg-gray-100 text-gray-600" : "bg-green-100 text-green-700"}`}
-            >
-              {c.Encerrado === "Sim" ? "Encerrado" : "Em Aberto"}
-            </span>
-          </div>
-
-          <div class="space-y-3 mb-6 bg-gray-50 p-4 rounded-lg">
-            <p class="text-gray-600 text-sm flex justify-between">
-              <span class="font-medium text-gray-500">Vítima:</span>
-              <span class="font-semibold text-gray-800"
-                >{c.Nome || "Não informado"}</span
-              >
-            </p>
-            <p class="text-gray-600 text-sm flex justify-between">
-              <span class="font-medium text-gray-500">Data:</span>
-              <span>{c.Data || "N/A"}</span>
-            </p>
-            <p class="text-gray-600 text-sm flex justify-between">
-              <span class="font-medium text-gray-500">Tipo:</span>
-              <span>{c.Tipo_Vitima || "N/A"}</span>
-            </p>
-          </div>
-
-          <Link
-            to={`/case/${c.ID_Caso}`}
-            class="block w-full text-center bg-white border border-save-primary text-save-primary py-2.5 rounded-lg hover:bg-save-primary hover:text-white transition-all font-bold shadow-sm"
-          >
-            Ver Detalhes
-          </Link>
+                  #{c.ID_Caso}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                  <div class="flex items-center">
+                    <div
+                      class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold mr-3 text-xs"
+                    >
+                      {c.Nome ? c.Nome.charAt(0).toUpperCase() : "?"}
+                    </div>
+                    {c.Nome || "Não informado"}
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {c.Data || "N/A"}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {c.Tipo_Vitima || "N/A"}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span
+                    class={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      c.Encerrado === "Sim"
+                        ? "bg-gray-100 text-gray-800"
+                        : "bg-green-100 text-green-800"
+                    }`}
+                  >
+                    {c.Encerrado === "Sim" ? "Arquivado" : "Em Aberto"}
+                  </span>
+                </td>
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                >
+                  <a
+                    href={`/case/${c.ID_Caso}`}
+                    class="text-save-primary hover:text-save-secondary font-semibold hover:underline"
+                  >
+                    Editar
+                  </a>
+                  {#if user.role === "Admin" || user.role === "admin"}
+                    <button
+                      on:click={() => deleteCase(c.ID_Caso)}
+                      class="text-red-600 hover:text-red-900 ml-4 font-semibold hover:underline bg-transparent border-none cursor-pointer"
+                    >
+                      Excluir
+                    </button>
+                  {/if}
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+      {#if filteredCases.length === 0}
+        <div class="text-center py-12 text-gray-500">
+          Nenhum caso encontrado.
         </div>
-      {/each}
+      {/if}
+    </div>
+
+    <!-- Bottom Filters -->
+    <div
+      class="mt-6 flex flex-col md:flex-row justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+    >
+      <div class="flex items-center w-full md:w-auto mb-4 md:mb-0">
+        <span class="material-icons text-gray-400 mr-2">search</span>
+        <input
+          type="text"
+          placeholder="Pesquisar ID..."
+          class="border-gray-300 rounded-md shadow-sm focus:ring-save-primary focus:border-save-primary px-3 py-2 w-full md:w-64"
+          bind:value={searchId}
+        />
+      </div>
+
+      <label class="flex items-center cursor-pointer select-none">
+        <input
+          type="checkbox"
+          class="form-checkbox text-save-primary h-5 w-5 rounded border-gray-300 focus:ring-save-primary"
+          bind:checked={showArchived}
+        />
+        <span class="ml-2 text-gray-700 font-medium"
+          >Mostrar casos Arquivados</span
+        >
+      </label>
     </div>
   {/if}
 </div>

@@ -210,7 +210,9 @@
               <div class="h-8 w-1 bg-save-accent rounded-full mr-3"></div>
               <h3 class="text-xl font-bold text-gray-800">{section.label}</h3>
             </div>
-            <svelte:component this={section.component} caseId={id} />
+            {#key id}
+              <svelte:component this={section.component} caseId={id} />
+            {/key}
           </div>
         {/if}
       {/each}

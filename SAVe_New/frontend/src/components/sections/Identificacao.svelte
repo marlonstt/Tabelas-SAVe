@@ -21,39 +21,74 @@
             if (!data.telefones) data.telefones = [];
             if (!data.emails) data.emails = [];
             if (!data.endereco) data.endereco = {};
-        } catch (err) {
-            console.warn(
-                "Backend unavailable, using Mock Data for Identificacao",
-            );
-            data = {
-                Nome_Civil: "Maria da Silva",
-                Nome_Social: "Maria",
-                Data_Nascimento: "1990-05-15",
-                Nome_Mae: "Ana da Silva",
-                Nome_Pai: "João da Silva",
-                Naturalidade: "Belo Horizonte",
-                Nacionalidade: "Brasileira",
-                Sexo: "Feminino",
-                Identidade_Genero: "Mulher Cis",
-                Orientacao_Sexual: "Heterossexual",
-                Raca_Cor: "Parda",
-                Religiao: "Católica",
-                Estado_Civil: "Solteira",
-                CPF: "123.456.789-00",
-                RG: "MG-12.345.678",
-                CTPS: "1234567/0010",
-                Contato_Confianca: "Ana (Irmã) - (31) 98888-8888",
-                telefones: [{ numero: "(31) 99999-9999", tipo: "Celular" }],
-                emails: [{ email: "maria@email.com" }],
-                endereco: {
-                    Logradouro: "Rua das Flores",
-                    Numero: "123",
-                    Bairro: "Centro",
-                    Cidade: "Belo Horizonte",
-                    UF: "MG",
-                    CEP: "30000-000",
-                },
-            };
+        } catch (err: any) {
+            if (err.response && err.response.status === 404) {
+                console.log(
+                    "No data found for Identificacao, initializing empty.",
+                );
+                data = {
+                    Nome_Civil: "",
+                    Nome_Social: "",
+                    Data_Nascimento: "",
+                    Nome_Mae: "",
+                    Nome_Pai: "",
+                    Naturalidade: "",
+                    Nacionalidade: "",
+                    Sexo: "",
+                    Identidade_Genero: "",
+                    Orientacao_Sexual: "",
+                    Raca_Cor: "",
+                    Religiao: "",
+                    Estado_Civil: "",
+                    CPF: "",
+                    RG: "",
+                    CTPS: "",
+                    Contato_Confianca: "",
+                    telefones: [],
+                    emails: [],
+                    endereco: {
+                        Logradouro: "",
+                        Numero: "",
+                        Bairro: "",
+                        Cidade: "",
+                        UF: "",
+                        CEP: "",
+                    },
+                };
+            } else {
+                console.warn(
+                    "Backend unavailable, using Mock Data for Identificacao",
+                );
+                data = {
+                    Nome_Civil: "Maria da Silva",
+                    Nome_Social: "Maria",
+                    Data_Nascimento: "1990-05-15",
+                    Nome_Mae: "Ana da Silva",
+                    Nome_Pai: "João da Silva",
+                    Naturalidade: "Belo Horizonte",
+                    Nacionalidade: "Brasileira",
+                    Sexo: "Feminino",
+                    Identidade_Genero: "Mulher Cis",
+                    Orientacao_Sexual: "Heterossexual",
+                    Raca_Cor: "Parda",
+                    Religiao: "Católica",
+                    Estado_Civil: "Solteira",
+                    CPF: "123.456.789-00",
+                    RG: "MG-12.345.678",
+                    CTPS: "1234567/0010",
+                    Contato_Confianca: "Ana (Irmã) - (31) 98888-8888",
+                    telefones: [{ numero: "(31) 99999-9999", tipo: "Celular" }],
+                    emails: [{ email: "maria@email.com" }],
+                    endereco: {
+                        Logradouro: "Rua das Flores",
+                        Numero: "123",
+                        Bairro: "Centro",
+                        Cidade: "Belo Horizonte",
+                        UF: "MG",
+                        CEP: "30000-000",
+                    },
+                };
+            }
         } finally {
             loading = false;
             lastSavedData = JSON.stringify(data);
