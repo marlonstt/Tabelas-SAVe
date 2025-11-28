@@ -5,94 +5,592 @@
     export let caseId: string;
 
     let data: any = {
+        Nome_RC: "",
+        Nome_social_ancestral: "",
+        Como_querser_chamada: "",
+        Data_nascimento: "",
+        Idade: "",
+        Filiacao_1: "",
+        Filiacao_2: "",
+        Naturalidade: "",
+        Nacionalidade: "",
+        DC_situacao: "",
+        DC_CPF: "",
+        DC_RG: "",
+        DC_CTPS: "",
+        CC_Nome: "",
+        CC_telefoneDDD: "",
+        CC_vinculo: "",
+        PPS_Sexo: "",
+        PPS_idgenero: "",
+        PPS_orientacao_sexual: "",
+        PPS_Raca_cor_etnia: "",
+        PPS_religiao: "",
+        PPS_estado_civil: "",
+        enderecos: [],
         telefones: [],
         emails: [],
-        endereco: {},
     };
     let loading = true;
     let saving = false;
     let saveTimeout: any;
     let lastSavedData: string = "";
 
-    onMount(async () => {
+    const nacionalidades = [
+        "Afegã (Afeganistão)",
+        "Albanesa (Albânia)",
+        "Alemã (Alemanha)",
+        "Andorrana (Andorra)",
+        "Angolana (Angola)",
+        "Antiguana (Antígua e Barbuda)",
+        "Saudita (Arábia Saudita)",
+        "Argelina (Argélia)",
+        "Argentina (Argentina)",
+        "Armênia (Armênia)",
+        "Australiana (Austrália)",
+        "Austríaca (Áustria)",
+        "Azerbaijana (Azerbaijão)",
+        "Bahamenha (Bahamas)",
+        "Bangladeshiana (Bangladesh)",
+        "Barbadiana (Barbados)",
+        "Bareinita (Bahrein)",
+        "Belga (Bélgica)",
+        "Belizenha (Belize)",
+        "Beninense (Benin)",
+        "Bielorrussa (Bielorrússia)",
+        "Boliviana (Bolívia)",
+        "Bósnia (Bósnia e Herzegovina)",
+        "Botsuanesa (Botsuana)",
+        "Brasileira (Brasil)",
+        "Britânica (Reino Unido)",
+        "Bruneana (Brunei)",
+        "Búlgara (Bulgária)",
+        "Burkinesa (Burkina Faso)",
+        "Burundesa (Burundi)",
+        "Butanesa (Butão)",
+        "Cabo-verdiana (Cabo Verde)",
+        "Camaronesa (Camarões)",
+        "Cambojana (Camboja)",
+        "Canadense (Canadá)",
+        "Cazaque (Cazaquistão)",
+        "Chadiana (Chade)",
+        "Chilena (Chile)",
+        "Chinesa (China)",
+        "Cingapuriana (Cingapura)",
+        "Colombiana (Colômbia)",
+        "Comorense (Comores)",
+        "Congolesa (República do Congo)",
+        "Costarriquenha (Costa Rica)",
+        "Croata (Croácia)",
+        "Cubana (Cuba)",
+        "Dinamarquesa (Dinamarca)",
+        "Dominicana (República Dominicana)",
+        "Egípcia (Egito)",
+        "Salvadorenha (El Salvador)",
+        "Emiradense (Emirados Árabes Unidos)",
+        "Equatoriana (Equador)",
+        "Eritreia (Eritreia)",
+        "Eslovaca (Eslováquia)",
+        "Eslovena (Eslovênia)",
+        "Espanhola (Espanha)",
+        "Estoniana (Estônia)",
+        "Etíope (Etiópia)",
+        "Fijiana (Fiji)",
+        "Filipina (Filipinas)",
+        "Finlandesa (Finlândia)",
+        "Francesa (França)",
+        "Gabonesa (Gabão)",
+        "Gambiana (Gâmbia)",
+        "Ganense (Gana)",
+        "Georgiana (Geórgia)",
+        "Grega (Grécia)",
+        "Granadina (Granada)",
+        "Guatemalteca (Guatemala)",
+        "Guianense (Guiana)",
+        "Guiné-Bissauense (Guiné-Bissau)",
+        "Guineense (Guiné)",
+        "Haitiana (Haiti)",
+        "Holandesa (Holanda)",
+        "Hondurenha (Honduras)",
+        "Húngara (Hungria)",
+        "Iemenita (Iêmen)",
+        "Indiana (Índia)",
+        "Indonésia (Indonésia)",
+        "Iraniana (Irã)",
+        "Iraquiana (Iraque)",
+        "Irlandesa (Irlanda)",
+        "Islandesa (Islândia)",
+        "Israelense (Israel)",
+        "Italiana (Itália)",
+        "Jamaicana (Jamaica)",
+        "Japonesa (Japão)",
+        "Jordana (Jordânia)",
+        "Kosovar (Kosovo)",
+        "Kuwaitiana (Kuwait)",
+        "Laosiana (Laos)",
+        "Letã (Letônia)",
+        "Libanesa (Líbano)",
+        "Liberiana (Libéria)",
+        "Líbia (Líbia)",
+        "Liechtensteinense (Liechtenstein)",
+        "Lituana (Lituânia)",
+        "Luxemburguesa (Luxemburgo)",
+        "Macedônia (Macedônia do Norte)",
+        "Madagascarense (Madagascar)",
+        "Malásia (Malásia)",
+        "Malauiana (Malaui)",
+        "Maldiva (Maldivas)",
+        "Malienses (Mali)",
+        "Maltesa (Malta)",
+        "Marroquina (Marrocos)",
+        "Marshallina (Ilhas Marshall)",
+        "Mauritana (Mauritânia)",
+        "Mexicana (México)",
+        "Mianmarense (Mianmar)",
+        "Micronésia (Micronésia)",
+        "Moçambicana (Moçambique)",
+        "Moldava (Moldávia)",
+        "Monacanesa (Mônaco)",
+        "Mongol (Mongólia)",
+        "Montenegrina (Montenegro)",
+        "Namibiana (Namíbia)",
+        "Nauruana (Nauru)",
+        "Nepalesa (Nepal)",
+        "Neozelandesa (Nova Zelândia)",
+        "Nicaraguense (Nicarágua)",
+        "Nigeriana (Nigéria)",
+        "Norueguesa (Noruega)",
+        "Omã (Omã)",
+        "Palauense (Palau)",
+        "Panamenha (Panamá)",
+        "Papua (Papua-Nova Guiné)",
+        "Paquistanesa (Paquistão)",
+        "Paraguaia (Paraguai)",
+        "Peruana (Peru)",
+        "Polonesa (Polônia)",
+        "Portuguesa (Portugal)",
+        "Queniana (Quênia)",
+        "Quirguiz (Quirguistão)",
+        "Romena (Romênia)",
+        "Ruandesa (Ruanda)",
+        "Russa (Rússia)",
+        "Samoana (Samoa)",
+        "Santa-lucense (Santa Lúcia)",
+        "São-cristovense (São Cristóvão e Nevis)",
+        "São-marinense (San Marino)",
+        "São-tomense (São Tomé e Príncipe)",
+        "São-vicentina (São Vicente e Granadinas)",
+        "Saudita (Arábia Saudita)",
+        "Senegalesa (Senegal)",
+        "Sérvia (Sérvia)",
+        "Síria (Síria)",
+        "Somali (Somália)",
+        "Sul-africana (África do Sul)",
+        "Sudanesa (Sudão)",
+        "Sueca (Suécia)",
+        "Suíça (Suíça)",
+        "Surinamesa (Suriname)",
+        "Tadjique (Tadjiquistão)",
+        "Tailandesa (Tailândia)",
+        "Tanzaniana (Tanzânia)",
+        "Tcheca (República Tcheca)",
+        "Timorense (Timor-Leste)",
+        "Togolesa (Togo)",
+        "Tonganesa (Tonga)",
+        "Trinidadiana (Trinidad e Tobago)",
+        "Tunisiana (Tunísia)",
+        "Turca (Turquia)",
+        "Tuvaluana (Tuvalu)",
+        "Ucraniana (Ucrânia)",
+        "Ugandense (Uganda)",
+        "Uruguaia (Uruguai)",
+        "Usbeque (Uzbequistão)",
+        "Vanuatuense (Vanuatu)",
+        "Vaticana (Vaticano)",
+        "Venezuelana (Venezuela)",
+        "Vietnamita (Vietnã)",
+        "Zambiana (Zâmbia)",
+        "Zimbabuana (Zimbábue)",
+    ];
+
+    const naturalidades = [
+        "ABAETE",
+        "ABRE CAMPO",
+        "ACUCENA",
+        "AGUA BOA",
+        "AGUAS FORMOSAS",
+        "AIMORES",
+        "AIURUOCA",
+        "ALEM PARAIBA",
+        "ALFENAS",
+        "ALMENARA",
+        "ALPINOPOLIS",
+        "ALTO RIO DOCE",
+        "ALVINOPOLIS",
+        "ANDRADAS",
+        "ANDRELANDIA",
+        "ARACUAI",
+        "ARAGUARI",
+        "ARAXA",
+        "ARCOS",
+        "AREADO",
+        "ARINOS",
+        "BAEPENDI",
+        "BAMBUI",
+        "BARAO DE COCAIS",
+        "BARBACENA",
+        "BARROSO",
+        "BELO HORIZONTE",
+        "BELO ORIENTE",
+        "BELO VALE",
+        "BETIM",
+        "BICAS",
+        "BOA ESPERANCA",
+        "BOCAIUVA",
+        "BOM DESPACHO",
+        "BOM JESUS DO GALHO",
+        "BOM SUCESSO",
+        "BONFIM",
+        "BONFINOPOLIS DE MINAS",
+        "BORDA DA MATA",
+        "BOTELHOS",
+        "BRASILIA DE MINAS",
+        "BRAZÓPOLIS",
+        "BRUMADINHO",
+        "BUENO BRANDAO",
+        "BUENOPOLIS",
+        "BURITIS",
+        "CABO VERDE",
+        "CACHOEIRA DE MINAS",
+        "CAETE",
+        "CALDAS",
+        "CAMANDUCAIA",
+        "CAMBUÍ",
+        "CAMBUQUIRA",
+        "CAMPANHA",
+        "CAMPESTRE",
+        "CAMPINA VERDE",
+        "CAMPO BELO",
+        "CAMPOS ALTOS",
+        "CAMPOS GERAIS",
+        "CANAPOLIS",
+        "CANDEIAS",
+        "CAPELINHA",
+        "CAPINOPOLIS",
+        "CARANDAI",
+        "CARANGOLA",
+        "CARATINGA",
+        "CARLOS CHAGAS",
+        "CARMO DA MATA",
+        "CARMO DE MINAS",
+        "CARMO DO CAJURU",
+        "CARMO DO PARANAIBA",
+        "CARMO DO RIO CLARO",
+        "CARMOPOLIS DE MINAS",
+        "CARNEIRINHO",
+        "CASSIA",
+        "CATAGUASES",
+        "CAXAMBU",
+        "CLAUDIO",
+        "CONCEICAO DAS ALAGOAS",
+        "CONCEICAO DO MATO DENTRO",
+        "CONCEICAO DO RIO VERDE",
+        "CONGONHAS",
+        "CONQUISTA",
+        "CONSELHEIRO LAFAIETE",
+        "CONSELHEIRO PENA",
+        "CONTAGEM",
+        "CORACAO DE JESUS",
+        "CORINTO",
+        "COROACI",
+        "COROMANDEL",
+        "CORONEL FABRICIANO",
+        "CRISTINA",
+        "CRUZILIA",
+        "CURVELO",
+        "DIAMANTINA",
+        "DIVINO",
+        "DIVINOPOLIS",
+        "DORES DO INDAIA",
+        "ELOI MENDES",
+        "ENTRE RIOS DE MINAS",
+        "ERVALIA",
+        "ESMERALDAS",
+        "ESPERA FELIZ",
+        "ESPINOSA",
+        "ESTRELA DO SUL",
+        "EUGENOPOLIS",
+        "EXTREMA",
+        "FERROS",
+        "FORMIGA",
+        "FRANCISCO SA",
+        "FRONTEIRA",
+        "FRUTAL",
+        "GALILEIA",
+        "GOVERNADOR VALADARES",
+        "GRAO MOGOL",
+        "GUANHAES",
+        "GUAPE",
+        "GUARANESIA",
+        "GUARANI",
+        "GUAXUPE",
+        "IBIA",
+        "IBIRACI",
+        "IBIRITE",
+        "IGARAPE",
+        "IGUATAMA",
+        "INHAPIM",
+        "IPANEMA",
+        "IPATINGA",
+        "ITABIRA",
+        "ITABIRINHA",
+        "ITABIRITO",
+        "ITAGUARA",
+        "ITAJUBA",
+        "ITAMARANDIBA",
+        "ITAMBACURI",
+        "ITAMOGI",
+        "ITAMONTE",
+        "ITANHANDU",
+        "ITANHOMI",
+        "ITAOBIM",
+        "ITAPAGIPE",
+        "ITAPECERICA",
+        "ITAUNA",
+        "ITUIUTABA",
+        "ITUMIRIM",
+        "ITURAMA",
+        "JABOTICATUBAS",
+        "JACINTO",
+        "JACUI",
+        "JACUTINGA",
+        "JAIBA",
+        "JANAUBA",
+        "JANUARIA",
+        "JEQUERI",
+        "JEQUITINHONHA",
+        "JOAIMA",
+        "JOAO MONLEVADE",
+        "JOAO PINHEIRO",
+        "JUATUBA",
+        "JUIZ DE FORA",
+        "LAGOA DA PRATA",
+        "LAGOA DOURADA",
+        "LAGOA SANTA",
+        "LAJINHA",
+        "LAMBARI",
+        "LAVRAS",
+        "LEOPOLDINA",
+        "LIMA DUARTE",
+        "LUZ",
+        "MACHADO",
+        "MALACACHETA",
+        "MANGA",
+        "MANHUACU",
+        "MANHUMIRIM",
+        "MANTENA",
+        "MAR DE ESPANHA",
+        "MARIANA",
+        "MARTINHO CAMPOS",
+        "MATEUS LEME",
+        "MATIAS BARBOSA",
+        "MATO VERDE",
+        "MATOZINHOS",
+        "MEDINA",
+        "MERCES",
+        "MESQUITA",
+        "MINAS NOVAS",
+        "MIRABELA",
+        "MIRADOURO",
+        "MIRAI",
+        "MONTALVANIA",
+        "MONTE ALEGRE DE MINAS",
+        "MONTE AZUL",
+        "MONTE BELO",
+        "MONTE CARMELO",
+        "MONTE SANTO DE MINAS",
+        "MONTE SIAO",
+        "MONTES CLAROS",
+        "MORADA NOVA DE MINAS",
+        "MURIAE",
+        "MUTUM",
+        "MUZAMBINHO",
+        "NANUQUE",
+        "NATERCIA",
+        "NEPOMUCENO",
+        "NOVA ERA",
+        "NOVA LIMA",
+        "NOVA PONTE",
+        "NOVA RESENDE",
+        "NOVA SERRANA",
+        "NOVO CRUZEIRO",
+        "OLIVEIRA",
+        "OURO BRANCO",
+        "OURO FINO",
+        "OURO PRETO",
+        "PADRE PARAISO",
+        "PAINS",
+        "PALMA",
+        "PAPAGAIOS",
+        "PARA DE MINAS",
+        "PARACATU",
+        "PARAGUACU",
+        "PARAISOPOLIS",
+        "PARAOPEBA",
+        "PASSA QUATRO",
+        "PASSA TEMPO",
+        "PASSOS",
+        "PATOS DE MINAS",
+        "PATROCINIO",
+        "PECANHA",
+        "PEDRA AZUL",
+        "PEDRALVA",
+        "PEDRO LEOPOLDO",
+        "PERDIZES",
+        "PERDOES",
+        "PIRANGA",
+        "PIRAPETINGA",
+        "PIRAPORA",
+        "PITANGUI",
+        "PIUMHI",
+        "POCO FUNDO",
+        "POCOS DE CALDAS",
+        "POMPEU",
+        "PONTE NOVA",
+        "PORTEIRINHA",
+        "POUSO ALEGRE",
+        "PRADOS",
+        "PRATA",
+        "PRATAPOLIS",
+        "PRESIDENTE OLEGARIO",
+        "RAUL SOARES",
+        "RESENDE COSTA",
+        "RESPLENDOR",
+        "RIBEIRAO DAS NEVES",
+        "RIO CASCA",
+        "RIO NOVO",
+        "RIO PARANAIBA",
+        "RIO PARDO DE MINAS",
+        "RIO PIRACICABA",
+        "RIO POMBA",
+        "RIO PRETO",
+        "RIO VERMELHO",
+        "RUBIM",
+        "SABARA",
+        "SABINOPOLIS",
+        "SACRAMENTO",
+        "SALINAS",
+        "SANTA BARBARA",
+        "SANTA LUZIA",
+        "SANTA MARIA DE ITABIRA",
+        "SANTA MARIA DO SUACUI",
+        "SANTA RITA DE CALDAS",
+        "SANTA RITA DO SAPUCAI",
+        "SANTA VITORIA",
+        "SANTO ANTONIO DO AMPARO",
+        "SANTO ANTONIO DO MONTE",
+        "SANTOS DUMONT",
+        "SAO DOMINGOS DO PRATA",
+        "SAO FRANCISCO",
+        "SAO GONCALO DO ABAETE",
+        "SAO GONCALO DO PARA",
+        "SAO GONCALO DO SAPUCAI",
+        "SAO GOTARDO",
+        "SAO JOAO DA PONTE",
+        "SAO JOAO DEL REI",
+        "SAO JOAO DO PARAISO",
+        "SAO JOAO EVANGELISTA",
+        "SAO JOAO NEPOMUCENO",
+        "SAO LOURENCO",
+        "SAO ROMAO",
+        "SAO ROQUE DE MINAS",
+        "SAO SEBASTIAO DO PARAISO",
+        "SAO TOMAS DE AQUINO",
+        "SENADOR FIRMINO",
+        "SERRO",
+        "SETE LAGOAS",
+        "SILVIANOPOLIS",
+        "TAIOBEIRAS",
+        "TARUMIRIM",
+        "TEIXEIRAS",
+        "TEOFILO OTONI",
+        "TIMOTEO",
+        "TIROS",
+        "TOCANTINS",
+        "TOMBOS",
+        "TRES CORACOES",
+        "TRES MARIAS",
+        "TRES PONTAS",
+        "TUPACIGUARA",
+        "TURMALINA",
+        "UBA",
+        "UBERABA",
+        "UBERLANDIA",
+        "UNAI",
+        "VARGINHA",
+        "VARZEA DA PALMA",
+        "VAZANTE",
+        "VESPASIANO",
+        "VICOSA",
+        "VIRGINOPOLIS",
+        "VISCONDE DO RIO BRANCO",
+    ];
+
+    // Reset data when caseId changes
+    $: if (caseId) {
+        data = {
+            Nome_RC: "",
+            Nome_social_ancestral: "",
+            Como_querser_chamada: "",
+            Data_nascimento: "",
+            Idade: "",
+            Filiacao_1: "",
+            Filiacao_2: "",
+            Naturalidade: "",
+            Nacionalidade: "",
+            DC_situacao: "",
+            DC_CPF: "",
+            DC_RG: "",
+            DC_CTPS: "",
+            CC_Nome: "",
+            CC_telefoneDDD: "",
+            CC_vinculo: "",
+            PPS_Sexo: "",
+            PPS_idgenero: "",
+            PPS_orientacao_sexual: "",
+            PPS_Raca_cor_etnia: "",
+            PPS_religiao: "",
+            PPS_estado_civil: "",
+            enderecos: [],
+            telefones: [],
+            emails: [],
+        };
+        loading = true;
+        loadData();
+    }
+
+    async function loadData() {
         try {
             const response = await api.get(`/cases/${caseId}/identificacao`);
-            data = response.data || { telefones: [], emails: [], endereco: {} };
+            const loadedData = response.data || {};
+
+            // Map backend data to frontend structure if needed, or just assign
+            data = { ...data, ...loadedData };
+
+            // Ensure arrays exist
             if (!data.telefones) data.telefones = [];
             if (!data.emails) data.emails = [];
-            if (!data.endereco) data.endereco = {};
+            if (!data.enderecos) data.enderecos = [];
         } catch (err: any) {
-            if (err.response && err.response.status === 404) {
-                console.log(
-                    "No data found for Identificacao, initializing empty.",
-                );
-                data = {
-                    Nome_Civil: "",
-                    Nome_Social: "",
-                    Data_Nascimento: "",
-                    Nome_Mae: "",
-                    Nome_Pai: "",
-                    Naturalidade: "",
-                    Nacionalidade: "",
-                    Sexo: "",
-                    Identidade_Genero: "",
-                    Orientacao_Sexual: "",
-                    Raca_Cor: "",
-                    Religiao: "",
-                    Estado_Civil: "",
-                    CPF: "",
-                    RG: "",
-                    CTPS: "",
-                    Contato_Confianca: "",
-                    telefones: [],
-                    emails: [],
-                    endereco: {
-                        Logradouro: "",
-                        Numero: "",
-                        Bairro: "",
-                        Cidade: "",
-                        UF: "",
-                        CEP: "",
-                    },
-                };
-            } else {
-                console.warn(
-                    "Backend unavailable, using Mock Data for Identificacao",
-                );
-                data = {
-                    Nome_Civil: "Maria da Silva",
-                    Nome_Social: "Maria",
-                    Data_Nascimento: "1990-05-15",
-                    Nome_Mae: "Ana da Silva",
-                    Nome_Pai: "João da Silva",
-                    Naturalidade: "Belo Horizonte",
-                    Nacionalidade: "Brasileira",
-                    Sexo: "Feminino",
-                    Identidade_Genero: "Mulher Cis",
-                    Orientacao_Sexual: "Heterossexual",
-                    Raca_Cor: "Parda",
-                    Religiao: "Católica",
-                    Estado_Civil: "Solteira",
-                    CPF: "123.456.789-00",
-                    RG: "MG-12.345.678",
-                    CTPS: "1234567/0010",
-                    Contato_Confianca: "Ana (Irmã) - (31) 98888-8888",
-                    telefones: [{ numero: "(31) 99999-9999", tipo: "Celular" }],
-                    emails: [{ email: "maria@email.com" }],
-                    endereco: {
-                        Logradouro: "Rua das Flores",
-                        Numero: "123",
-                        Bairro: "Centro",
-                        Cidade: "Belo Horizonte",
-                        UF: "MG",
-                        CEP: "30000-000",
-                    },
-                };
-            }
+            console.error("Error loading identificacao:", err);
         } finally {
             loading = false;
             lastSavedData = JSON.stringify(data);
         }
+    }
+
+    onMount(() => {
+        loadData();
     });
 
     function autosave() {
@@ -106,8 +604,8 @@
 
         saveTimeout = setTimeout(async () => {
             try {
-                // await api.put(`/cases/${caseId}/identificacao`, data);
-                console.log("Autosaving Identificacao...", data);
+                await api.put(`/cases/${caseId}/identificacao`, data);
+                // console.log("Autosaving Identificacao...", data);
                 await new Promise((r) => setTimeout(r, 500));
                 lastSavedData = currentData;
             } catch (err) {
@@ -120,23 +618,67 @@
 
     $: if (data) autosave();
 
+    // Calculate Age
+    $: if (data.Data_nascimento) {
+        const birthDate = new Date(data.Data_nascimento);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        data.Idade = age.toString();
+    }
+
+    function addEndereco() {
+        data.enderecos = [
+            ...data.enderecos,
+            {
+                Endereco: "",
+                Numero: "",
+                Complemento: "",
+                Bairro: "",
+                Cidade: "",
+                UF: "",
+                CEP: "",
+                Moradia_Situacao: "",
+            },
+        ];
+        autosave();
+    }
+
+    function removeEndereco(index: number) {
+        data.enderecos = data.enderecos.filter(
+            (_: any, i: number) => i !== index,
+        );
+        autosave();
+    }
+
     function addTelefone() {
-        data.telefones = [...data.telefones, { numero: "", tipo: "Celular" }];
+        data.telefones = [
+            ...data.telefones,
+            { TelefoneDDD: "", Atualizado: new Date().toISOString() },
+        ];
         autosave();
     }
 
     function removeTelefone(index: number) {
-        data.telefones = data.telefones.filter((_, i) => i !== index);
+        data.telefones = data.telefones.filter(
+            (_: any, i: number) => i !== index,
+        );
         autosave();
     }
 
     function addEmail() {
-        data.emails = [...data.emails, { email: "" }];
+        data.emails = [
+            ...data.emails,
+            { Email: "", Atualizado: new Date().toISOString() },
+        ];
         autosave();
     }
 
     function removeEmail(index: number) {
-        data.emails = data.emails.filter((_, i) => i !== index);
+        data.emails = data.emails.filter((_: any, i: number) => i !== index);
         autosave();
     }
 </script>
@@ -175,78 +717,140 @@
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <label class="block">
-                        <span class="text-gray-700">Nome Civil</span>
+                        <span class="text-gray-700">Nome (Registro Civil)</span>
                         <input
                             type="text"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Nome_Civil}
+                            bind:value={data.Nome_RC}
                         />
                     </label>
                     <label class="block">
                         <span class="text-gray-700"
-                            >Nome Social / Como quer ser chamada</span
+                            >Nome Social ou Ancestral</span
                         >
                         <input
                             type="text"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Nome_Social}
+                            bind:value={data.Nome_social_ancestral}
                         />
                     </label>
                     <label class="block">
-                        <span class="text-gray-700">Data de Nascimento</span>
+                        <span class="text-gray-700">Como quer ser chamada</span>
                         <input
-                            type="date"
+                            type="text"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Data_Nascimento}
+                            bind:value={data.Como_querser_chamada}
+                        />
+                    </label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="block">
+                            <span class="text-gray-700">Data de nascimento</span
+                            >
+                            <input
+                                type="date"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={data.Data_nascimento}
+                            />
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700">Idade</span>
+                            <input
+                                type="text"
+                                readonly
+                                class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm"
+                                bind:value={data.Idade}
+                            />
+                        </label>
+                    </div>
+                    <label class="block">
+                        <span class="text-gray-700">Filiação 1</span>
+                        <input
+                            type="text"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                            bind:value={data.Filiacao_1}
+                        />
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700">Filiação 2</span>
+                        <input
+                            type="text"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                            bind:value={data.Filiacao_2}
                         />
                     </label>
                     <label class="block">
                         <span class="text-gray-700">Naturalidade</span>
-                        <input
-                            type="text"
+                        <select
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.Naturalidade}
-                        />
+                        >
+                            <option value="">Selecione...</option>
+                            {#each naturalidades as item}
+                                <option value={item}>{item}</option>
+                            {/each}
+                        </select>
                     </label>
                     <label class="block">
                         <span class="text-gray-700">Nacionalidade</span>
-                        <input
-                            type="text"
+                        <select
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.Nacionalidade}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Nome da Mãe</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Nome_Mae}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Nome do Pai</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Nome_Pai}
-                        />
+                        >
+                            <option value="">Selecione...</option>
+                            {#each nacionalidades as item}
+                                <option value={item}>{item}</option>
+                            {/each}
+                        </select>
                     </label>
                 </div>
             </div>
 
-            <!-- Documentos -->
+            <!-- Documentação Civil -->
             <div class="border-b pb-4">
                 <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Documentos
+                    Documentação Civil
                 </h3>
+                <div class="mb-4">
+                    <span class="text-gray-700 block mb-2">Situação:</span>
+                    <div class="flex gap-4">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                class="form-radio text-save-primary"
+                                bind:group={data.DC_situacao}
+                                value="Possui"
+                            />
+                            <span class="ml-2">Possui</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                class="form-radio text-save-primary"
+                                bind:group={data.DC_situacao}
+                                value="Nunca teve"
+                            />
+                            <span class="ml-2">Nunca teve</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                class="form-radio text-save-primary"
+                                bind:group={data.DC_situacao}
+                                value="Perda/Roubo/Danificado/Extravio"
+                            />
+                            <span class="ml-2"
+                                >Perda/Roubo/Danificado/Extravio</span
+                            >
+                        </label>
+                    </div>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <label class="block">
                         <span class="text-gray-700">CPF</span>
                         <input
                             type="text"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.CPF}
+                            bind:value={data.DC_CPF}
                         />
                     </label>
                     <label class="block">
@@ -254,17 +858,225 @@
                         <input
                             type="text"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.RG}
+                            bind:value={data.DC_RG}
                         />
                     </label>
                     <label class="block">
-                        <span class="text-gray-700"
-                            >CTPS (Carteira de Trabalho)</span
-                        >
+                        <span class="text-gray-700">CTPS</span>
                         <input
                             type="text"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.CTPS}
+                            bind:value={data.DC_CTPS}
+                        />
+                    </label>
+                </div>
+            </div>
+
+            <!-- Endereços -->
+            <div class="border-b pb-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-700">
+                        Endereço(s)
+                    </h3>
+                    <button
+                        class="text-sm text-save-primary hover:underline"
+                        on:click={addEndereco}>+ Incluir endereço</button
+                    >
+                </div>
+
+                {#each data.enderecos as endereco, i}
+                    <div
+                        class="bg-gray-50 p-4 rounded-md mb-4 border border-gray-200 relative"
+                    >
+                        <button
+                            class="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                            on:click={() => removeEndereco(i)}
+                        >
+                            <span class="material-icons">delete</span>
+                        </button>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <label class="block md:col-span-2">
+                                <span class="text-gray-700">Endereço</span>
+                                <input
+                                    type="text"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                    bind:value={endereco.Endereco}
+                                />
+                            </label>
+                            <label class="block">
+                                <span class="text-gray-700">Nº</span>
+                                <input
+                                    type="text"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                    bind:value={endereco.Numero}
+                                />
+                            </label>
+                            <label class="block">
+                                <span class="text-gray-700">Complemento</span>
+                                <input
+                                    type="text"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                    bind:value={endereco.Complemento}
+                                />
+                            </label>
+                            <label class="block">
+                                <span class="text-gray-700">Bairro</span>
+                                <input
+                                    type="text"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                    bind:value={endereco.Bairro}
+                                />
+                            </label>
+                            <label class="block">
+                                <span class="text-gray-700">Cidade</span>
+                                <input
+                                    type="text"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                    bind:value={endereco.Cidade}
+                                />
+                            </label>
+                            <label class="block">
+                                <span class="text-gray-700">UF</span>
+                                <input
+                                    type="text"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                    bind:value={endereco.UF}
+                                />
+                            </label>
+                            <label class="block">
+                                <span class="text-gray-700">CEP</span>
+                                <input
+                                    type="text"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                    bind:value={endereco.CEP}
+                                />
+                            </label>
+                            <div class="md:col-span-3">
+                                <span class="text-gray-700 block mb-2"
+                                    >Situação de Moradia:</span
+                                >
+                                <div class="flex gap-4 flex-wrap">
+                                    {#each ["Casa própria", "Aluguel", "Em situação de rua", "Outro"] as situacao}
+                                        <label class="inline-flex items-center">
+                                            <input
+                                                type="radio"
+                                                class="form-radio text-save-primary"
+                                                bind:group={
+                                                    endereco.Moradia_Situacao
+                                                }
+                                                value={situacao}
+                                            />
+                                            <span class="ml-2">{situacao}</span>
+                                        </label>
+                                    {/each}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {/each}
+            </div>
+
+            <!-- Contatos -->
+            <div class="border-b pb-4">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">
+                    Contatos
+                </h3>
+
+                <div class="mb-6">
+                    <h4 class="font-medium text-gray-600 mb-2">
+                        Telefones de contato
+                    </h4>
+                    {#each data.telefones as tel, i}
+                        <div class="flex gap-2 mb-2 items-center">
+                            <input
+                                type="text"
+                                placeholder="(00) 0000-0000"
+                                class="flex-1 rounded-md border-gray-300 shadow-sm"
+                                bind:value={tel.TelefoneDDD}
+                            />
+                            <input
+                                type="text"
+                                readonly
+                                class="w-32 rounded-md border-gray-300 bg-gray-100 shadow-sm text-xs"
+                                value={tel.Atualizado
+                                    ? new Date(
+                                          tel.Atualizado,
+                                      ).toLocaleDateString()
+                                    : ""}
+                            />
+                            <button
+                                class="text-red-500 hover:text-red-700 px-2"
+                                on:click={() => removeTelefone(i)}
+                            >
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    {/each}
+                    <button
+                        class="text-sm text-save-primary hover:underline mt-1"
+                        on:click={addTelefone}>+ Incluir telefone</button
+                    >
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-medium text-gray-600 mb-2">E-mails</h4>
+                    {#each data.emails as email, i}
+                        <div class="flex gap-2 mb-2 items-center">
+                            <input
+                                type="email"
+                                placeholder="exemplo@email.com"
+                                class="flex-1 rounded-md border-gray-300 shadow-sm"
+                                bind:value={email.Email}
+                            />
+                            <input
+                                type="text"
+                                readonly
+                                class="w-32 rounded-md border-gray-300 bg-gray-100 shadow-sm text-xs"
+                                value={email.Atualizado
+                                    ? new Date(
+                                          email.Atualizado,
+                                      ).toLocaleDateString()
+                                    : ""}
+                            />
+                            <button
+                                class="text-red-500 hover:text-red-700 px-2"
+                                on:click={() => removeEmail(i)}
+                            >
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    {/each}
+                    <button
+                        class="text-sm text-save-primary hover:underline mt-1"
+                        on:click={addEmail}>+ Incluir e-mail</button
+                    >
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <label class="block">
+                        <span class="text-gray-700"
+                            >Pessoa de Confiança (Nome)</span
+                        >
+                        <input
+                            type="text"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            bind:value={data.CC_Nome}
+                        />
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700">Telefone com DDD</span>
+                        <input
+                            type="text"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            bind:value={data.CC_telefoneDDD}
+                        />
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700">Vínculo</span>
+                        <input
+                            type="text"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            bind:value={data.CC_vinculo}
                         />
                     </label>
                 </div>
@@ -279,8 +1091,8 @@
                     <label class="block">
                         <span class="text-gray-700">Sexo Biológico</span>
                         <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Sexo}
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            bind:value={data.PPS_Sexo}
                         >
                             <option value="">Selecione...</option>
                             <option value="Feminino">Feminino</option>
@@ -291,8 +1103,8 @@
                     <label class="block">
                         <span class="text-gray-700">Identidade de Gênero</span>
                         <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Identidade_Genero}
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            bind:value={data.PPS_idgenero}
                         >
                             <option value="">Selecione...</option>
                             <option value="Mulher Cis">Mulher Cis</option>
@@ -307,8 +1119,8 @@
                     <label class="block">
                         <span class="text-gray-700">Orientação Sexual</span>
                         <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Orientacao_Sexual}
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            bind:value={data.PPS_orientacao_sexual}
                         >
                             <option value="">Selecione...</option>
                             <option value="Heterossexual">Heterossexual</option>
@@ -324,8 +1136,8 @@
                     <label class="block">
                         <span class="text-gray-700">Raça / Cor</span>
                         <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Raca_Cor}
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            bind:value={data.PPS_Raca_cor_etnia}
                         >
                             <option value="">Selecione...</option>
                             <option value="Branca">Branca</option>
@@ -338,8 +1150,8 @@
                     <label class="block">
                         <span class="text-gray-700">Religião / Credo</span>
                         <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Religiao}
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            bind:value={data.PPS_religiao}
                         >
                             <option value="">Selecione...</option>
                             <option value="Católica">Católica</option>
@@ -355,8 +1167,8 @@
                     <label class="block">
                         <span class="text-gray-700">Estado Civil</span>
                         <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Estado_Civil}
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            bind:value={data.PPS_estado_civil}
                         >
                             <option value="">Selecione...</option>
                             <option value="Solteira(o)">Solteira(o)</option>
@@ -365,138 +1177,6 @@
                             <option value="Viúva(o)">Viúva(o)</option>
                             <option value="União Estável">União Estável</option>
                         </select>
-                    </label>
-                </div>
-            </div>
-
-            <!-- Contatos -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Contatos
-                </h3>
-
-                <label class="block mb-4">
-                    <span class="text-gray-700"
-                        >Contato de Confiança (Nome e Telefone)</span
-                    >
-                    <input
-                        type="text"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                        bind:value={data.Contato_Confianca}
-                        placeholder="Ex: Maria (Mãe) - (31) 99999-9999"
-                    />
-                </label>
-
-                <div class="mb-4">
-                    <h4 class="font-medium text-gray-600 mb-2">Telefones</h4>
-                    {#each data.telefones as tel, i}
-                        <div class="flex gap-2 mb-2">
-                            <input
-                                type="text"
-                                placeholder="Número"
-                                class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={tel.numero}
-                            />
-                            <select
-                                class="w-32 rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={tel.tipo}
-                            >
-                                <option value="Celular">Celular</option>
-                                <option value="Fixo">Fixo</option>
-                                <option value="Recado">Recado</option>
-                            </select>
-                            <button
-                                class="text-red-500 hover:text-red-700 px-2"
-                                on:click={() => removeTelefone(i)}
-                            >
-                                <span class="material-icons">delete</span>
-                            </button>
-                        </div>
-                    {/each}
-                    <button
-                        class="text-sm text-save-primary hover:underline mt-1"
-                        on:click={addTelefone}>+ Adicionar Telefone</button
-                    >
-                </div>
-
-                <div>
-                    <h4 class="font-medium text-gray-600 mb-2">Emails</h4>
-                    {#each data.emails as email, i}
-                        <div class="flex gap-2 mb-2">
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={email.email}
-                            />
-                            <button
-                                class="text-red-500 hover:text-red-700 px-2"
-                                on:click={() => removeEmail(i)}
-                            >
-                                <span class="material-icons">delete</span>
-                            </button>
-                        </div>
-                    {/each}
-                    <button
-                        class="text-sm text-save-primary hover:underline mt-1"
-                        on:click={addEmail}>+ Adicionar Email</button
-                    >
-                </div>
-            </div>
-
-            <!-- Endereço -->
-            <div>
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Endereço Residencial
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <label class="block md:col-span-2">
-                        <span class="text-gray-700">Logradouro</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.endereco.Logradouro}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Número</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.endereco.Numero}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Bairro</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.endereco.Bairro}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Cidade</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.endereco.Cidade}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">UF</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.endereco.UF}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">CEP</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.endereco.CEP}
-                        />
                     </label>
                 </div>
             </div>

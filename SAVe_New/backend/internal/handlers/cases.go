@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -13,7 +15,8 @@ import (
 
 func GetAllCases(c *gin.Context) {
 	var cases []models.SAVe_Geral
-	if err := database.DB.Order("ID_Caso desc").Find(&cases).Error; err != nil {
+	// Use quoted identifier for case-sensitive column
+	if err := database.DB.Order("\"ID_Caso\" desc").Find(&cases).Error; err != nil {
 		fmt.Println("Error fetching cases:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching cases"})
 		return
@@ -43,23 +46,42 @@ func GetCaseById(c *gin.Context) {
 	database.DB.First(&identificacao, id)
 
 	var telefones []models.SAVe_Identificacao_telefone
-	database.DB.Where("ID_Caso = ?", id).Find(&telefones)
+	database.DB.Where("\"ID_Caso\" = ?", id).Find(&telefones)
 
 	var emails []models.SAVe_Identificacao_email
-	database.DB.Where("ID_Caso = ?", id).Find(&emails)
+	database.DB.Where("\"ID_Caso\" = ?", id).Find(&emails)
 
 	var enderecos []models.SAVe_Identificacao_endereco
-	database.DB.Where("ID_Caso = ?", id).Find(&enderecos)
+	database.DB.Where("\"ID_Caso\" = ?", id).Find(&enderecos)
+
+	var casosVinculados models.SAVe_Casos_Vinculados
+	database.DB.First(&casosVinculados, id)
 
 	// Add other tables here...
+	var situacaoJuridica models.SAVe_Situacao_Juridica
+	database.DB.First(&situacaoJuridica, id)
+
+	var situacaoJuridica2 models.SAVe_Situacao_Juridica2
+	database.DB.First(&situacaoJuridica2, id)
+
+	var processos []models.SAVe_Situacao_Juridica_Incluir_processo
+	database.DB.Where("\"ID_Caso\" = ?", id).Find(&processos)
+
+	var saude models.SAVe_Saude
+	database.DB.First(&saude, id)
 
 	c.JSON(http.StatusOK, gin.H{
-		"geral":         geral,
-		"dadosEntrada":  dadosEntrada,
-		"identificacao": identificacao,
-		"telefones":     telefones,
-		"emails":        emails,
-		"enderecos":     enderecos,
+		"geral":             geral,
+		"dadosEntrada":      dadosEntrada,
+		"identificacao":     identificacao,
+		"telefones":         telefones,
+		"emails":            emails,
+		"enderecos":         enderecos,
+		"casosVinculados":   casosVinculados,
+		"situacaoJuridica":  situacaoJuridica,
+		"situacaoJuridica2": situacaoJuridica2,
+		"processos":         processos,
+		"saude":             saude,
 	})
 }
 
@@ -98,7 +120,8 @@ func CreateCase(c *gin.Context) {
 	newCase := models.SAVe_Geral{
 		ID_Caso:   newID,
 		Encerrado: "Não",
-		// Initialize other fields if necessary
+		Nome:      "Novo Caso", // Default name to ensure visibility
+		Data:      "",          // Empty date initially
 	}
 
 	if err := tx.Create(&newCase).Error; err != nil {
@@ -139,38 +162,45 @@ func DeleteCase(c *gin.Context) {
 
 	// Delete from dependent tables first (Cascading Delete Manual)
 	// 1. Identificacao related tables (1:N)
-	if err := tx.Where("ID_Caso = ?", id).Delete(&models.SAVe_Identificacao_telefone{}).Error; err != nil {
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Identificacao_telefone{}).Error; err != nil {
 		tx.Rollback()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete phones"})
 		return
 	}
-	if err := tx.Where("ID_Caso = ?", id).Delete(&models.SAVe_Identificacao_email{}).Error; err != nil {
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Identificacao_email{}).Error; err != nil {
 		tx.Rollback()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete emails"})
 		return
 	}
-	if err := tx.Where("ID_Caso = ?", id).Delete(&models.SAVe_Identificacao_endereco{}).Error; err != nil {
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Identificacao_endereco{}).Error; err != nil {
 		tx.Rollback()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete addresses"})
 		return
 	}
 
 	// 2. Identificacao (1:1)
-	if err := tx.Where("ID_Caso = ?", id).Delete(&models.SAVe_Identificacao{}).Error; err != nil {
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Identificacao{}).Error; err != nil {
 		tx.Rollback()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete identificacao"})
 		return
 	}
 
 	// 3. DadosDeEntrada (1:1)
-	if err := tx.Where("ID_Caso = ?", id).Delete(&models.SAVe_DadosDeEntrada{}).Error; err != nil {
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_DadosDeEntrada{}).Error; err != nil {
 		tx.Rollback()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete dados de entrada"})
 		return
 	}
 
-	// 4. Main Table (SAVe_Geral)
-	if err := tx.Where("ID_Caso = ?", id).Delete(&models.SAVe_Geral{}).Error; err != nil {
+	// 4. Casos Vinculados (1:1)
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Casos_Vinculados{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete casos vinculados"})
+		return
+	}
+
+	// 5. Main Table (SAVe_Geral)
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Geral{}).Error; err != nil {
 		tx.Rollback()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete case"})
 		return
@@ -207,7 +237,7 @@ func ArchiveCase(c *gin.Context) {
 	}
 
 	// 1. Update SAVe_Geral Encerrado = "Sim"
-	if err := tx.Model(&models.SAVe_Geral{}).Where("ID_Caso = ?", id).Update("Encerrado", "Sim").Error; err != nil {
+	if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Update("Encerrado", "Sim").Error; err != nil {
 		tx.Rollback()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update case status"})
 		return
@@ -215,9 +245,9 @@ func ArchiveCase(c *gin.Context) {
 
 	// 2. Save Encerramento data (Create or Update)
 	var count int64
-	tx.Model(&models.SAVe_Encerramento{}).Where("ID_Caso = ?", id).Count(&count)
+	tx.Model(&models.SAVe_Encerramento{}).Where("\"ID_Caso\" = ?", id).Count(&count)
 	if count > 0 {
-		if err := tx.Model(&models.SAVe_Encerramento{}).Where("ID_Caso = ?", id).Updates(&encerramento).Error; err != nil {
+		if err := tx.Model(&models.SAVe_Encerramento{}).Where("\"ID_Caso\" = ?", id).Updates(&encerramento).Error; err != nil {
 			tx.Rollback()
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update encerramento data"})
 			return
@@ -236,4 +266,357 @@ func ArchiveCase(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Case archived successfully"})
+}
+
+func UpdateCaseSection(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	section := c.Param("section")
+
+	switch section {
+	case "dados-entrada":
+		var input struct {
+			models.SAVe_DadosDeEntrada
+			Crimes            []string `json:"crimes"`
+			CasosRelacionados []struct {
+				ID     string `json:"id"`
+				Motivo string `json:"motivo"`
+			} `json:"casosRelacionados"`
+			TipoVitima string `json:"Tipo_Vitima"` // Frontend uses Tipo_Vitima
+		}
+
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		// Map frontend fields to model
+		input.SAVe_DadosDeEntrada.ID_Caso = id
+
+		// Map Tipo_Vitima to Classificacao_vitima if empty
+		if input.SAVe_DadosDeEntrada.Classificacao_vitima == "" {
+			input.SAVe_DadosDeEntrada.Classificacao_vitima = input.TipoVitima
+		}
+
+		// 1. Crimes -> Crime_relacionado (Semicolon separated string)
+		if len(input.Crimes) > 0 {
+			// Join with "; " to match PowerApps format
+			joinedCrimes := ""
+			for i, crime := range input.Crimes {
+				if i > 0 {
+					joinedCrimes += "; "
+				}
+				joinedCrimes += crime
+			}
+			input.SAVe_DadosDeEntrada.Crime_relacionado = joinedCrimes
+		}
+
+		// Start Transaction
+		tx := database.DB.Begin()
+
+		// 2. Save SAVe_DadosDeEntrada
+		var count int64
+		tx.Model(&models.SAVe_DadosDeEntrada{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+
+		if count == 0 {
+			if err := tx.Create(&input.SAVe_DadosDeEntrada).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create dados de entrada"})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_DadosDeEntrada{}).Where("\"ID_Caso\" = ?", id).Updates(&input.SAVe_DadosDeEntrada).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update dados de entrada"})
+				return
+			}
+		}
+
+		// 3. Save SAVe_Casos_Vinculados
+		if len(input.CasosRelacionados) > 0 {
+			importJson, _ := json.Marshal(input.CasosRelacionados)
+			casosVinculados := models.SAVe_Casos_Vinculados{
+				ID_Caso:            id,
+				Casos_Relacionados: string(importJson),
+			}
+
+			var cvCount int64
+			tx.Model(&models.SAVe_Casos_Vinculados{}).Where("\"ID_Caso\" = ?", id).Count(&cvCount)
+			if cvCount == 0 {
+				if err := tx.Create(&casosVinculados).Error; err != nil {
+					tx.Rollback()
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create casos vinculados"})
+					return
+				}
+			} else {
+				if err := tx.Model(&models.SAVe_Casos_Vinculados{}).Where("\"ID_Caso\" = ?", id).Updates(&casosVinculados).Error; err != nil {
+					tx.Rollback()
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update casos vinculados"})
+					return
+				}
+			}
+		}
+
+		// 4. Update SAVe_Geral fields
+		updates := map[string]interface{}{}
+		if input.SAVe_DadosDeEntrada.Data != "" {
+			updates["Data"] = input.SAVe_DadosDeEntrada.Data
+		}
+		if input.SAVe_DadosDeEntrada.Comarca_origem != "" {
+			updates["Comarca"] = input.SAVe_DadosDeEntrada.Comarca_origem
+		}
+		if input.TipoVitima != "" {
+			updates["Tipo_Vitima"] = input.TipoVitima
+		}
+		// Update Tipo_Crime in SAVe_Geral
+		// Concatenate crimes + classification
+		tipoCrime := input.SAVe_DadosDeEntrada.Crime_relacionado
+		if input.SAVe_DadosDeEntrada.Classificacao_crime != "" {
+			tipoCrime += " (" + input.SAVe_DadosDeEntrada.Classificacao_crime + ")"
+		}
+		if tipoCrime != "" {
+			updates["Tipo_Crime"] = tipoCrime
+		}
+
+		if len(updates) > 0 {
+			if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Updates(updates).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral info"})
+				return
+			}
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Dados de entrada updated"})
+
+	case "identificacao":
+		var input struct {
+			models.SAVe_Identificacao
+			Enderecos []models.SAVe_Identificacao_endereco `json:"enderecos"`
+			Telefones []models.SAVe_Identificacao_telefone `json:"telefones"`
+			Emails    []models.SAVe_Identificacao_email    `json:"emails"`
+		}
+
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		input.SAVe_Identificacao.ID_Caso = id
+
+		tx := database.DB.Begin()
+
+		// 1. Save SAVe_Identificacao
+		var count int64
+		tx.Model(&models.SAVe_Identificacao{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input.SAVe_Identificacao).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create identificacao"})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_Identificacao{}).Where("\"ID_Caso\" = ?", id).Updates(&input.SAVe_Identificacao).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update identificacao"})
+				return
+			}
+		}
+
+		// 2. Update SAVe_Geral Nome if Nome_RC is present
+		if input.SAVe_Identificacao.Nome_RC != "" {
+			if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Update("Nome", input.SAVe_Identificacao.Nome_RC).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral name"})
+				return
+			}
+		}
+
+		// 3. Save Enderecos (Delete all and recreate)
+		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Identificacao_endereco{}).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old addresses"})
+			return
+		}
+		for _, end := range input.Enderecos {
+			end.ID_Caso = id
+			end.ID = 0 // Ensure new ID
+			if err := tx.Create(&end).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create address"})
+				return
+			}
+		}
+
+		// 4. Save Telefones (Delete all and recreate)
+		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Identificacao_telefone{}).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old phones"})
+			return
+		}
+		for _, tel := range input.Telefones {
+			tel.ID_Caso = id
+			tel.ID = 0
+			if err := tx.Create(&tel).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create phone"})
+				return
+			}
+		}
+
+		// 5. Save Emails (Delete all and recreate)
+		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Identificacao_email{}).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old emails"})
+			return
+		}
+		for _, em := range input.Emails {
+			em.ID_Caso = id
+			em.ID = 0
+			if err := tx.Create(&em).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create email"})
+				return
+			}
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Identificacao updated"})
+
+	case "situacao-juridica":
+		fmt.Println("Received situacao-juridica update request")
+		var input struct {
+			models.SAVe_Situacao_Juridica
+			SituacaoJuridica2 models.SAVe_Situacao_Juridica2                   `json:"situacaoJuridica2"`
+			Processos         []models.SAVe_Situacao_Juridica_Incluir_processo `json:"processos"`
+		}
+
+		if err := c.ShouldBindJSON(&input); err != nil {
+			fmt.Println("Error binding JSON:", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		fmt.Printf("Bound input: %+v\n", input)
+
+		input.SAVe_Situacao_Juridica.ID_Caso = id
+		input.SituacaoJuridica2.ID_Caso = id
+
+		tx := database.DB.Begin()
+
+		// 1. Save SAVe_Situacao_Juridica
+		input.SAVe_Situacao_Juridica.ID_Caso = id // Ensure ID_Caso is set
+		var count int64
+		tx.Model(&models.SAVe_Situacao_Juridica{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input.SAVe_Situacao_Juridica).Error; err != nil {
+				tx.Rollback()
+				log.Println("Error creating SAVe_Situacao_Juridica:", err)
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create situacao juridica: " + err.Error()})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_Situacao_Juridica{}).Where("\"ID_Caso\" = ?", id).Updates(&input.SAVe_Situacao_Juridica).Error; err != nil {
+				tx.Rollback()
+				log.Println("Error updating SAVe_Situacao_Juridica:", err)
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update situacao juridica: " + err.Error()})
+				return
+			}
+		}
+
+		// 2. Save SAVe_Situacao_Juridica2
+		input.SituacaoJuridica2.ID_Caso = id // Ensure ID_Caso is set
+		var count2 int64
+		tx.Model(&models.SAVe_Situacao_Juridica2{}).Where("\"ID_Caso\" = ?", id).Count(&count2)
+		if count2 == 0 {
+			if err := tx.Create(&input.SituacaoJuridica2).Error; err != nil {
+				tx.Rollback()
+				log.Println("Error creating SAVe_Situacao_Juridica2:", err)
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create situacao juridica 2: " + err.Error()})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_Situacao_Juridica2{}).Where("\"ID_Caso\" = ?", id).Updates(&input.SituacaoJuridica2).Error; err != nil {
+				tx.Rollback()
+				log.Println("Error updating SAVe_Situacao_Juridica2:", err)
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update situacao juridica 2: " + err.Error()})
+				return
+			}
+		}
+
+		// 3. Save Processos (Delete all and recreate)
+		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Situacao_Juridica_Incluir_processo{}).Error; err != nil {
+			tx.Rollback()
+			log.Println("Error deleting old Processos:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old processos: " + err.Error()})
+			return
+		}
+		for _, proc := range input.Processos {
+			proc.ID_Caso = id
+			proc.ID = 0
+			if err := tx.Create(&proc).Error; err != nil {
+				tx.Rollback()
+				log.Println("Error creating Processo:", err)
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create processo: " + err.Error()})
+				return
+			}
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Situacao Juridica updated"})
+
+	case "saude":
+		var input struct {
+			Saude models.SAVe_Saude `json:"saude"`
+		}
+
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		tx := database.DB.Begin()
+
+		input.Saude.ID_Caso = id // Ensure ID_Caso is set
+
+		var count int64
+		tx.Model(&models.SAVe_Saude{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input.Saude).Error; err != nil {
+				tx.Rollback()
+				log.Println("Error creating SAVe_Saude:", err)
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create saude: " + err.Error()})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_Saude{}).Where("\"ID_Caso\" = ?", id).Updates(&input.Saude).Error; err != nil {
+				tx.Rollback()
+				log.Println("Error updating SAVe_Saude:", err)
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update saude: " + err.Error()})
+				return
+			}
+		}
+
+		tx.Commit()
+		c.JSON(http.StatusOK, gin.H{"message": "Saude updated successfully"})
+
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid section"})
+	}
 }

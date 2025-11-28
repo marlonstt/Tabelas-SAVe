@@ -10,7 +10,20 @@
     let saveTimeout: any;
     let lastSavedData: string = "";
 
-    onMount(async () => {
+    // Reset data when caseId changes
+    $: if (caseId) {
+        data = {
+            Data_Encerramento: "",
+            Forma_Encerramento: "",
+            Especifique_Outros: "",
+            Observacao: "",
+            Encaminhamento_Pos_Alta: "",
+        };
+        loading = true;
+        loadData();
+    }
+
+    async function loadData() {
         try {
             const response = await api.get(`/cases/${caseId}/encerramento`);
             data = response.data || {};
@@ -42,6 +55,10 @@
             loading = false;
             lastSavedData = JSON.stringify(data);
         }
+    }
+
+    onMount(() => {
+        loadData();
     });
 
     function autosave() {

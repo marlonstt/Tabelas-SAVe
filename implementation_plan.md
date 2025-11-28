@@ -78,23 +78,6 @@ Complete the migration of the SAVe frontend to Svelte, implementing all missing 
 - Register `DELETE /cases/:id` route.
 - Register `POST /cases/:id/archive` route.
 
-### Backend Changes
-#### [MODIFY] [cases.go](file:///c:/Users/User/Desktop/SAVe_Svelt%20e%20GoLang/Tabelas%20SAVe/SAVe_New/backend/internal/handlers/cases.go)
-- Implement `CreateCase` using PostgreSQL Sequence for concurrency safety.
-- Ensure sequence exists and is synced with table MAX(ID).
-- Remove unsafe `max(ID) + 1` logic.
-
-### Frontend Changes
-#### [MODIFY] [Dashboard.svelte](file:///c:/Users/User/Desktop/SAVe_Svelt%20e%20GoLang/Tabelas%20SAVe/SAVe_New/frontend/src/routes/Dashboard.svelte)
-- Remove "Demo create" fallback in `createCase`. Show actual error if backend fails.
-
-## Verification Plan
-### Automated Tests
-- None planned for this iteration.
-
-### Manual Verification
-1. **Create Case:** Click "Novo Caso", verify redirection/list update and DB persistence.
-2. **Delete Case (Admin):** Log in as Admin, delete a case, verify it disappears from list and DB.
 3. **Delete Case (User):** Log in as User, verify "Delete" button is NOT visible.
 
 ### Backend Updates (If needed)

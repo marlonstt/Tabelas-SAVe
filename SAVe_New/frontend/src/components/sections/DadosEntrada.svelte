@@ -13,60 +13,85 @@
     let saveTimeout: any;
     let lastSavedData: string = "";
 
-    onMount(async () => {
+    // Reset data when caseId changes
+    $: if (caseId) {
+        // Reset to empty state immediately to prevent showing old data
+        data = {
+            casosRelacionados: [],
+            crimes: [],
+            Data: new Date().toISOString().split("T")[0],
+            Comarca_origem: "",
+            N_procedimento_MPE: "",
+            Precisa_Atendimento_Esp: "Não",
+            Quem_encaminha: "",
+            PE_nome: "",
+            PE_telefone: "",
+            PE_email: "",
+            PE_cargo: "",
+            Possui_Relacionado: "Não",
+            Tipo_Vitima: "",
+            Vitimizacao: "",
+            Vit_Terciaria_Origem: "",
+            Classificacao_crime: "",
+            Observacao: "",
+        };
+        loading = true;
+        loadData();
+    }
+
+    async function loadData() {
         try {
             const response = await api.get(`/cases/${caseId}/dados-entrada`);
-            data = response.data || {};
-            // Ensure arrays exist
-            if (!data.casosRelacionados) data.casosRelacionados = [];
-            if (!data.crimes) data.crimes = [];
+            // Merge response data
+            const backendData = response.data.dadosEntrada || {};
+            const casosVinculadosData = response.data.casosVinculados || {};
+
+            data = { ...data, ...backendData };
+
+            // Parse Casos Relacionados (JSON string in DB -> Array in Frontend)
+            if (casosVinculadosData.Casos_Relacionados) {
+                try {
+                    data.casosRelacionados = JSON.parse(
+                        casosVinculadosData.Casos_Relacionados,
+                    );
+                } catch (e) {
+                    console.error("Error parsing Casos_Relacionados", e);
+                    data.casosRelacionados = [];
+                }
+            } else {
+                data.casosRelacionados = [];
+            }
+
+            // Parse Crimes (Semicolon separated string in DB -> Array in Frontend)
+            if (data.Crime_relacionado) {
+                data.crimes = data.Crime_relacionado.split("; ").filter(
+                    (c: string) => c.trim() !== "",
+                );
+            } else {
+                data.crimes = [];
+            }
         } catch (err: any) {
             if (err.response && err.response.status === 404) {
                 // Case exists but no data for this section yet -> Init empty
                 console.log(
                     "No data found for this section, initializing empty.",
                 );
-                data = {
-                    Data: new Date().toISOString().split("T")[0],
-                    Comarca_origem: "",
-                    N_procedimento_MPE: "",
-                    Precisa_Atendimento_Esp: "Não",
-                    Quem_encaminha: "",
-                    PE_nome: "",
-                    PE_telefone: "",
-                    PE_email: "",
-                    PE_cargo: "",
-                    Possui_Relacionado: "Não",
-                    casosRelacionados: [],
-                    Tipo_Vitima: "",
-                    crimes: [],
-                    Observacao: "",
-                };
+                // Keep default initialized data
             } else {
                 console.warn(
                     "Backend unavailable or error, using Mock Data for DadosEntrada",
                 );
-                data = {
-                    Data: new Date().toISOString().split("T")[0],
-                    Comarca_origem: "Belo Horizonte",
-                    N_procedimento_MPE: "",
-                    Precisa_Atendimento_Esp: "Não",
-                    Quem_encaminha: "MPMG",
-                    PE_nome: "",
-                    PE_telefone: "",
-                    PE_email: "",
-                    PE_cargo: "",
-                    Possui_Relacionado: "Não",
-                    casosRelacionados: [],
-                    Tipo_Vitima: "",
-                    crimes: [], // Will store selected crimes
-                    Observacao: "",
-                };
+                // Only use mock if it's a real connection error, not just 404
+                // Keep default initialized data
             }
         } finally {
             loading = false;
             lastSavedData = JSON.stringify(data);
         }
+    }
+
+    onMount(() => {
+        loadData();
     });
 
     function autosave() {
@@ -80,10 +105,10 @@
 
         saveTimeout = setTimeout(async () => {
             try {
-                // await api.put(`/cases/${caseId}/dados-entrada`, data);
+                await api.put(`/cases/${caseId}/dados-entrada`, data);
                 console.log("Autosaving...", data);
                 // Simulate network delay
-                await new Promise((r) => setTimeout(r, 500));
+                // await new Promise((r) => setTimeout(r, 500));
                 lastSavedData = currentData;
             } catch (err) {
                 console.error("Error autosaving", err);
@@ -170,13 +195,9 @@
                             bind:value={data.Comarca_origem}
                         >
                             <option value="">Selecione...</option>
-                            <option value="Belo Horizonte"
-                                >Belo Horizonte</option
-                            >
-                            <option value="Contagem">Contagem</option>
-                            <option value="Uberlândia">Uberlândia</option>
-                            <option value="Juiz de Fora">Juiz de Fora</option>
-                            <option value="Betim">Betim</option>
+                            {#each ["Belo Horizonte", "Contagem", "Uberlândia", "Juiz de Fora", "Betim", "Governador Valadares", "Montes Claros", "Ipatinga", "Sete Lagoas", "Divinópolis", "Santa Luzia", "Ibirité", "Poços de Caldas", "Patos de Minas", "Pouso Alegre", "Teófilo Otoni", "Barbacena", "Sabará", "Varginha", "Conselheiro Lafaiete", "Vespasiano", "Itabira", "Araguari", "Passos", "Ubá", "Coronel Fabriciano", "Muriaé", "Ituiutaba", "Araxá", "Lavras", "Itajubá", "Nova Serrana", "Pará de Minas", "Paracatu", "Itaúna", "Caratinga", "Patrocínio", "Manhuaçu", "Timóteo", "São João del Rei", "Unaí", "Curvelo", "Alfenas", "João Monlevade", "Três Corações", "Viçosa", "Cataguases", "Ouro Preto", "Janaúba", "São Sebastião do Paraíso", "Januária", "Formiga", "Esmeraldas", "Pedro Leopoldo", "Ponte Nova", "Mariana", "Frutal", "Três Pontas", "Pirapora", "Congonhas", "Campo Belo", "Lagoa Santa", "Leopoldina", "Guaxupé", "Bom Despacho", "Bocaiúva", "Monte Carmelo", "Diamantina", "Santos Dumont", "São Francisco", "Andradas", "Brumadinho", "Nanuque", "Salinas", "Visconde do Rio Branco", "Almenara", "Boa Esperança", "Arcos", "Iturama", "Ouro Branco", "Jequitinhonha", "Matozinhos", "São Lourenço", "Caeté", "Capelinha", "Porteirinha", "Machado", "Itabirito", "Extrema", "Oliveira", "São Gotardo", "Piumhi", "Várzea da Palma", "Araçuaí", "Guanhães", "Jaíba", "Além Paraíba", "Taiobeiras", "Santana do Paraíso", "Barão de Cocais", "Brasília de Minas", "Novo Cruzeiro", "Rio Pardo de Minas", "Santa Rita do Sapucaí", "Espinosa", "Carangola", "Pompéu", "Mateus Leme", "Buritis", "Ouro Fino", "Minas Novas", "João Pinheiro", "Sarzedo", "Turmalina", "Três Marias", "Campos Gerais", "Tupaciguara", "Carmo do Paranaíba", "Igarapé", "Cássia", "Conceição das Alagoas", "Lajinha", "Peçanha", "Aimorés", "Coração de Jesus", "Bambuí", "Mutum", "Paraopeba", "Campina Verde", "Itamarandiba", "Elói Mendes", "Prata", "Ibiá", "Presidente Olegário", "Sacramento", "Mantena", "São João da Ponte", "Cláudio", "Coromandel", "Camanducaia", "Belo Oriente", "Santo Antônio do Monte", "Buritizeiro", "Nepomuceno", "São Gonçalo do Sapucaí", "Jacutinga", "Itambacuri", "Carmo do Cajuru", "Muzambinho", "Paraguaçu", "Ipanema", "Tombos", "Rio Pomba", "Conselheiro Pena", "Pitangui", "Campestre", "Lambari", "Cambuí", "Santa Bárbara", "Monte Azul", "Itapecerica", "Carlos Chagas", "São João Nepomuceno", "Barroso", "Pedra Azul", "Itaobim", "Medina", "Campina Grande", "Outra"] as comarca}
+                                <option value={comarca}>{comarca}</option>
+                            {/each}
                         </select>
                     </label>
 
@@ -209,6 +230,32 @@
                             <option value="Outros">Outros</option>
                         </select>
                     </label>
+
+                    <label class="block">
+                        <span class="text-gray-700">Vitimização</span>
+                        <select
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                            bind:value={data.Vitimizacao}
+                        >
+                            <option value="">Selecione...</option>
+                            <option value="Primária">Primária</option>
+                            <option value="Secundária">Secundária</option>
+                            <option value="Terciária">Terciária</option>
+                        </select>
+                    </label>
+
+                    {#if data.Vitimizacao === "Terciária"}
+                        <label class="block">
+                            <span class="text-gray-700"
+                                >Origem (Vit. Terciária)</span
+                            >
+                            <input
+                                type="text"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={data.Vit_Terciaria_Origem}
+                            />
+                        </label>
+                    {/if}
                 </div>
             </div>
 
@@ -282,6 +329,7 @@
                             <option value="Demanda Espontânea"
                                 >Demanda Espontânea</option
                             >
+                            <option value="Outros">Outros</option>
                         </select>
                     </label>
 
@@ -404,6 +452,21 @@
                 <h3 class="text-lg font-semibold text-gray-700 mb-4">
                     Classificação do Crime / Violência
                 </h3>
+
+                <div class="mb-4">
+                    <label class="block">
+                        <span class="text-gray-700"
+                            >Classificação (Tentado/Consumado)</span
+                        >
+                        <input
+                            type="text"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                            bind:value={data.Classificacao_crime}
+                            placeholder="Ex: Tentado"
+                        />
+                    </label>
+                </div>
+
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {#each ["Homicídio", "Feminicídio", "Lesão Corporal", "Ameaça", "Estupro", "Assédio Sexual", "Cárcere Privado", "Violência Psicológica", "Violência Patrimonial", "Stalking"] as crime}
                         <label class="inline-flex items-center">

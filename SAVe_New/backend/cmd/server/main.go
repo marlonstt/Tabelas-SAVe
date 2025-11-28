@@ -70,7 +70,7 @@ func main() {
 				cases.GET("/:id", handlers.GetCaseById)
 				cases.DELETE("/:id", handlers.DeleteCase)
 				cases.POST("/:id/archive", handlers.ArchiveCase)
-				// cases.PUT("/:id/:section", handlers.UpdateCaseSection)
+				cases.PUT("/:id/:section", handlers.UpdateCaseSection)
 			}
 		}
 	}

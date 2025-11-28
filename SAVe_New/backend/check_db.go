@@ -24,23 +24,28 @@ func main() {
 	}
 	fmt.Println("Connected successfully")
 
-	var cases []SAVe_Geral
-	if err := db.Find(&cases).Error; err != nil {
-		log.Fatal("Failed to query save_geral:", err)
-	}
-	fmt.Println("Query successful. Count:", len(cases))
-
-	// Check table name with quotes
-	if err := db.Exec("SELECT 1 FROM \"SAVe_Geral\" LIMIT 1").Error; err != nil {
-		fmt.Println("Table \"SAVe_Geral\" (quoted) access failed:", err)
-	} else {
-		fmt.Println("Table \"SAVe_Geral\" (quoted) access successful")
+	// List all tables
+	var tables []string
+	db.Raw("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'").Scan(&tables)
+	fmt.Println("Existing tables:")
+	for _, t := range tables {
+		fmt.Println("- " + t)
 	}
 
-	// Check table name without quotes
-	if err := db.Exec("SELECT 1 FROM save_geral LIMIT 1").Error; err != nil {
-		fmt.Println("Table save_geral (unquoted) access failed:", err)
-	} else {
-		fmt.Println("Table save_geral (unquoted) access successful")
+	// Test variations
+	variations := []string{
+		"\"SAVe_Geral\"",
+		"save_geral",
+		"\"save_geral\"",
+		"SAVe_Geral",
+	}
+
+	for _, v := range variations {
+		err := db.Exec(fmt.Sprintf("SELECT 1 FROM %s LIMIT 1", v)).Error
+		if err != nil {
+			fmt.Printf("Access failed for %s: %v\n", v, err)
+		} else {
+			fmt.Printf("Access SUCCESS for %s\n", v)
+		}
 	}
 }

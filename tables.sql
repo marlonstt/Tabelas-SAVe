@@ -89,6 +89,7 @@ CREATE TABLE "SAVe_Identificacao_telefone" (
 
 -- Table: SAVe_Identificacao_endereco
 CREATE TABLE "SAVe_Identificacao_endereco" (
+    "ID" SERIAL PRIMARY KEY,
     "Endereco" TEXT,
     "Numero" TEXT,
     "Complemento" TEXT,
@@ -96,8 +97,14 @@ CREATE TABLE "SAVe_Identificacao_endereco" (
     "Cidade" TEXT,
     "UF" TEXT,
     "CEP" TEXT,
-    "ID_Caso" INTEGER PRIMARY KEY,
+    "ID_Caso" INTEGER,
     "Moradia_Situacao" TEXT
+);
+
+-- Table: SAVe_Casos_Vinculados
+CREATE TABLE "SAVe_Casos_Vinculados" (
+    "ID_Caso" INTEGER PRIMARY KEY,
+    "Casos_Relacionados" TEXT
 );
 
 -- Table: SAVe_protecao_seguranca_ameacadores
@@ -654,4 +661,62 @@ CREATE TABLE "SAVe_Acompanhamentos" (
     "Responsaveis" TEXT
 );
     "Tema" TEXT
+);
+-- Table: SAVe_Situacao_Juridica
+CREATE TABLE "SAVe_Situacao_Juridica" (
+    "ID_Caso" INTEGER PRIMARY KEY,
+    "SJ_IP_PCNet" TEXT,
+    "SJ_Auto_Judicial" TEXT,
+    "SJ_Num_MPMG" TEXT,
+    "SJ_IP_PCNet_Classe_Tipo" TEXT,
+    "SJ_Auto_Judicial_Classe_Tipo" TEXT,
+    "SJ_Num_MPMG_Tipo" TEXT,
+    "SJ_REDS_Classe_Tipo" TEXT,
+    "SJ_Obs_Documentacao" TEXT,
+    "SJ_Medidas_Prot_Cautelar" TEXT,
+    "SJ_REDS" TEXT,
+    "SJ_Num_Processo" TEXT,
+    "SJ_Vitima_Intimada" TEXT,
+    "SJ_Agressor_Intimado" TEXT,
+    "SJ_Compartilhado_Rede" TEXT,
+    "SJ_Relato_Descumprimento" TEXT,
+    "SJ_Descumprimento_Especif" TEXT,
+    "SJ_Autor_Maior_18" TEXT,
+    "SJ_Promotoria" TEXT,
+    "SJ_Delegacia" TEXT,
+    "SJ_Servidor_Referencia" TEXT,
+    "SJ_Promotor" TEXT,
+    "SJ_Delegado" TEXT,
+    "SJ_Juiz" TEXT,
+    "SJ_Orgao_Julgador" TEXT,
+    "SJ_Contato_Promotor" TEXT,
+    "SJ_Contato_Delegado" TEXT,
+    "SJ_Contato_Juiz" TEXT,
+    "SJ_Tipo_Penal_Fatos" TEXT,
+    "SJ_Tipo_Penal_Autuacao_IP" TEXT,
+    "SJ_Tipo_Penal_Conclusao_IP" TEXT,
+    "SJ_Tipo_Penal_Denuncia_Repres" TEXT,
+    "SJ_Tipo_Penal_Audiencia" TEXT,
+    "SJ_Tipo_Penal_Sentenca" TEXT,
+    "SJ_Tipo_Penal_Transito_Julgado" TEXT,
+    "SJ_Data_Fatos" TEXT,
+    "SJ_Data_Autuacao_IP" TEXT,
+    "SJ_Data_Conclusao_IP" TEXT,
+    "SJ_Data_Denuncia_Repres" TEXT,
+    "SJ_Data_Audiencia" TEXT,
+    "SJ_Data_Sentenca" TEXT,
+    "SJ_Data_Transito_Julgado" TEXT
+);
+
+-- Table: SAVe_Situacao_Juridica2
+CREATE TABLE "SAVe_Situacao_Juridica2" (
+    "ID_Caso" INTEGER PRIMARY KEY
+);
+
+-- Table: SAVe_Situacao_Juridica_Incluir_processo
+CREATE TABLE "SAVe_Situacao_Juridica_Incluir_processo" (
+    "ID" SERIAL PRIMARY KEY,
+    "ID_Caso" INTEGER,
+    "SJIP_Numero" TEXT,
+    "SJIP_Classe_Tipo" TEXT
 );

@@ -4,474 +4,727 @@
 
     export let caseId: string;
 
-    let data: any = {
-        processos: [],
-        demandas: {},
+    let data = {
+        SJ_IP_PCNet: "",
+        SJ_Auto_Judicial: "",
+        SJ_Num_MPMG: "",
+        SJ_IP_PCNet_Classe_Tipo: "",
+        SJ_Auto_Judicial_Classe_Tipo: "",
+        SJ_Num_MPMG_Tipo: "",
+        SJ_REDS_Classe_Tipo: "",
+        SJ_Obs_Documentacao: "",
+        SJ_Medidas_Prot_Cautelar: "Não",
+        SJ_REDS: "",
+        SJ_Num_Processo: "",
+        SJ_Vitima_Intimada: "Não",
+        SJ_Agressor_Intimado: "Não",
+        SJ_Compartilhado_Rede: "Não",
+        SJ_Relato_Descumprimento: "Não",
+        SJ_Descumprimento_Especif: "",
+        SJ_Autor_Maior_18: "Sim",
+        SJ_Promotoria: "",
+        SJ_Delegacia: "",
+        SJ_Servidor_Referencia: "",
+        SJ_Promotor: "",
+        SJ_Delegado: "",
+        SJ_Juiz: "",
+        SJ_Orgao_Julgador: "",
+        SJ_Contato_Promotor: "",
+        SJ_Contato_Delegado: "",
+        SJ_Contato_Juiz: "",
+        SJ_Tipo_Penal_Fatos: "",
+        SJ_Tipo_Penal_Autuacao_IP: "",
+        SJ_Tipo_Penal_Conclusao_IP: "",
+        SJ_Tipo_Penal_Denuncia_Repres: "",
+        SJ_Tipo_Penal_Audiencia: "",
+        SJ_Tipo_Penal_Sentenca: "",
+        SJ_Tipo_Penal_Transito_Julgado: "",
+        SJ_Data_Fatos: "",
+        SJ_Data_Autuacao_IP: "",
+        SJ_Data_Conclusao_IP: "",
+        SJ_Data_Denuncia_Repres: "",
+        SJ_Data_Audiencia: "",
+        SJ_Data_Sentenca: "",
+        SJ_Data_Transito_Julgado: "",
     };
+
+    let situacaoJuridica2 = { ID_Caso: 0 };
+
+    let processos = [];
+
     let loading = true;
     let saving = false;
-    let saveTimeout: any;
-    let lastSavedData: string = "";
+    let saveTimeout;
 
     onMount(async () => {
-        try {
-            const response = await api.get(
-                `/cases/${caseId}/situacao-juridica`,
-            );
-            data = response.data || { processos: [], demandas: {} };
-            if (!data.processos) data.processos = [];
-            if (!data.demandas) data.demandas = {};
-        } catch (err) {
-            console.warn(
-                "Backend unavailable, using Mock Data for SituacaoJuridica",
-            );
-            data = {
-                Autor_Maior_18: "Sim",
-                Medidas_Protetivas: "Sim",
-                Compartilhado_Rede: "Não",
-                Relato_Descumprimento: "Não",
-                Juiz: "",
-                Promotor: "",
-                Delegado: "",
-                Local_Crime: "",
-                Hora_Crime: "",
-                Status_Juridico_Autor: "",
-                Data_Fato: "",
-                Data_Autuacao: "",
-                Data_Conclusao_IP: "",
-                Data_Denuncia: "",
-                Data_Audiencia: "",
-                Data_Sentenca: "",
-                Data_Transito_Julgado: "",
-                Tipos_Penais_Fase_Policial: "",
-                Tipos_Penais_Fase_Judicial: "",
-                Prisao_Data: "",
-                Prisao_Procedimento: "",
-                Prisao_Infracao: "",
-                processos: [
-                    {
-                        numero: "1234567-89.2024.8.13.0024",
-                        classe: "Medida Protetiva",
-                    },
-                ],
-                demandas: {
-                    Divorcio: false,
-                    Guarda: true,
-                    Pensao: true,
-                },
-            };
-        } finally {
-            loading = false;
-            lastSavedData = JSON.stringify(data);
-        }
+        await loadData();
     });
 
+    async function loadData() {
+        try {
+            loading = true;
+            const response = await api.get(`/cases/${caseId}`);
+            const apiData = response.data;
+
+            if (apiData.situacaoJuridica && apiData.situacaoJuridica.ID_Caso) {
+                data = { ...data, ...apiData.situacaoJuridica };
+            }
+            if (
+                apiData.situacaoJuridica2 &&
+                apiData.situacaoJuridica2.ID_Caso
+            ) {
+                situacaoJuridica2 = {
+                    ...situacaoJuridica2,
+                    ...apiData.situacaoJuridica2,
+                };
+            }
+            if (apiData.processos) {
+                processos = apiData.processos;
+            }
+        } catch (error) {
+            console.error("Error loading data:", error);
+        } finally {
+            loading = false;
+        }
+    }
+
     function autosave() {
-        if (loading) return;
-
-        const currentData = JSON.stringify(data);
-        if (currentData === lastSavedData) return;
-
-        clearTimeout(saveTimeout);
+        if (saveTimeout) clearTimeout(saveTimeout);
         saving = true;
-
         saveTimeout = setTimeout(async () => {
             try {
-                // await api.put(`/cases/${caseId}/situacao-juridica`, data);
-                console.log("Autosaving SituacaoJuridica...", data);
-                await new Promise((r) => setTimeout(r, 500));
-                lastSavedData = currentData;
-            } catch (err) {
-                console.error("Error autosaving", err);
-            } finally {
+                const payload = {
+                    ...data,
+                    situacaoJuridica2: situacaoJuridica2,
+                    processos: processos,
+                };
+                await api.put(`/cases/${caseId}/situacao-juridica`, payload);
+                saving = false;
+            } catch (error) {
+                console.error("Error saving data:", error);
                 saving = false;
             }
         }, 1000);
     }
 
-    $: if (data) autosave();
-
     function addProcesso() {
-        data.processos = [...data.processos, { numero: "", classe: "" }];
+        processos = [...processos, { SJIP_Numero: "", SJIP_Classe_Tipo: "" }];
         autosave();
     }
 
-    function removeProcesso(index: number) {
-        data.processos = data.processos.filter((_, i) => i !== index);
+    function removeProcesso(index) {
+        processos = processos.filter((_, i) => i !== index);
         autosave();
     }
 </script>
 
-<div class="bg-white rounded shadow p-6 relative">
-    <!-- Autosave Indicator -->
-    <div
-        class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={!saving}
-        class:opacity-100={saving}
-    >
-        <span class="text-save-primary flex items-center">
-            <span class="material-icons text-sm mr-1 animate-spin">sync</span>
-            Salvando...
-        </span>
-    </div>
-    <div
-        class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving || loading}
-        class:opacity-100={!saving && !loading}
-    >
-        <span class="text-green-600 flex items-center">
-            <span class="material-icons text-sm mr-1">check</span>
-            Salvo
-        </span>
-    </div>
+<div class="p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Situação Jurídica</h2>
 
     {#if loading}
         <p>Carregando...</p>
     {:else}
-        <div class="space-y-6">
-            <!-- Informações Gerais -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Informações Gerais
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Identificação dos Procedimentos -->
+            <div class="col-span-2">
+                <h3
+                    class="text-lg font-semibold mb-4 text-gray-700 border-b pb-2"
+                >
+                    Identificação dos Procedimentos
                 </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <label class="block">
-                        <span class="text-gray-700"
-                            >Autor é maior de 18 anos?</span
-                        >
-                        <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Autor_Maior_18}
-                        >
-                            <option value="">Selecione...</option>
-                            <option value="Sim">Sim</option>
-                            <option value="Não">Não</option>
-                        </select>
-                    </label>
+            </div>
 
-                    <label class="block">
-                        <span class="text-gray-700"
-                            >Possui Medidas Protetivas?</span
-                        >
-                        <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Medidas_Protetivas}
-                        >
-                            <option value="">Selecione...</option>
-                            <option value="Sim">Sim</option>
-                            <option value="Não">Não</option>
-                        </select>
-                    </label>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Nº IP / PCNet</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_IP_PCNet}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
 
-                    <label class="block">
-                        <span class="text-gray-700"
-                            >Caso compartilhado com a rede?</span
-                        >
-                        <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Compartilhado_Rede}
-                        >
-                            <option value="">Selecione...</option>
-                            <option value="Sim">Sim</option>
-                            <option value="Não">Não</option>
-                        </select>
-                    </label>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Classe / Tipo (IP)</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_IP_PCNet_Classe_Tipo}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
 
-                    <label class="block">
-                        <span class="text-gray-700"
-                            >Houve relato de descumprimento?</span
-                        >
-                        <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Relato_Descumprimento}
-                        >
-                            <option value="">Selecione...</option>
-                            <option value="Sim">Sim</option>
-                            <option value="Não">Não</option>
-                        </select>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Nº Autos Judiciais</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Auto_Judicial}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Classe / Tipo (Judicial)</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Auto_Judicial_Classe_Tipo}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Nº MPMG</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Num_MPMG}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Tipo (MPMG)</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Num_MPMG_Tipo}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Nº REDS</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_REDS}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Classe / Tipo (REDS)</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_REDS_Classe_Tipo}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="col-span-2">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Observações sobre Documentação</label
+                >
+                <textarea
+                    bind:value={data.SJ_Obs_Documentacao}
+                    on:input={autosave}
+                    rows="3"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                ></textarea>
+            </div>
+
+            <!-- Medidas Protetivas -->
+            <div class="col-span-2 mt-6">
+                <h3
+                    class="text-lg font-semibold mb-4 text-gray-700 border-b pb-2"
+                >
+                    Medidas Protetivas
+                </h3>
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Medidas Protetivas / Cautelar?</label
+                >
+                <div class="mt-2 space-x-4">
+                    <label class="inline-flex items-center">
+                        <input
+                            type="radio"
+                            bind:group={data.SJ_Medidas_Prot_Cautelar}
+                            value="Sim"
+                            on:change={autosave}
+                            class="form-radio text-indigo-600"
+                        />
+                        <span class="ml-2">Sim</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input
+                            type="radio"
+                            bind:group={data.SJ_Medidas_Prot_Cautelar}
+                            value="Não"
+                            on:change={autosave}
+                            class="form-radio text-indigo-600"
+                        />
+                        <span class="ml-2">Não</span>
                     </label>
                 </div>
             </div>
 
-            <!-- Detalhes do Crime -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Detalhes do Crime
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <label class="block">
-                        <span class="text-gray-700">Local do Crime</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Local_Crime}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Hora do Crime</span>
-                        <input
-                            type="time"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Hora_Crime}
-                        />
-                    </label>
+            {#if data.SJ_Medidas_Prot_Cautelar === "Sim"}
+                <div class="form-group">
+                    <label class="block text-sm font-medium text-gray-700"
+                        >Nº Processo</label
+                    >
+                    <input
+                        type="text"
+                        bind:value={data.SJ_Num_Processo}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
                 </div>
-            </div>
 
-            <!-- Datas Importantes -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Datas Importantes
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <label class="block">
-                        <span class="text-gray-700">Data do Fato</span>
-                        <input
-                            type="date"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Data_Fato}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Data da Autuação</span>
-                        <input
-                            type="date"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Data_Autuacao}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Data Conclusão IP</span>
-                        <input
-                            type="date"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Data_Conclusao_IP}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Data da Denúncia</span>
-                        <input
-                            type="date"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Data_Denuncia}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Data da Audiência</span>
-                        <input
-                            type="date"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Data_Audiencia}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Data da Sentença</span>
-                        <input
-                            type="date"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Data_Sentenca}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Trânsito em Julgado</span>
-                        <input
-                            type="date"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Data_Transito_Julgado}
-                        />
-                    </label>
-                </div>
-            </div>
-
-            <!-- Tipos Penais -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Tipos Penais
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <label class="block">
-                        <span class="text-gray-700">Fase Policial</span>
-                        <textarea
-                            rows="3"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Tipos_Penais_Fase_Policial}
-                        ></textarea>
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Fase Judicial</span>
-                        <textarea
-                            rows="3"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Tipos_Penais_Fase_Judicial}
-                        ></textarea>
-                    </label>
-                </div>
-            </div>
-
-            <!-- Autoridades -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Autoridades Envolvidas
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <label class="block">
-                        <span class="text-gray-700">Juiz(a)</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Juiz}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Promotor(a)</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Promotor}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Delegado(a)</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Delegado}
-                        />
-                    </label>
-                </div>
-            </div>
-
-            <!-- Status e Prisão -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Status do Autor e Prisão
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <label class="block">
-                        <span class="text-gray-700"
-                            >Status Jurídico do Autor</span
-                        >
-                        <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Status_Juridico_Autor}
-                        >
-                            <option value="">Selecione...</option>
-                            <option value="Investigado">Investigado</option>
-                            <option value="Indiciado">Indiciado</option>
-                            <option value="Denunciado">Denunciado</option>
-                            <option value="Réu">Réu</option>
-                            <option value="Condenado">Condenado</option>
-                            <option value="Absolvido">Absolvido</option>
-                        </select>
-                    </label>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                    <label class="block">
-                        <span class="text-gray-700">Data da Prisão</span>
-                        <input
-                            type="date"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Prisao_Data}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Procedimento</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Prisao_Procedimento}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">Infração</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Prisao_Infracao}
-                        />
-                    </label>
-                </div>
-            </div>
-
-            <!-- Processos -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Processos / Procedimentos
-                </h3>
-                {#each data.processos as proc, i}
-                    <div class="flex gap-4 mb-2 items-end">
-                        <label class="flex-1">
-                            <span class="text-xs text-gray-500">Número</span>
+                <div class="form-group">
+                    <label class="block text-sm font-medium text-gray-700"
+                        >Vítima Intimada?</label
+                    >
+                    <div class="mt-2 space-x-4">
+                        <label class="inline-flex items-center">
                             <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={proc.numero}
+                                type="radio"
+                                bind:group={data.SJ_Vitima_Intimada}
+                                value="Sim"
+                                on:change={autosave}
+                                class="form-radio text-indigo-600"
                             />
+                            <span class="ml-2">Sim</span>
                         </label>
-                        <label class="flex-1">
-                            <span class="text-xs text-gray-500"
-                                >Classe / Tipo</span
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                bind:group={data.SJ_Vitima_Intimada}
+                                value="Não"
+                                on:change={autosave}
+                                class="form-radio text-indigo-600"
+                            />
+                            <span class="ml-2">Não</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="block text-sm font-medium text-gray-700"
+                        >Agressor Intimado?</label
+                    >
+                    <div class="mt-2 space-x-4">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                bind:group={data.SJ_Agressor_Intimado}
+                                value="Sim"
+                                on:change={autosave}
+                                class="form-radio text-indigo-600"
+                            />
+                            <span class="ml-2">Sim</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                bind:group={data.SJ_Agressor_Intimado}
+                                value="Não"
+                                on:change={autosave}
+                                class="form-radio text-indigo-600"
+                            />
+                            <span class="ml-2">Não</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="block text-sm font-medium text-gray-700"
+                        >Compartilhado com a Rede?</label
+                    >
+                    <div class="mt-2 space-x-4">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                bind:group={data.SJ_Compartilhado_Rede}
+                                value="Sim"
+                                on:change={autosave}
+                                class="form-radio text-indigo-600"
+                            />
+                            <span class="ml-2">Sim</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                bind:group={data.SJ_Compartilhado_Rede}
+                                value="Não"
+                                on:change={autosave}
+                                class="form-radio text-indigo-600"
+                            />
+                            <span class="ml-2">Não</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="block text-sm font-medium text-gray-700"
+                        >Relato de Descumprimento?</label
+                    >
+                    <div class="mt-2 space-x-4">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                bind:group={data.SJ_Relato_Descumprimento}
+                                value="Sim"
+                                on:change={autosave}
+                                class="form-radio text-indigo-600"
+                            />
+                            <span class="ml-2">Sim</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                bind:group={data.SJ_Relato_Descumprimento}
+                                value="Não"
+                                on:change={autosave}
+                                class="form-radio text-indigo-600"
+                            />
+                            <span class="ml-2">Não</span>
+                        </label>
+                    </div>
+                </div>
+
+                {#if data.SJ_Relato_Descumprimento === "Sim"}
+                    <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-700"
+                            >Especifique o Descumprimento</label
+                        >
+                        <textarea
+                            bind:value={data.SJ_Descumprimento_Especif}
+                            on:input={autosave}
+                            rows="3"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        ></textarea>
+                    </div>
+                {/if}
+            {/if}
+
+            <!-- Outros Processos -->
+            <div class="col-span-2 mt-6">
+                <h3
+                    class="text-lg font-semibold mb-4 text-gray-700 border-b pb-2"
+                >
+                    Outros Processos
+                </h3>
+
+                {#each processos as processo, index}
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 border rounded bg-gray-50"
+                    >
+                        <div class="form-group">
+                            <label
+                                class="block text-sm font-medium text-gray-700"
+                                >Número</label
                             >
                             <input
                                 type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={proc.classe}
+                                bind:value={processo.SJIP_Numero}
+                                on:input={autosave}
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                             />
-                        </label>
-                        <button
-                            class="text-red-500 hover:text-red-700 mb-2"
-                            on:click={() => removeProcesso(i)}
-                        >
-                            <span class="material-icons">delete</span>
-                        </button>
+                        </div>
+                        <div class="form-group">
+                            <label
+                                class="block text-sm font-medium text-gray-700"
+                                >Classe / Tipo</label
+                            >
+                            <input
+                                type="text"
+                                bind:value={processo.SJIP_Classe_Tipo}
+                                on:input={autosave}
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            />
+                        </div>
+                        <div class="flex items-end">
+                            <button
+                                on:click={() => removeProcesso(index)}
+                                class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                                >Remover</button
+                            >
+                        </div>
                     </div>
                 {/each}
+
                 <button
-                    class="text-sm text-save-primary hover:underline mt-2"
-                    on:click={addProcesso}>+ Adicionar Processo</button
+                    on:click={addProcesso}
+                    class="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                    >Incluir Processo</button
                 >
             </div>
 
-            <!-- Demandas da Vítima -->
-            <div>
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Demandas da Vítima
+            <!-- Datas e Tipos Penais -->
+            <div class="col-span-2 mt-6">
+                <h3
+                    class="text-lg font-semibold mb-4 text-gray-700 border-b pb-2"
+                >
+                    Datas e Tipos Penais
                 </h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Data dos Fatos</label
+                >
+                <input
+                    type="date"
+                    bind:value={data.SJ_Data_Fatos}
+                    on:change={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Tipo Penal (Fatos)</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Tipo_Penal_Fatos}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Data Autuação IP</label
+                >
+                <input
+                    type="date"
+                    bind:value={data.SJ_Data_Autuacao_IP}
+                    on:change={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Tipo Penal (Autuação IP)</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Tipo_Penal_Autuacao_IP}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Data Conclusão IP</label
+                >
+                <input
+                    type="date"
+                    bind:value={data.SJ_Data_Conclusao_IP}
+                    on:change={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Tipo Penal (Conclusão IP)</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Tipo_Penal_Conclusao_IP}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Data Denúncia/Repres.</label
+                >
+                <input
+                    type="date"
+                    bind:value={data.SJ_Data_Denuncia_Repres}
+                    on:change={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Tipo Penal (Denúncia)</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Tipo_Penal_Denuncia_Repres}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Data Audiência</label
+                >
+                <input
+                    type="date"
+                    bind:value={data.SJ_Data_Audiencia}
+                    on:change={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Tipo Penal (Audiência)</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Tipo_Penal_Audiencia}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Data Sentença</label
+                >
+                <input
+                    type="date"
+                    bind:value={data.SJ_Data_Sentenca}
+                    on:change={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Tipo Penal (Sentença)</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Tipo_Penal_Sentenca}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Data Trânsito Julgado</label
+                >
+                <input
+                    type="date"
+                    bind:value={data.SJ_Data_Transito_Julgado}
+                    on:change={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Tipo Penal (Trânsito)</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Tipo_Penal_Transito_Julgado}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <!-- Outras Informações -->
+            <div class="col-span-2 mt-6">
+                <h3
+                    class="text-lg font-semibold mb-4 text-gray-700 border-b pb-2"
+                >
+                    Outras Informações
+                </h3>
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Autor Maior de 18?</label
+                >
+                <div class="mt-2 space-x-4">
                     <label class="inline-flex items-center">
                         <input
-                            type="checkbox"
-                            class="form-checkbox text-save-primary"
-                            bind:checked={data.demandas.Divorcio}
+                            type="radio"
+                            bind:group={data.SJ_Autor_Maior_18}
+                            value="Sim"
+                            on:change={autosave}
+                            class="form-radio text-indigo-600"
                         />
-                        <span class="ml-2">Divórcio</span>
+                        <span class="ml-2">Sim</span>
                     </label>
                     <label class="inline-flex items-center">
                         <input
-                            type="checkbox"
-                            class="form-checkbox text-save-primary"
-                            bind:checked={data.demandas.Guarda}
+                            type="radio"
+                            bind:group={data.SJ_Autor_Maior_18}
+                            value="Não"
+                            on:change={autosave}
+                            class="form-radio text-indigo-600"
                         />
-                        <span class="ml-2">Guarda</span>
+                        <span class="ml-2">Não</span>
                     </label>
-                    <label class="inline-flex items-center">
-                        <input
-                            type="checkbox"
-                            class="form-checkbox text-save-primary"
-                            bind:checked={data.demandas.Pensao}
-                        />
-                        <span class="ml-2">Pensão Alimentícia</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input
-                            type="checkbox"
-                            class="form-checkbox text-save-primary"
-                            bind:checked={data.demandas.Partilha}
-                        />
-                        <span class="ml-2">Partilha de Bens</span>
-                    </label>
-                    <!-- Adicionar mais demandas conforme necessário -->
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Promotoria</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Promotoria}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Delegacia</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Delegacia}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Servidor Referência</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Servidor_Referencia}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Órgão Julgador</label
+                >
+                <input
+                    type="text"
+                    bind:value={data.SJ_Orgao_Julgador}
+                    on:input={autosave}
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
             </div>
         </div>
     {/if}

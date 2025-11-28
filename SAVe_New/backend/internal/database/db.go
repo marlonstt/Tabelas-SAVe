@@ -3,6 +3,8 @@ package database
 import (
 	"log"
 
+	"save-backend/internal/models"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -29,4 +31,19 @@ func Connect() {
 
 	log.Println("Connected to database successfully")
 	Connected = true
+
+	// AutoMigrate
+	err = DB.AutoMigrate(
+		&models.SAVe_Casos_Vinculados{},
+		&models.SAVe_Identificacao{},
+		&models.SAVe_Identificacao_endereco{},
+		&models.SAVe_Identificacao_telefone{},
+		&models.SAVe_Identificacao_email{},
+		&models.SAVe_Situacao_Juridica{},
+		&models.SAVe_Situacao_Juridica2{},
+		&models.SAVe_Situacao_Juridica_Incluir_processo{},
+	)
+	if err != nil {
+		log.Println("ERROR: Failed to migrate database:", err)
+	}
 }
