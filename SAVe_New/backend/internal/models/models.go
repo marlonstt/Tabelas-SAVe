@@ -425,3 +425,141 @@ type SAVe_Ensino_trab_renda struct {
 func (SAVe_Ensino_trab_renda) TableName() string {
 	return "save_ensino_trab_renda"
 }
+
+type SAVe_Vinculos struct {
+	ID_Caso                     uint      `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
+	Qtd_Pessoas_Fam             int       `gorm:"column:\"Qtd_Pessoas_Fam\"" json:"Qtd_Pessoas_Fam"`
+	Qtd_Filhos_Ent              int       `gorm:"column:\"Qtd_Filhos_Ent\"" json:"Qtd_Filhos_Ent"`
+	Num_Filhos_Dep              int       `gorm:"column:\"Num_Filhos_Dep\"" json:"Num_Filhos_Dep"`
+	Num_Enteados_Dep            int       `gorm:"column:\"Num_Enteados_Dep\"" json:"Num_Enteados_Dep"`
+	Renda_Total_Conv            float64   `gorm:"column:\"Renda_Total_Conv\"" json:"Renda_Total_Conv"`
+	Alt_Fam_Com_Vitim           string    `gorm:"column:\"Alt_Fam_Com_Vitim\"" json:"Alt_Fam_Com_Vitim"`
+	Alt_Fam_Com_Vitim_Descr     string    `gorm:"column:\"Alt_Fam_Com_Vitim_Descr\"" json:"Alt_Fam_Com_Vitim_Descr"`
+	Vulnerab_Vinculos_Fam       string    `gorm:"column:\"Vulnerab_Vinculos_Fam\"" json:"Vulnerab_Vinculos_Fam"`
+	Vulnerab_Vinculos_Fam_Descr string    `gorm:"column:\"Vulnerab_Vinculos_Fam_Descr\"" json:"Vulnerab_Vinculos_Fam_Descr"`
+	Vulnerab_Vitim_Sec_Ter      string    `gorm:"column:\"Vulnerab_Vitim_Sec_Ter\"" json:"Vulnerab_Vitim_Sec_Ter"`
+	Tipo_Vitim                  string    `gorm:"column:\"Tipo_Vitim\"" json:"Tipo_Vitim"`
+	Tipo_Vitim_Descr            string    `gorm:"column:\"Tipo_Vitim_Descr\"" json:"Tipo_Vitim_Descr"`
+	CreatedAt                   time.Time `json:"created_at"`
+	UpdatedAt                   time.Time `json:"updated_at"`
+}
+
+func (SAVe_Vinculos) TableName() string {
+	return "\"SAVe_Vinculos\""
+}
+
+type SAVe_Vinculos_Apoio struct {
+	ID                            uint      `gorm:"primaryKey;autoIncrement;column:\"ID\"" json:"ID"`
+	ID_Caso                       uint      `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
+	AVF_Grau_Parentesco           string    `gorm:"column:\"AVF_Grau_Parentesco\"" json:"AVF_Grau_Parentesco"`
+	AVF_Nome                      string    `gorm:"column:\"AVF_Nome\"" json:"AVF_Nome"`
+	AVF_Data_Nasc                 string    `gorm:"column:\"AVF_Data_Nasc\"" json:"AVF_Data_Nasc"`
+	AVF_Escolaridade              string    `gorm:"column:\"AVF_Escolaridade\"" json:"AVF_Escolaridade"`
+	AVF_Ocupacao                  string    `gorm:"column:\"AVF_Ocupacao\"" json:"AVF_Ocupacao"`
+	AVF_Renda                     string    `gorm:"column:\"AVF_Renda\"" json:"AVF_Renda"`
+	AVF_Mora_Com_Vitima           bool      `gorm:"column:\"AVF_Mora_Com_Vitima\"" json:"AVF_Mora_Com_Vitima"`
+	AVF_Presenciou_Violencia      bool      `gorm:"column:\"AVF_Presenciou_Violencia\"" json:"AVF_Presenciou_Violencia"`
+	AVF_Conhecimento_Fato         bool      `gorm:"column:\"AVF_Conhecimento_Fato\"" json:"AVF_Conhecimento_Fato"`
+	AVF_Alt_Vinculo_Pos_Violencia string    `gorm:"column:\"AVF_Alt_Vinculo_Pos_Violencia\"" json:"AVF_Alt_Vinculo_Pos_Violencia"`
+	AVF_Rede_Apoio                bool      `gorm:"column:\"AVF_Rede_Apoio\"" json:"AVF_Rede_Apoio"`
+	CreatedAt                     time.Time `json:"created_at"`
+	UpdatedAt                     time.Time `json:"updated_at"`
+}
+
+func (SAVe_Vinculos_Apoio) TableName() string {
+	return "\"SAVe_Vinculos_Apoio\""
+}
+
+type SAVe_protecao_seguranca struct {
+	ID_Caso                              int    `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
+	PS_Natureza_Ameaca                   string `gorm:"column:\"PS_Natureza_Ameaca\"" json:"PS_Natureza_Ameaca"`
+	PS_Natureza_Ameaca_Especif           string `gorm:"column:\"PS_Natureza_Ameaca_Especif\"" json:"PS_Natureza_Ameaca_Especif"`
+	PS_Como_Ameaca                       string `gorm:"column:\"PS_Como_Ameaca\"" json:"PS_Como_Ameaca"`
+	PS_Tempo_Ameaca                      string `gorm:"column:\"PS_Tempo_Ameaca\"" json:"PS_Tempo_Ameaca"`
+	PS_Ameaca_Autor_Vitim                string `gorm:"column:\"PS_Ameaca_Autor_Vitim\"" json:"PS_Ameaca_Autor_Vitim"`
+	PS_Ameaca_Conhece                    string `gorm:"column:\"PS_Ameaca_Conhece\"" json:"PS_Ameaca_Conhece"`
+	PS_Ameaca_Mais_Autor                 string `gorm:"column:\"PS_Ameaca_Mais_Autor\"" json:"PS_Ameaca_Mais_Autor"`
+	PS_Tipo_Relacao                      string `gorm:"column:\"PS_Tipo_Relacao\"" json:"PS_Tipo_Relacao"`
+	PS_Tipo_Relacao_Especif              string `gorm:"column:\"PS_Tipo_Relacao_Especif\"" json:"PS_Tipo_Relacao_Especif"`
+	PS_Reside_Com_Autor                  string `gorm:"column:\"PS_Reside_Com_Autor\"" json:"PS_Reside_Com_Autor"`
+	PS_Relacao_Poder                     string `gorm:"column:\"PS_Relacao_Poder\"" json:"PS_Relacao_Poder"`
+	PS_Relacao_Poder_Especif             string `gorm:"column:\"PS_Relacao_Poder_Especif\"" json:"PS_Relacao_Poder_Especif"`
+	PS_Ameacas_Anteriores                string `gorm:"column:\"PS_Ameacas_Anteriores\"" json:"PS_Ameacas_Anteriores"`
+	PS_Ameacas_Anteriores_Especif        string `gorm:"column:\"PS_Ameacas_Anteriores_Especif\"" json:"PS_Ameacas_Anteriores_Especif"`
+	PS_Ameaca_Agente_Publico             string `gorm:"column:\"PS_Ameaca_Agente_Publico\"" json:"PS_Ameaca_Agente_Publico"`
+	PS_Ameaca_Agente_Instituicao         string `gorm:"column:\"PS_Ameaca_Agente_Instituicao\"" json:"PS_Ameaca_Agente_Instituicao"`
+	PS_Ameaca_Agente_Instituicao_Especif string `gorm:"column:\"PS_Ameaca_Agente_Instituicao_Especif\"" json:"PS_Ameaca_Agente_Instituicao_Especif"`
+	PS_Ameaca_Org_Criminosa              string `gorm:"column:\"PS_Ameaca_Org_Criminosa\"" json:"PS_Ameaca_Org_Criminosa"`
+	PS_Ameaca_Org_Criminosa_Especif      string `gorm:"column:\"PS_Ameaca_Org_Criminosa_Especif\"" json:"PS_Ameaca_Org_Criminosa_Especif"`
+	PS_Regiao_Abrangencia_Ameaca         string `gorm:"column:\"PS_Regiao_Abrangencia_Ameaca\"" json:"PS_Regiao_Abrangencia_Ameaca"`
+	PS_Ameaca_Meios_Concretizar          string `gorm:"column:\"PS_Ameaca_Meios_Concretizar\"" json:"PS_Ameaca_Meios_Concretizar"`
+	PS_Ameaca_Meios_Concretizar_Especif  string `gorm:"column:\"PS_Ameaca_Meios_Concretizar_Especif\"" json:"PS_Ameaca_Meios_Concretizar_Especif"`
+	PS_Sendo_Perseguido                  string `gorm:"column:\"PS_Sendo_Perseguido\"" json:"PS_Sendo_Perseguido"`
+	PS_Perseguido_Descr                  string `gorm:"column:\"PS_Perseguido_Descr\"" json:"PS_Perseguido_Descr"`
+	PS_Autor_Acesso_Armas                string `gorm:"column:\"PS_Autor_Acesso_Armas\"" json:"PS_Autor_Acesso_Armas"`
+	PS_Acesso_Armas_Descr                string `gorm:"column:\"PS_Acesso_Armas_Descr\"" json:"PS_Acesso_Armas_Descr"`
+	PS_Violencia_Pos_Ameaca              string `gorm:"column:\"PS_Violencia_Pos_Ameaca\"" json:"PS_Violencia_Pos_Ameaca"`
+	PS_Violencia_Pos_Ameaca_Descr        string `gorm:"column:\"PS_Violencia_Pos_Ameaca_Descr\"" json:"PS_Violencia_Pos_Ameaca_Descr"`
+	PS_Ameaca_Repercussoes_Soc           string `gorm:"column:\"PS_Ameaca_Repercussoes_Soc\"" json:"PS_Ameaca_Repercussoes_Soc"`
+	PS_Repercussoes_Soc_Descr            string `gorm:"column:\"PS_Repercussoes_Soc_Descr\"" json:"PS_Repercussoes_Soc_Descr"`
+	PS_Ameaca_Extensao_Familia           string `gorm:"column:\"PS_Ameaca_Extensao_Familia\"" json:"PS_Ameaca_Extensao_Familia"`
+	PS_Extensao_Familia_Descr            string `gorm:"column:\"PS_Extensao_Familia_Descr\"" json:"PS_Extensao_Familia_Descr"`
+	PS_Ameaca_Crianca_Adolescente        string `gorm:"column:\"PS_Ameaca_Crianca_Adolescente\"" json:"PS_Ameaca_Crianca_Adolescente"`
+	PS_Liberdade_Limitada                string `gorm:"column:\"PS_Liberdade_Limitada\"" json:"PS_Liberdade_Limitada"`
+	PS_Liberdade_Limitada_Descr          string `gorm:"column:\"PS_Liberdade_Limitada_Descr\"" json:"PS_Liberdade_Limitada_Descr"`
+	PS_Impactos_Emocionais_Psic          string `gorm:"column:\"PS_Impactos_Emocionais_Psic\"" json:"PS_Impactos_Emocionais_Psic"`
+	PS_Impactos_Emocionais_Psic_Descr    string `gorm:"column:\"PS_Impactos_Emocionais_Psic_Descr\"" json:"PS_Impactos_Emocionais_Psic_Descr"`
+	PS_Impactos_Financeiros              string `gorm:"column:\"PS_Impactos_Financeiros\"" json:"PS_Impactos_Financeiros"`
+	PS_Impactos_Financeiros_Descr        string `gorm:"column:\"PS_Impactos_Financeiros_Descr\"" json:"PS_Impactos_Financeiros_Descr"`
+	PS_Nao_Sente_Segura_Mudar            string `gorm:"column:\"PS_Nao_Sente_Segura_Mudar\"" json:"PS_Nao_Sente_Segura_Mudar"`
+	PS_Nao_Sente_Segura_Mudar_Descr      string `gorm:"column:\"PS_Nao_Sente_Segura_Mudar_Descr\"" json:"PS_Nao_Sente_Segura_Mudar_Descr"`
+	PS_Possui_Rede_Apoio_Fam             string `gorm:"column:\"PS_Possui_Rede_Apoio_Fam\"" json:"PS_Possui_Rede_Apoio_Fam"`
+	PS_Rede_Apoio_Fam_Descr              string `gorm:"column:\"PS_Rede_Apoio_Fam_Descr\"" json:"PS_Rede_Apoio_Fam_Descr"`
+	PS_Possui_Rede_Comunitaria           string `gorm:"column:\"PS_Possui_Rede_Comunitaria\"" json:"PS_Possui_Rede_Comunitaria"`
+	PS_Rede_Comunitaria_Descr            string `gorm:"column:\"PS_Rede_Comunitaria_Descr\"" json:"PS_Rede_Comunitaria_Descr"`
+	PS_Possui_Equip_Seguranca            string `gorm:"column:\"PS_Possui_Equip_Seguranca\"" json:"PS_Possui_Equip_Seguranca"`
+	PS_Equip_Seguranca_Descr             string `gorm:"column:\"PS_Equip_Seguranca_Descr\"" json:"PS_Equip_Seguranca_Descr"`
+	PS_Possivel_Deslocamento_Seguro      string `gorm:"column:\"PS_Possivel_Deslocamento_Seguro\"" json:"PS_Possivel_Deslocamento_Seguro"`
+	PS_Deslocamento_Seguro_Descr         string `gorm:"column:\"PS_Deslocamento_Seguro_Descr\"" json:"PS_Deslocamento_Seguro_Descr"`
+	PS_Servicos_Prot_Social              string `gorm:"column:\"PS_Servicos_Prot_Social\"" json:"PS_Servicos_Prot_Social"`
+	PS_Servicos_Prot_Social_Especif      string `gorm:"column:\"PS_Servicos_Prot_Social_Especif\"" json:"PS_Servicos_Prot_Social_Especif"`
+	PS_Servicos_Acolhimento_Emerg        string `gorm:"column:\"PS_Servicos_Acolhimento_Emerg\"" json:"PS_Servicos_Acolhimento_Emerg"`
+	PS_Servicos_Acolhimento_Especif      string `gorm:"column:\"PS_Servicos_Acolhimento_Especif\"" json:"PS_Servicos_Acolhimento_Especif"`
+	PS_Programas_Protecao                string `gorm:"column:\"PS_Programas_Protecao\"" json:"PS_Programas_Protecao"`
+	PS_Programas_Protecao_Especif        string `gorm:"column:\"PS_Programas_Protecao_Especif\"" json:"PS_Programas_Protecao_Especif"`
+	PS_Vitima_Capaz_Ingressar_Prog       string `gorm:"column:\"PS_Vitima_Capaz_Ingressar_Prog\"" json:"PS_Vitima_Capaz_Ingressar_Prog"`
+	PS_Providencia_Realizada             string `gorm:"column:\"PS_Providencia_Realizada\"" json:"PS_Providencia_Realizada"`
+	PS_Providencia_Realizada_Descr       string `gorm:"column:\"PS_Providencia_Realizada_Descr\"" json:"PS_Providencia_Realizada_Descr"`
+	PS_Vitima_Violencia_Domestica        string `gorm:"column:\"PS_Vitima_Violencia_Domestica\"" json:"PS_Vitima_Violencia_Domestica"`
+	PS_Vitima_Crime_Odio                 string `gorm:"column:\"PS_Vitima_Crime_Odio\"" json:"PS_Vitima_Crime_Odio"`
+	PS_Rede_Aplicou_Protocolo_FF         string `gorm:"column:\"PS_Rede_Aplicou_Protocolo_FF\"" json:"PS_Rede_Aplicou_Protocolo_FF"`
+	PS_Rede_Aplicou_Protocolo_Roger      string `gorm:"column:\"PS_Rede_Aplicou_Protocolo_Roger\"" json:"PS_Rede_Aplicou_Protocolo_Roger"`
+	PS_Deseja_Aplicar_FONAR              string `gorm:"column:\"PS_Deseja_Aplicar_FONAR\"" json:"PS_Deseja_Aplicar_FONAR"`
+	PS_Situacao_ameaca_relat             string `gorm:"column:\"PS_Situacao_ameaca_relat\"" json:"PS_Situacao_ameaca_relat"`
+	Nomes_Ameacadores                    string `gorm:"column:\"Nomes_Ameacadores\"" json:"Nomes_Ameacadores"`
+}
+
+func (SAVe_protecao_seguranca) TableName() string {
+	return "\"SAVe_protecao_seguranca\""
+}
+
+type SAVe_protecao_seguranca_ameacadores struct {
+	ID                   int    `gorm:"primaryKey;autoIncrement;column:\"ID\"" json:"ID"`
+	ID_Caso              int    `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
+	PSA_Nome_Ameacadores string `gorm:"column:\"PSA_Nome_Ameacadores\"" json:"PSA_Nome_Ameacadores"`
+}
+
+func (SAVe_protecao_seguranca_ameacadores) TableName() string {
+	return "\"SAVe_protecao_seguranca_ameacadores\""
+}
+
+type SAVe_protecao_seguranca_adolescente struct {
+	ID                   int    `gorm:"primaryKey;autoIncrement;column:\"ID\"" json:"ID"`
+	ID_Caso              int    `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
+	PS_ADOLESCENTE_Idade string `gorm:"column:\"PS_ADOLESCENTE_Idade\"" json:"PS_ADOLESCENTE_Idade"`
+	PS_ADOLESCENTE_Nome  string `gorm:"column:\"PS_ADOLESCENTE_Nome\"" json:"PS_ADOLESCENTE_Nome"`
+}
+
+func (SAVe_protecao_seguranca_adolescente) TableName() string {
+	return "\"SAVe_protecao_seguranca_adolescente\""
+}

@@ -11,6 +11,7 @@ import (
 	"save-backend/internal/models"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm" // Import gorm for ErrRecordNotFound
 )
 
 func GetAllCases(c *gin.Context) {
@@ -90,6 +91,34 @@ func GetCaseById(c *gin.Context) {
 		// Handle error or ignore if record not found
 	}
 
+	var vinculos models.SAVe_Vinculos
+	if err := database.DB.Where("\"ID_Caso\" = ?", id).First(&vinculos).Error; err != nil {
+		// Handle error or ignore
+	}
+
+	var vinculosApoio []models.SAVe_Vinculos_Apoio
+	database.DB.Where("\"ID_Caso\" = ?", id).Find(&vinculosApoio)
+
+	var protecaoSeguranca models.SAVe_protecao_seguranca
+	if err := database.DB.Where("\"ID_Caso\" = ?", id).First(&protecaoSeguranca).Error; err != nil {
+		if err != gorm.ErrRecordNotFound {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching protecao seguranca"})
+			return
+		}
+	}
+
+	var ameacadores []models.SAVe_protecao_seguranca_ameacadores
+	if err := database.DB.Where("\"ID_Caso\" = ?", id).Find(&ameacadores).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching ameacadores"})
+		return
+	}
+
+	var adolescentes []models.SAVe_protecao_seguranca_adolescente
+	if err := database.DB.Where("\"ID_Caso\" = ?", id).Find(&adolescentes).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching adolescentes"})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"geral":               geral,
 		"dadosEntrada":        dadosEntrada,
@@ -106,6 +135,11 @@ func GetCaseById(c *gin.Context) {
 		"habitacaoTerritorio": habitacaoTerritorio,
 		"assistencia":         assistencia,
 		"ensinoTrabRenda":     ensinoTrabRenda,
+		"vinculos":            vinculos,
+		"vinculosApoio":       vinculosApoio,
+		"protecaoSeguranca":   protecaoSeguranca,
+		"ameacadores":         ameacadores,
+		"adolescentes":        adolescentes,
 	})
 }
 
@@ -702,7 +736,7 @@ func UpdateCaseSection(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		input.ID_Caso = id
+		input.ID_Caso = uint(id)
 
 		tx := database.DB.Begin()
 		var count int64
@@ -723,6 +757,127 @@ func UpdateCaseSection(c *gin.Context) {
 
 		tx.Commit()
 		c.JSON(http.StatusOK, gin.H{"message": "Ensino Trab Renda updated successfully"})
+
+	case "vinculos":
+		var input struct {
+			Vinculos      models.SAVe_Vinculos         `json:"vinculos"`
+			VinculosApoio []models.SAVe_Vinculos_Apoio `json:"vinculosApoio"`
+		}
+
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		tx := database.DB.Begin()
+
+		// 1. Save SAVe_Vinculos
+		input.Vinculos.ID_Caso = uint(id)
+		var count int64
+		tx.Model(&models.SAVe_Vinculos{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input.Vinculos).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create vinculos"})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_Vinculos{}).Where("\"ID_Caso\" = ?", id).Updates(&input.Vinculos).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update vinculos"})
+				return
+			}
+		}
+
+		// 2. Save SAVe_Vinculos_Apoio (Delete all and recreate)
+		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Vinculos_Apoio{}).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old vinculos apoio"})
+			return
+		}
+		for _, item := range input.VinculosApoio {
+			item.ID_Caso = uint(id)
+			item.ID = 0 // Ensure new ID
+			if err := tx.Create(&item).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create vinculos apoio"})
+				return
+			}
+		}
+
+		tx.Commit()
+		c.JSON(http.StatusOK, gin.H{"message": "Vinculos updated successfully"})
+
+	case "protecao-seguranca":
+		var input struct {
+			ProtecaoSeguranca models.SAVe_protecao_seguranca               `json:"protecaoSeguranca"`
+			Ameacadores       []models.SAVe_protecao_seguranca_ameacadores `json:"ameacadores"`
+			Adolescentes      []models.SAVe_protecao_seguranca_adolescente `json:"adolescentes"`
+		}
+
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		tx := database.DB.Begin()
+
+		// 1. Save SAVe_protecao_seguranca
+		input.ProtecaoSeguranca.ID_Caso = id
+		var count int64
+		tx.Model(&models.SAVe_protecao_seguranca{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input.ProtecaoSeguranca).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create protecao seguranca"})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_protecao_seguranca{}).Where("\"ID_Caso\" = ?", id).Updates(&input.ProtecaoSeguranca).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update protecao seguranca"})
+				return
+			}
+		}
+
+		// 2. Save SAVe_protecao_seguranca_ameacadores (Delete all and recreate)
+		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_protecao_seguranca_ameacadores{}).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old ameacadores"})
+			return
+		}
+		for _, item := range input.Ameacadores {
+			item.ID_Caso = id
+			item.ID = 0 // Ensure new ID
+			if err := tx.Create(&item).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create ameacador"})
+				return
+			}
+		}
+
+		// 3. Save SAVe_protecao_seguranca_adolescente (Delete all and recreate)
+		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_protecao_seguranca_adolescente{}).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old adolescentes"})
+			return
+		}
+		for _, item := range input.Adolescentes {
+			item.ID_Caso = id
+			item.ID = 0 // Ensure new ID
+			if err := tx.Create(&item).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create adolescente"})
+				return
+			}
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Protecao Seguranca updated successfully"})
 
 	default:
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid section"})
