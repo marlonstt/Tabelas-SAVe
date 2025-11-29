@@ -11,12 +11,12 @@
     let saving = false;
     let saveTimeout: any;
     let lastSavedData: string = "";
+    let saveStatus = "";
 
     onMount(async () => {
         try {
-            const response = await api.get(`/cases/${caseId}/acompanhamentos`);
-            data = response.data || { acompanhamentos: [] };
-            if (!data.acompanhamentos) data.acompanhamentos = [];
+            const response = await api.get(`/cases/${caseId}`);
+            data = { acompanhamentos: response.data.acompanhamentos || [] };
         } catch (err) {
             console.warn(
                 "Backend unavailable, using Mock Data for Acompanhamento",
@@ -39,33 +39,55 @@
         }
     });
 
+    async function manualSave() {
+        if (saving) return;
+        saving = true;
+        saveStatus = "Salvando...";
+
+        try {
+            await api.put(`/cases/${caseId}/acompanhamentos`, data);
+            saveStatus = "Salvo com sucesso! ✅";
+            lastSavedData = JSON.stringify(data);
+            setTimeout(() => (saveStatus = ""), 3000);
+        } catch (err) {
+            console.error("Error saving data:", err);
+            saveStatus = "Erro ao salvar ❌";
+        } finally {
+            saving = false;
+        }
+    }
+
     function autosave() {
-        if (loading) return;
+        if (loading || saving) return;
 
         const currentData = JSON.stringify(data);
         if (currentData === lastSavedData) return;
 
         clearTimeout(saveTimeout);
-        saving = true;
-
         saveTimeout = setTimeout(async () => {
+            if (saving) return; // Double check
+            saving = true;
+            saveStatus = "Salvando...";
             try {
-                // await api.put(`/cases/${caseId}/acompanhamentos`, data);
+                await api.put(`/cases/${caseId}/acompanhamentos`, data);
                 console.log("Autosaving Acompanhamento...", data);
-                await new Promise((r) => setTimeout(r, 500));
+                saveStatus = "Salvo! ✅";
                 lastSavedData = currentData;
+                setTimeout(() => (saveStatus = ""), 2000);
             } catch (err) {
                 console.error("Error autosaving", err);
+                saveStatus = "Erro ao salvar ❌";
             } finally {
                 saving = false;
             }
-        }, 1000);
+        }, 2000);
     }
 
     $: if (data) autosave();
 
     function addAcompanhamento() {
         data.acompanhamentos = [
+            ...data.acompanhamentos,
             {
                 Data: new Date().toISOString().split("T")[0],
                 Tipo_Atendimento: "Presencial",
@@ -73,21 +95,20 @@
                 Encaminhamento: "",
                 Responsaveis: "",
             },
-            ...data.acompanhamentos,
         ];
         autosave();
     }
 
     function removeAcompanhamento(index: number) {
         data.acompanhamentos = data.acompanhamentos.filter(
-            (_, i) => i !== index,
+            (_: any, i: number) => i !== index,
         );
         autosave();
     }
 </script>
 
-<div class="bg-white rounded shadow p-6 relative">
-    <!-- Autosave Indicator -->
+<!-- Autosave Indicator -->
+<div class="relative p-4 space-y-4">
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
         class:opacity-0={!saving}
@@ -103,30 +124,29 @@
         class:opacity-0={saving || loading}
         class:opacity-100={!saving && !loading}
     >
-        <span class="text-green-600 flex items-center">
-            <span class="material-icons text-sm mr-1">check</span>
-            Salvo
+        <span
+            class="flex items-center {saveStatus.includes('Erro')
+                ? 'text-red-600'
+                : 'text-green-600'}"
+        >
+            {#if saveStatus.includes("Erro")}
+                <span class="material-icons text-sm mr-1">error</span>
+            {:else if saveStatus.includes("Salvo")}
+                <span class="material-icons text-sm mr-1">check</span>
+            {/if}
+            {saveStatus || "Salvo"}
         </span>
     </div>
+
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Acompanhamentos</h2>
 
     {#if loading}
         <p>Carregando...</p>
     {:else}
         <div class="space-y-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-700">
-                    Histórico de Acompanhamentos
-                </h3>
-                <button
-                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition text-sm flex items-center"
-                    on:click={addAcompanhamento}
-                >
-                    <span class="material-icons mr-1">add</span> Novo Acompanhamento
-                </button>
-            </div>
-
+            <!-- Lista de Acompanhamentos -->
             {#each data.acompanhamentos as acomp, i}
-                <div class="bg-gray-50 p-4 rounded border mb-4 relative">
+                <div class="border p-4 rounded bg-gray-50 relative">
                     <button
                         class="absolute top-2 right-2 text-red-500 hover:text-red-700"
                         on:click={() => removeAcompanhamento(i)}
@@ -134,72 +154,89 @@
                         <span class="material-icons">delete</span>
                     </button>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <label class="block">
-                            <span class="text-xs text-gray-500">Data</span>
+                            <span class="text-gray-700">Data</span>
                             <input
                                 type="date"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={acomp.Data}
                             />
                         </label>
+
                         <label class="block">
-                            <span class="text-xs text-gray-500"
+                            <span class="text-gray-700"
                                 >Tipo de Atendimento</span
                             >
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={acomp.Tipo_Atendimento}
                             >
+                                <option value="">Selecione...</option>
                                 <option value="Presencial">Presencial</option>
-                                <option value="Remoto/Telefone"
-                                    >Remoto/Telefone</option
-                                >
+                                <option value="Telefônico">Telefônico</option>
                                 <option value="Visita Domiciliar"
                                     >Visita Domiciliar</option
                                 >
-                                <option value="Reunião de Rede"
-                                    >Reunião de Rede</option
-                                >
+                                <option value="Outros">Outros</option>
                             </select>
                         </label>
-                    </div>
 
-                    <label class="block mb-4">
-                        <span class="text-xs text-gray-500"
-                            >Síntese do Atendimento</span
-                        >
-                        <textarea
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            rows="3"
-                            bind:value={acomp.Sintese}
-                        ></textarea>
-                    </label>
+                        <div class="md:col-span-2">
+                            <label class="block">
+                                <span class="text-gray-700">Síntese</span>
+                                <textarea
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                    rows="3"
+                                    bind:value={acomp.Sintese}
+                                ></textarea>
+                            </label>
+                        </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <label class="block">
-                            <span class="text-xs text-gray-500"
-                                >Encaminhamentos</span
-                            >
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={acomp.Encaminhamento}
-                            />
-                        </label>
-                        <label class="block">
-                            <span class="text-xs text-gray-500"
-                                >Responsáveis Técnicos</span
-                            >
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={acomp.Responsaveis}
-                            />
-                        </label>
+                        <div class="md:col-span-2">
+                            <label class="block">
+                                <span class="text-gray-700"
+                                    >Encaminhamentos</span
+                                >
+                                <textarea
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                    rows="2"
+                                    bind:value={acomp.Encaminhamento}
+                                ></textarea>
+                            </label>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block">
+                                <span class="text-gray-700">Responsáveis</span>
+                                <input
+                                    type="text"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                    bind:value={acomp.Responsaveis}
+                                />
+                            </label>
+                        </div>
                     </div>
                 </div>
             {/each}
+
+            <button
+                class="text-save-primary hover:underline font-medium"
+                on:click={addAcompanhamento}
+            >
+                + Adicionar Acompanhamento
+            </button>
+
+            <!-- Manual Save Button -->
+            <div class="flex justify-end mt-4">
+                <button
+                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                    on:click={manualSave}
+                    disabled={saving || loading}
+                >
+                    {saving ? "Salvando..." : "Salvar Dados"}
+                </button>
+            </div>
         </div>
     {/if}
 </div>

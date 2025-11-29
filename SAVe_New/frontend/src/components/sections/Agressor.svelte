@@ -11,12 +11,12 @@
     let saving = false;
     let saveTimeout: any;
     let lastSavedData: string = "";
+    let saveStatus = "";
 
     onMount(async () => {
         try {
-            const response = await api.get(`/cases/${caseId}/agressor`);
-            data = response.data || { agressores: [] };
-            if (!data.agressores) data.agressores = [];
+            const response = await api.get(`/cases/${caseId}`);
+            data = { agressores: response.data.agressor || [] };
         } catch (err) {
             console.warn("Backend unavailable, using Mock Data for Agressor");
             data = {
@@ -45,27 +45,48 @@
         }
     });
 
+    async function manualSave() {
+        if (saving) return;
+        saving = true;
+        saveStatus = "Salvando...";
+
+        try {
+            await api.put(`/cases/${caseId}/agressor`, data);
+            saveStatus = "Salvo com sucesso! ✅";
+            lastSavedData = JSON.stringify(data);
+            setTimeout(() => (saveStatus = ""), 3000);
+        } catch (err) {
+            console.error("Error saving data:", err);
+            saveStatus = "Erro ao salvar ❌";
+        } finally {
+            saving = false;
+        }
+    }
+
     function autosave() {
-        if (loading) return;
+        if (loading || saving) return;
 
         const currentData = JSON.stringify(data);
         if (currentData === lastSavedData) return;
 
         clearTimeout(saveTimeout);
-        saving = true;
-
         saveTimeout = setTimeout(async () => {
+            if (saving) return; // Double check
+            saving = true;
+            saveStatus = "Salvando...";
             try {
-                // await api.put(`/cases/${caseId}/agressor`, data);
+                await api.put(`/cases/${caseId}/agressor`, data);
                 console.log("Autosaving Agressor...", data);
-                await new Promise((r) => setTimeout(r, 500));
+                saveStatus = "Salvo! ✅";
                 lastSavedData = currentData;
+                setTimeout(() => (saveStatus = ""), 2000);
             } catch (err) {
                 console.error("Error autosaving", err);
+                saveStatus = "Erro ao salvar ❌";
             } finally {
                 saving = false;
             }
-        }, 1000);
+        }, 2000);
     }
 
     $: if (data) autosave();
@@ -79,13 +100,15 @@
     }
 
     function removeAgressor(index: number) {
-        data.agressores = data.agressores.filter((_, i) => i !== index);
+        data.agressores = data.agressores.filter(
+            (_: any, i: number) => i !== index,
+        );
         autosave();
     }
 </script>
 
-<div class="bg-white rounded shadow p-6 relative">
-    <!-- Autosave Indicator -->
+<!-- Autosave Indicator -->
+<div class="relative p-4 space-y-4">
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
         class:opacity-0={!saving}
@@ -101,22 +124,42 @@
         class:opacity-0={saving || loading}
         class:opacity-100={!saving && !loading}
     >
-        <span class="text-green-600 flex items-center">
-            <span class="material-icons text-sm mr-1">check</span>
-            Salvo
+        <span
+            class="flex items-center {saveStatus.includes('Erro')
+                ? 'text-red-600'
+                : 'text-green-600'}"
+        >
+            {#if saveStatus.includes("Erro")}
+                <span class="material-icons text-sm mr-1">error</span>
+            {:else if saveStatus.includes("Salvo")}
+                <span class="material-icons text-sm mr-1">check</span>
+            {/if}
+            {saveStatus || "Salvo"}
         </span>
+    </div>
+
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-gray-800">
+            Dados do(s) Suposto(s) Autor(es) da Violência
+        </h2>
+        <!-- Manual Save Button -->
+        <div class="flex items-center space-x-4">
+            <button
+                class="bg-save-primary text-white px-4 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                on:click={manualSave}
+                disabled={saving || loading}
+            >
+                {saving ? "Salvando..." : "Salvar"}
+            </button>
+        </div>
     </div>
 
     {#if loading}
         <p>Carregando...</p>
     {:else}
         <div class="space-y-6">
-            <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                Perfil do(s) Agressor(es)
-            </h3>
-
             {#each data.agressores as agressor, i}
-                <div class="bg-gray-50 p-4 rounded border mb-4 relative">
+                <div class="border p-4 rounded bg-gray-50 relative">
                     <button
                         class="absolute top-2 right-2 text-red-500 hover:text-red-700"
                         on:click={() => removeAgressor(i)}
@@ -126,177 +169,176 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <label class="block">
-                            <span class="text-gray-700">Tipo de Agressor</span>
+                            <span class="text-gray-700">Nome</span>
+                            <input
+                                type="text"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={agressor.Nome}
+                                on:input={autosave}
+                            />
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700">Apelido</span>
+                            <input
+                                type="text"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={agressor.Apelido}
+                                on:input={autosave}
+                            />
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700">Idade</span>
+                            <input
+                                type="number"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={agressor.Idade}
+                                on:input={autosave}
+                            />
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700">Sexo</span>
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={agressor.Tipo}
+                                bind:value={agressor.Sexo}
+                                on:change={autosave}
                             >
-                                <option value="Pessoa Física"
-                                    >Pessoa Física</option
-                                >
-                                <option value="Pessoa Jurídica"
-                                    >Pessoa Jurídica</option
-                                >
+                                <option value="">Selecione...</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Feminino">Feminino</option>
+                                <option value="Outros">Outros</option>
                             </select>
                         </label>
-
-                        {#if agressor.Tipo === "Pessoa Física"}
-                            <label class="block">
-                                <span class="text-gray-700">Nome Civil</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.Nome}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700"
-                                    >Apelido / Alcunha</span
-                                >
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.Apelido}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700"
-                                    >Idade Aproximada</span
-                                >
-                                <input
-                                    type="number"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.Idade}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700">Sexo</span>
-                                <select
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.Sexo}
-                                >
-                                    <option value="">Selecione...</option>
-                                    <option value="Masculino">Masculino</option>
-                                    <option value="Feminino">Feminino</option>
-                                    <option value="Outro">Outro</option>
-                                </select>
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700">Raça/Cor</span>
-                                <select
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.Raca}
-                                >
-                                    <option value="">Selecione...</option>
-                                    <option value="Branca">Branca</option>
-                                    <option value="Preta">Preta</option>
-                                    <option value="Parda">Parda</option>
-                                    <option value="Amarela">Amarela</option>
-                                    <option value="Indígena">Indígena</option>
-                                </select>
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700"
-                                    >Relação com a Vítima</span
-                                >
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.Relacao}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700">Ocupação</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.Ocupacao}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700"
-                                    >Renda Aproximada</span
-                                >
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.Renda}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700">Escolaridade</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.Escolaridade}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700"
-                                    >Antecedentes Criminais?</span
-                                >
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.Antecedentes}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700"
-                                    >Uso de Álcool/Drogas?</span
-                                >
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.Uso_Drogas}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700">Porte de Arma?</span
-                                >
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.Porte_Arma}
-                                />
-                            </label>
-                        {:else}
-                            <label class="block">
-                                <span class="text-gray-700">Razão Social</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.Nome}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700">CNPJ</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={agressor.CNPJ}
-                                />
-                            </label>
-                        {/if}
-
-                        <label class="block md:col-span-2">
+                        <label class="block">
+                            <span class="text-gray-700">Raça/Cor</span>
+                            <select
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={agressor.Raca}
+                                on:change={autosave}
+                            >
+                                <option value="">Selecione...</option>
+                                <option value="Branca">Branca</option>
+                                <option value="Preta">Preta</option>
+                                <option value="Parda">Parda</option>
+                                <option value="Amarela">Amarela</option>
+                                <option value="Indígena">Indígena</option>
+                            </select>
+                        </label>
+                        <label class="block">
                             <span class="text-gray-700"
-                                >Endereço / Localização</span
+                                >Relação com a Vítima</span
                             >
                             <input
                                 type="text"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={agressor.Endereco}
+                                bind:value={agressor.Relacao}
+                                on:input={autosave}
                             />
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700">Ocupação</span>
+                            <input
+                                type="text"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={agressor.Ocupacao}
+                                on:input={autosave}
+                            />
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700">Renda Aproximada</span>
+                            <input
+                                type="text"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={agressor.Renda}
+                                on:input={autosave}
+                            />
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700">Escolaridade</span>
+                            <select
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={agressor.Escolaridade}
+                                on:change={autosave}
+                            >
+                                <option value="">Selecione...</option>
+                                <option value="Fundamental Incompleto"
+                                    >Fundamental Incompleto</option
+                                >
+                                <option value="Fundamental Completo"
+                                    >Fundamental Completo</option
+                                >
+                                <option value="Médio Incompleto"
+                                    >Médio Incompleto</option
+                                >
+                                <option value="Médio Completo"
+                                    >Médio Completo</option
+                                >
+                                <option value="Superior Incompleto"
+                                    >Superior Incompleto</option
+                                >
+                                <option value="Superior Completo"
+                                    >Superior Completo</option
+                                >
+                            </select>
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700">Endereço</span>
+                            <input
+                                type="text"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={agressor.Endereco}
+                                on:input={autosave}
+                            />
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700"
+                                >Antecedentes Criminais?</span
+                            >
+                            <select
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={agressor.Antecedentes}
+                                on:change={autosave}
+                            >
+                                <option value="">Selecione...</option>
+                                <option value="Sim">Sim</option>
+                                <option value="Não">Não</option>
+                                <option value="Não Sabe">Não Sabe</option>
+                            </select>
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700"
+                                >Uso de Álcool/Drogas?</span
+                            >
+                            <input
+                                type="text"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={agressor.Uso_Drogas}
+                                on:input={autosave}
+                                placeholder="Especifique se houver"
+                            />
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700">Porte de Arma?</span>
+                            <select
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={agressor.Porte_Arma}
+                                on:change={autosave}
+                            >
+                                <option value="">Selecione...</option>
+                                <option value="Sim">Sim</option>
+                                <option value="Não">Não</option>
+                                <option value="Não Sabe">Não Sabe</option>
+                            </select>
                         </label>
                     </div>
                 </div>
             {/each}
 
             <button
-                class="text-sm text-save-primary hover:underline"
-                on:click={addAgressor}>+ Adicionar Agressor</button
+                class="text-save-primary hover:underline font-medium"
+                on:click={addAgressor}
             >
+                + Adicionar Agressor
+            </button>
         </div>
     {/if}
 </div>

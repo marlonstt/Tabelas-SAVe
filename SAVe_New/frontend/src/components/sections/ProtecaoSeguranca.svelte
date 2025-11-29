@@ -33,8 +33,28 @@
         }
     });
 
+    async function manualSave() {
+        saving = true;
+        const currentData = JSON.stringify({ data, ameacadores, adolescentes });
+        try {
+            await api.put(`/cases/${caseId}/protecao-seguranca`, {
+                protecaoSeguranca: data,
+                ameacadores: ameacadores,
+                adolescentes: adolescentes,
+            });
+            console.log("Manual save ProtecaoSeguranca...", data);
+            lastSavedData = currentData;
+            // Show success message briefly (optional, since button handles loading state)
+        } catch (err) {
+            console.error("Error manual saving", err);
+            alert("Erro ao salvar dados!");
+        } finally {
+            saving = false;
+        }
+    }
+
     function autosave() {
-        if (loading) return;
+        if (loading || saving) return;
 
         const currentData = JSON.stringify({ data, ameacadores, adolescentes });
         if (currentData === lastSavedData) return;
@@ -56,7 +76,7 @@
             } finally {
                 saving = false;
             }
-        }, 1000);
+        }, 2000);
     }
 
     function handleMasterSwitch(value: string) {
@@ -141,12 +161,10 @@
         ameacadores = [];
         adolescentes = [];
     }
-
-    $: if (data) autosave();
 </script>
 
-<div class="bg-white rounded shadow p-6 relative">
-    <!-- Autosave Indicator -->
+<!-- Autosave Indicator -->
+<div class="relative p-4 space-y-4">
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
         class:opacity-0={!saving}
@@ -162,10 +180,32 @@
         class:opacity-0={saving || loading}
         class:opacity-100={!saving && !loading}
     >
-        <span class="text-green-600 flex items-center">
-            <span class="material-icons text-sm mr-1">check</span>
-            Salvo
+        <span
+            class="flex items-center {saveStatus.includes('Erro')
+                ? 'text-red-600'
+                : 'text-green-600'}"
+        >
+            {#if saveStatus.includes("Erro")}
+                <span class="material-icons text-sm mr-1">error</span>
+            {:else if saveStatus.includes("Salvo")}
+                <span class="material-icons text-sm mr-1">check</span>
+            {/if}
+            {saveStatus || "Salvo"}
         </span>
+    </div>
+
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-gray-800">Proteção e Segurança</h2>
+        <!-- Manual Save Button -->
+        <div class="flex items-center space-x-4">
+            <button
+                class="bg-save-primary text-white px-4 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                on:click={manualSave}
+                disabled={saving || loading}
+            >
+                {saving ? "Salvando..." : "Salvar"}
+            </button>
+        </div>
     </div>
 
     {#if loading}
@@ -173,41 +213,28 @@
     {:else}
         <div class="space-y-6">
             <!-- Master Switch -->
-            <div class="border-b pb-4">
-                <label class="block text-lg font-semibold text-gray-700 mb-2">
-                    Há situação de ameaça a ser relatada?
+            <div class="border p-4 rounded bg-gray-50">
+                <label class="block">
+                    <span class="text-gray-700 font-medium"
+                        >A vítima relata situação de ameaça?</span
+                    >
+                    <select
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                        bind:value={data.PS_Situacao_ameaca_relat}
+                        on:change={(e) =>
+                            handleMasterSwitch(e.currentTarget.value)}
+                    >
+                        <option value="">Selecione...</option>
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
                 </label>
-                <div class="flex space-x-4">
-                    <label class="inline-flex items-center">
-                        <input
-                            type="radio"
-                            class="form-radio text-save-primary"
-                            name="PS_Situacao_ameaca_relat"
-                            value="Sim"
-                            checked={data.PS_Situacao_ameaca_relat === "Sim"}
-                            on:change={() => handleMasterSwitch("Sim")}
-                        />
-                        <span class="ml-2">Sim</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input
-                            type="radio"
-                            class="form-radio text-save-primary"
-                            name="PS_Situacao_ameaca_relat"
-                            value="Não"
-                            checked={data.PS_Situacao_ameaca_relat === "Não"}
-                            on:change={() => handleMasterSwitch("Não")}
-                        />
-                        <span class="ml-2">Não</span>
-                    </label>
-                </div>
             </div>
 
             {#if data.PS_Situacao_ameaca_relat === "Sim"}
-                <!-- Detalhes da Ameaça -->
-                <div class="border-b pb-4">
-                    <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                        Detalhes da Ameaça
+                <div class="border p-4 rounded bg-gray-50 space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-700">
+                        Detalhamento da Ameaça
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <label class="block">
@@ -217,70 +244,8 @@
                                 type="text"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Natureza_Ameaca}
-                                placeholder="Morte, Agressão Física..."
+                                on:input={autosave}
                             />
-                        </label>
-
-                        <label class="block">
-                            <span class="text-gray-700"
-                                >Como a ameaça é feita?</span
-                            >
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={data.PS_Como_Ameaca}
-                                placeholder="Presencial, Telefone, Redes Sociais..."
-                            />
-                        </label>
-
-                        <label class="block">
-                            <span class="text-gray-700">Tempo de Ameaça</span>
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={data.PS_Tempo_Ameaca}
-                            />
-                        </label>
-
-                        <label class="block">
-                            <span class="text-gray-700"
-                                >Relação Autor-Vítima</span
-                            >
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={data.PS_Tipo_Relacao}
-                            />
-                        </label>
-                    </div>
-
-                    <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <label class="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                checked={data.PS_Ameacas_Anteriores === "Sim"}
-                                on:change={(e) =>
-                                    (data.PS_Ameacas_Anteriores = e
-                                        .currentTarget.checked
-                                        ? "Sim"
-                                        : "Não")}
-                            />
-                            <span class="ml-2">Ameaças Anteriores</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                checked={data.PS_Ameaca_Agente_Publico ===
-                                    "Sim"}
-                                on:change={(e) =>
-                                    (data.PS_Ameaca_Agente_Publico = e
-                                        .currentTarget.checked
-                                        ? "Sim"
-                                        : "Não")}
-                            />
-                            <span class="ml-2">Agente Público?</span>
                         </label>
                         <label class="inline-flex items-center">
                             <input

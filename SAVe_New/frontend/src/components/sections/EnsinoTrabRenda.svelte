@@ -9,6 +9,7 @@
     let saving = false;
     let saveTimeout: any;
     let lastSavedData: string = "";
+    let saveStatus = "";
 
     onMount(async () => {
         try {
@@ -51,27 +52,48 @@
         }
     });
 
+    async function manualSave() {
+        if (saving) return;
+        saving = true;
+        saveStatus = "Salvando...";
+
+        try {
+            await api.put(`/cases/${caseId}/ensino-trab-renda`, data);
+            saveStatus = "Salvo com sucesso! ✅";
+            lastSavedData = JSON.stringify(data);
+            setTimeout(() => (saveStatus = ""), 3000);
+        } catch (err) {
+            console.error("Error saving data:", err);
+            saveStatus = "Erro ao salvar ❌";
+        } finally {
+            saving = false;
+        }
+    }
+
     function autosave() {
-        if (loading) return;
+        if (loading || saving) return;
 
         const currentData = JSON.stringify(data);
         if (currentData === lastSavedData) return;
 
         clearTimeout(saveTimeout);
-        saving = true;
-
         saveTimeout = setTimeout(async () => {
+            if (saving) return; // Double check
+            saving = true;
+            saveStatus = "Salvando...";
             try {
                 await api.put(`/cases/${caseId}/ensino-trab-renda`, data);
                 console.log("Autosaving EnsinoTrabRenda...", data);
-                await new Promise((r) => setTimeout(r, 500));
+                saveStatus = "Salvo! ✅";
                 lastSavedData = currentData;
+                setTimeout(() => (saveStatus = ""), 2000);
             } catch (err) {
                 console.error("Error autosaving", err);
+                saveStatus = "Erro ao salvar ❌";
             } finally {
                 saving = false;
             }
-        }, 1000);
+        }, 2000);
     }
 
     $: if (data) autosave();
@@ -94,47 +116,68 @@
         class:opacity-0={saving || loading}
         class:opacity-100={!saving && !loading}
     >
-        <span class="text-green-600 flex items-center">
-            <span class="material-icons text-sm mr-1">check</span>
-            Salvo
+        <span
+            class="flex items-center {saveStatus.includes('Erro')
+                ? 'text-red-600'
+                : 'text-green-600'}"
+        >
+            {#if saveStatus.includes("Erro")}
+                <span class="material-icons text-sm mr-1">error</span>
+            {:else if saveStatus.includes("Salvo")}
+                <span class="material-icons text-sm mr-1">check</span>
+            {/if}
+            {saveStatus || "Salvo"}
         </span>
+    </div>
+
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-gray-800">
+            Ensino, Trabalho e Renda
+        </h2>
+        <!-- Manual Save Button -->
+        <div class="flex items-center space-x-4">
+            <button
+                class="bg-save-primary text-white px-4 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                on:click={manualSave}
+                disabled={saving || loading}
+            >
+                {saving ? "Salvando..." : "Salvar"}
+            </button>
+        </div>
     </div>
 
     {#if loading}
         <p>Carregando...</p>
     {:else}
         <div class="space-y-6">
-            <!-- Educação (Container2_7) -->
+            <!-- Escolaridade -->
             <div class="border-b pb-4">
                 <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Educação
+                    Escolaridade
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Grau de Escolaridade -->
                     <label class="block">
                         <span class="text-gray-700 font-semibold"
-                            >Grau de escolaridade:</span
+                            >Grau de Escolaridade:</span
                         >
                         <select
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.Grau_escolaridade}
+                            on:change={autosave}
                         >
                             <option value="">Selecione...</option>
                             <option value="Analfabeto">Analfabeto</option>
-                            <option value="Analfabeto Funcional"
-                                >Analfabeto Funcional</option
+                            <option value="Fundamental Incompleto"
+                                >Fundamental Incompleto</option
                             >
-                            <option value="E. Fund. Incompleto"
-                                >E. Fund. Incompleto</option
+                            <option value="Fundamental Completo"
+                                >Fundamental Completo</option
                             >
-                            <option value="E. Fund. Completo"
-                                >E. Fund. Completo</option
+                            <option value="Médio Incompleto"
+                                >Médio Incompleto</option
                             >
-                            <option value="E. Médio Incompleto"
-                                >E. Médio Incompleto</option
-                            >
-                            <option value="E. Médio Completo"
-                                >E. Médio Completo</option
+                            <option value="Médio Completo"
+                                >Médio Completo</option
                             >
                             <option value="Superior Incompleto"
                                 >Superior Incompleto</option
@@ -142,79 +185,34 @@
                             <option value="Superior Completo"
                                 >Superior Completo</option
                             >
-                            <option value="Pós graduação">Pós graduação</option>
-                            <option
-                                value="Curso profissionalizante ou treinamento"
-                                >Curso profissionalizante ou treinamento</option
-                            >
+                            <option value="Pós-graduação">Pós-graduação</option>
                         </select>
                     </label>
 
-                    <!-- Estuda Atualmente? -->
-                    <div class="block">
-                        <span class="text-gray-700 font-semibold block mb-1"
-                            >Estuda atualmente?</span
+                    <label class="block">
+                        <span class="text-gray-700 font-semibold"
+                            >Estuda Atualmente?</span
                         >
-                        <div class="flex space-x-4">
-                            <label class="inline-flex items-center">
-                                <input
-                                    type="radio"
-                                    class="form-radio text-save-primary"
-                                    bind:group={data.Estuda_atualmente}
-                                    value="Sim"
-                                />
-                                <span class="ml-2">Sim</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input
-                                    type="radio"
-                                    class="form-radio text-save-primary"
-                                    bind:group={data.Estuda_atualmente}
-                                    value="Não"
-                                />
-                                <span class="ml-2">Não</span>
-                            </label>
-                        </div>
-                    </div>
+                        <select
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                            bind:value={data.Estuda_atualmente}
+                            on:change={autosave}
+                        >
+                            <option value="">Selecione...</option>
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                        </select>
+                    </label>
 
-                    <!-- Deseja retornar aos estudos? (Se Estuda_atualmente == "Não") -->
-                    {#if data.Estuda_atualmente === "Não"}
-                        <div class="block">
-                            <span class="text-gray-700 font-semibold block mb-1"
-                                >Deseja retornar aos estudos?</span
-                            >
-                            <div class="flex space-x-4">
-                                <label class="inline-flex items-center">
-                                    <input
-                                        type="radio"
-                                        class="form-radio text-save-primary"
-                                        bind:group={data.Retorno_estudos}
-                                        value="Sim"
-                                    />
-                                    <span class="ml-2">Sim</span>
-                                </label>
-                                <label class="inline-flex items-center">
-                                    <input
-                                        type="radio"
-                                        class="form-radio text-save-primary"
-                                        bind:group={data.Retorno_estudos}
-                                        value="Não"
-                                    />
-                                    <span class="ml-2">Não</span>
-                                </label>
-                            </div>
-                        </div>
-                    {/if}
-
-                    <!-- Tipo de Instituição (Se Estuda_atualmente == "Sim") -->
                     {#if data.Estuda_atualmente === "Sim"}
                         <label class="block">
                             <span class="text-gray-700 font-semibold"
-                                >Tipo de instituição:</span
+                                >Tipo de Instituição:</span
                             >
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.Tipo_instituicao}
+                                on:change={autosave}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Privada">Privada</option>

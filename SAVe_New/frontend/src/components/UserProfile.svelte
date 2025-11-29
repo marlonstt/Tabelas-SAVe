@@ -4,6 +4,7 @@
 
     export let user: any;
     export let isOpen = false;
+    export let positionClass = "absolute right-0 mt-2";
 
     const dispatch = createEventDispatcher();
 
@@ -175,7 +176,7 @@
 
 {#if isOpen}
     <div
-        class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-50 border border-gray-200"
+        class="{positionClass} w-80 bg-white rounded-lg shadow-xl z-50 border border-gray-200"
     >
         <div class="p-4 border-b border-gray-100 flex items-center space-x-3">
             <input
@@ -187,7 +188,7 @@
             />
             <button
                 on:click={() =>
-                    document.getElementById("profile-image-upload").click()}
+                    document.getElementById("profile-image-upload")?.click()}
                 class="w-12 h-12 bg-save-primary rounded-full flex items-center justify-center text-white text-xl font-bold hover:bg-save-secondary transition-colors cursor-pointer relative group flex-shrink-0"
                 title="Clique para alterar foto de perfil"
             >
@@ -297,5 +298,7 @@
     </div>
 
     <!-- Overlay to close on click outside -->
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div class="fixed inset-0 z-40" on:click={close}></div>
 {/if}

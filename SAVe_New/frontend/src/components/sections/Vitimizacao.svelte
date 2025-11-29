@@ -12,13 +12,15 @@
     let saving = false;
     let saveTimeout: any;
     let lastSavedData: string = "";
+    let saveStatus = "";
 
     onMount(async () => {
         try {
-            const response = await api.get(`/cases/${caseId}/vitimizacao`);
-            data = response.data || { Secundaria: {}, Terciaria: {} };
-            if (!data.Secundaria) data.Secundaria = {};
-            if (!data.Terciaria) data.Terciaria = {};
+            const response = await api.get(`/cases/${caseId}`);
+            data = {
+                Secundaria: response.data.vitimizacao?.Secundaria || {},
+                Terciaria: response.data.vitimizacao?.Terciaria || {},
+            };
         } catch (err) {
             console.warn(
                 "Backend unavailable, using Mock Data for Vitimizacao",
@@ -47,27 +49,48 @@
         }
     });
 
+    async function manualSave() {
+        if (saving) return;
+        saving = true;
+        saveStatus = "Salvando...";
+
+        try {
+            await api.put(`/cases/${caseId}/vitimizacao`, data);
+            saveStatus = "Salvo com sucesso! ✅";
+            lastSavedData = JSON.stringify(data);
+            setTimeout(() => (saveStatus = ""), 3000);
+        } catch (err) {
+            console.error("Error saving data:", err);
+            saveStatus = "Erro ao salvar ❌";
+        } finally {
+            saving = false;
+        }
+    }
+
     function autosave() {
-        if (loading) return;
+        if (loading || saving) return;
 
         const currentData = JSON.stringify(data);
         if (currentData === lastSavedData) return;
 
         clearTimeout(saveTimeout);
-        saving = true;
-
         saveTimeout = setTimeout(async () => {
+            if (saving) return; // Double check
+            saving = true;
+            saveStatus = "Salvando...";
             try {
-                // await api.put(`/cases/${caseId}/vitimizacao`, data);
+                await api.put(`/cases/${caseId}/vitimizacao`, data);
                 console.log("Autosaving Vitimizacao...", data);
-                await new Promise((r) => setTimeout(r, 500));
+                saveStatus = "Salvo! ✅";
                 lastSavedData = currentData;
+                setTimeout(() => (saveStatus = ""), 2000);
             } catch (err) {
                 console.error("Error autosaving", err);
+                saveStatus = "Erro ao salvar ❌";
             } finally {
                 saving = false;
             }
-        }, 1000);
+        }, 2000);
     }
 
     $: if (data) autosave();
@@ -90,11 +113,21 @@
         class:opacity-0={saving || loading}
         class:opacity-100={!saving && !loading}
     >
-        <span class="text-green-600 flex items-center">
-            <span class="material-icons text-sm mr-1">check</span>
-            Salvo
+        <span
+            class="flex items-center {saveStatus.includes('Erro')
+                ? 'text-red-600'
+                : 'text-green-600'}"
+        >
+            {#if saveStatus.includes("Erro")}
+                <span class="material-icons text-sm mr-1">error</span>
+            {:else if saveStatus.includes("Salvo")}
+                <span class="material-icons text-sm mr-1">check</span>
+            {/if}
+            {saveStatus || "Salvo"}
         </span>
     </div>
+
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Vitimização</h2>
 
     {#if loading}
         <p>Carregando...</p>
@@ -350,6 +383,17 @@
                         {/if}
                     </div>
                 </div>
+            </div>
+
+            <!-- Manual Save Button -->
+            <div class="flex justify-end mt-4">
+                <button
+                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                    on:click={manualSave}
+                    disabled={saving || loading}
+                >
+                    {saving ? "Salvando..." : "Salvar Dados"}
+                </button>
             </div>
         </div>
     {/if}

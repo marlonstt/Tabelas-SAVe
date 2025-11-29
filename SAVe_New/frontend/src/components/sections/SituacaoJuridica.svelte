@@ -48,13 +48,13 @@
         SJ_Data_Transito_Julgado: "",
     };
 
-    let situacaoJuridica2 = { ID_Caso: 0 };
+    let situacaoJuridica2: any = { ID_Caso: 0 };
 
-    let processos = [];
+    let processos: any[] = [];
 
     let loading = true;
     let saving = false;
-    let saveTimeout;
+    let saveTimeout: any;
 
     onMount(async () => {
         await loadData();
@@ -112,7 +112,7 @@
         autosave();
     }
 
-    function removeProcesso(index) {
+    function removeProcesso(index: number) {
         processos = processos.filter((_, i) => i !== index);
         autosave();
     }
@@ -135,99 +135,99 @@
             </div>
 
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Nº IP / PCNet</label
-                >
-                <input
-                    type="text"
-                    bind:value={data.SJ_IP_PCNet}
-                    on:input={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Nº IP / PCNet
+                    <input
+                        type="text"
+                        bind:value={data.SJ_IP_PCNet}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
 
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Classe / Tipo (IP)</label
-                >
-                <input
-                    type="text"
-                    bind:value={data.SJ_IP_PCNet_Classe_Tipo}
-                    on:input={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Classe / Tipo (IP)
+                    <input
+                        type="text"
+                        bind:value={data.SJ_IP_PCNet_Classe_Tipo}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
 
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Nº Autos Judiciais</label
-                >
-                <input
-                    type="text"
-                    bind:value={data.SJ_Auto_Judicial}
-                    on:input={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Nº Autos Judiciais
+                    <input
+                        type="text"
+                        bind:value={data.SJ_Auto_Judicial}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
 
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Classe / Tipo (Judicial)</label
-                >
-                <input
-                    type="text"
-                    bind:value={data.SJ_Auto_Judicial_Classe_Tipo}
-                    on:input={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Classe / Tipo (Judicial)
+                    <input
+                        type="text"
+                        bind:value={data.SJ_Auto_Judicial_Classe_Tipo}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
 
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Nº MPMG</label
-                >
-                <input
-                    type="text"
-                    bind:value={data.SJ_Num_MPMG}
-                    on:input={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Nº MPMG
+                    <input
+                        type="text"
+                        bind:value={data.SJ_Num_MPMG}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
 
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Tipo (MPMG)</label
-                >
-                <input
-                    type="text"
-                    bind:value={data.SJ_Num_MPMG_Tipo}
-                    on:input={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Tipo (MPMG)
+                    <input
+                        type="text"
+                        bind:value={data.SJ_Num_MPMG_Tipo}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
 
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Nº REDS</label
-                >
-                <input
-                    type="text"
-                    bind:value={data.SJ_REDS}
-                    on:input={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Nº REDS
+                    <input
+                        type="text"
+                        bind:value={data.SJ_REDS}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
 
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Classe / Tipo (REDS)</label
-                >
-                <input
-                    type="text"
-                    bind:value={data.SJ_REDS_Classe_Tipo}
-                    on:input={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Classe / Tipo (REDS)
+                    <input
+                        type="text"
+                        bind:value={data.SJ_REDS_Classe_Tipo}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
 
             <div class="col-span-2">
@@ -281,15 +281,15 @@
 
             {#if data.SJ_Medidas_Prot_Cautelar === "Sim"}
                 <div class="form-group">
-                    <label class="block text-sm font-medium text-gray-700"
-                        >Nº Processo</label
-                    >
-                    <input
-                        type="text"
-                        bind:value={data.SJ_Num_Processo}
-                        on:input={autosave}
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
+                    <label class="block text-sm font-medium text-gray-700">
+                        Nº Processo
+                        <input
+                            type="text"
+                            bind:value={data.SJ_Num_Processo}
+                            on:input={autosave}
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        />
+                    </label>
                 </div>
 
                 <div class="form-group">
@@ -434,26 +434,28 @@
                         <div class="form-group">
                             <label
                                 class="block text-sm font-medium text-gray-700"
-                                >Número</label
                             >
-                            <input
-                                type="text"
-                                bind:value={processo.SJIP_Numero}
-                                on:input={autosave}
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                            />
+                                Número
+                                <input
+                                    type="text"
+                                    bind:value={processo.SJIP_Numero}
+                                    on:input={autosave}
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                />
+                            </label>
                         </div>
                         <div class="form-group">
                             <label
                                 class="block text-sm font-medium text-gray-700"
-                                >Classe / Tipo</label
                             >
-                            <input
-                                type="text"
-                                bind:value={processo.SJIP_Classe_Tipo}
-                                on:input={autosave}
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                            />
+                                Classe / Tipo
+                                <input
+                                    type="text"
+                                    bind:value={processo.SJIP_Classe_Tipo}
+                                    on:input={autosave}
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                />
+                            </label>
                         </div>
                         <div class="flex items-end">
                             <button
@@ -482,118 +484,118 @@
             </div>
 
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Data dos Fatos</label
-                >
-                <input
-                    type="date"
-                    bind:value={data.SJ_Data_Fatos}
-                    on:change={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Data dos Fatos
+                    <input
+                        type="date"
+                        bind:value={data.SJ_Data_Fatos}
+                        on:change={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Tipo Penal (Fatos)</label
-                >
-                <input
-                    type="text"
-                    bind:value={data.SJ_Tipo_Penal_Fatos}
-                    on:input={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-            </div>
-
-            <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Data Autuação IP</label
-                >
-                <input
-                    type="date"
-                    bind:value={data.SJ_Data_Autuacao_IP}
-                    on:change={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-            </div>
-            <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Tipo Penal (Autuação IP)</label
-                >
-                <input
-                    type="text"
-                    bind:value={data.SJ_Tipo_Penal_Autuacao_IP}
-                    on:input={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Tipo Penal (Fatos)
+                    <input
+                        type="text"
+                        bind:value={data.SJ_Tipo_Penal_Fatos}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
 
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Data Conclusão IP</label
-                >
-                <input
-                    type="date"
-                    bind:value={data.SJ_Data_Conclusao_IP}
-                    on:change={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Data Autuação IP
+                    <input
+                        type="date"
+                        bind:value={data.SJ_Data_Autuacao_IP}
+                        on:change={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Tipo Penal (Conclusão IP)</label
-                >
-                <input
-                    type="text"
-                    bind:value={data.SJ_Tipo_Penal_Conclusao_IP}
-                    on:input={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-            </div>
-
-            <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Data Denúncia/Repres.</label
-                >
-                <input
-                    type="date"
-                    bind:value={data.SJ_Data_Denuncia_Repres}
-                    on:change={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-            </div>
-            <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Tipo Penal (Denúncia)</label
-                >
-                <input
-                    type="text"
-                    bind:value={data.SJ_Tipo_Penal_Denuncia_Repres}
-                    on:input={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Tipo Penal (Autuação IP)
+                    <input
+                        type="text"
+                        bind:value={data.SJ_Tipo_Penal_Autuacao_IP}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
 
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Data Audiência</label
-                >
-                <input
-                    type="date"
-                    bind:value={data.SJ_Data_Audiencia}
-                    on:change={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Data Conclusão IP
+                    <input
+                        type="date"
+                        bind:value={data.SJ_Data_Conclusao_IP}
+                        on:change={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
             <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Tipo Penal (Audiência)</label
-                >
-                <input
-                    type="text"
-                    bind:value={data.SJ_Tipo_Penal_Audiencia}
-                    on:input={autosave}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <label class="block text-sm font-medium text-gray-700">
+                    Tipo Penal (Conclusão IP)
+                    <input
+                        type="text"
+                        bind:value={data.SJ_Tipo_Penal_Conclusao_IP}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700">
+                    Data Denúncia/Repres.
+                    <input
+                        type="date"
+                        bind:value={data.SJ_Data_Denuncia_Repres}
+                        on:change={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700">
+                    Tipo Penal (Denúncia)
+                    <input
+                        type="text"
+                        bind:value={data.SJ_Tipo_Penal_Denuncia_Repres}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700">
+                    Data Audiência
+                    <input
+                        type="date"
+                        bind:value={data.SJ_Data_Audiencia}
+                        on:change={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700">
+                    Tipo Penal (Audiência)
+                    <input
+                        type="text"
+                        bind:value={data.SJ_Tipo_Penal_Audiencia}
+                        on:input={autosave}
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                </label>
             </div>
 
             <div class="form-group">

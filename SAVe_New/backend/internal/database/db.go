@@ -34,6 +34,8 @@ func Connect() {
 
 	// AutoMigrate
 	err = DB.AutoMigrate(
+		&models.SAVe_Geral{},
+		&models.SAVe_DadosDeEntrada{},
 		&models.SAVe_Casos_Vinculados{},
 		&models.SAVe_Identificacao{},
 		&models.SAVe_Identificacao_endereco{},
@@ -42,6 +44,16 @@ func Connect() {
 		&models.SAVe_Situacao_Juridica{},
 		&models.SAVe_Situacao_Juridica2{},
 		&models.SAVe_Situacao_Juridica_Incluir_processo{},
+		&models.SAVe_Encerramento{},
+		&models.SAVe_Saude{},
+		&models.SAVe_Habitacao_territorio{},
+		&models.SAVe_Assistencia{},
+		&models.SAVe_Ensino_trab_renda{},
+		&models.SAVe_Vinculos{},
+		&models.SAVe_Vinculos_Apoio{},
+		&models.SAVe_protecao_seguranca{},
+		&models.SAVe_protecao_seguranca_ameacadores{},
+		&models.SAVe_protecao_seguranca_adolescente{},
 	)
 	if err != nil {
 		log.Println("ERROR: Failed to migrate database:", err)

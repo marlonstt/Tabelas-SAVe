@@ -1,8 +1,35 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import api from "../lib/api";
+    import CaseTypeSelection from "../components/CaseTypeSelection.svelte";
 
     let user = JSON.parse(localStorage.getItem("user") || "{}");
     const userName = user.usuario || "Usuário";
+    let showCaseTypeSelection = false;
+
+    function openCaseSelection() {
+        showCaseTypeSelection = true;
+    }
+
+    function closeCaseSelection() {
+        showCaseTypeSelection = false;
+    }
+
+    async function handleCaseTypeSelect(event: CustomEvent) {
+        const type = event.detail; // "Breve" or "Completo"
+        closeCaseSelection();
+
+        try {
+            const response = await api.post("/cases", { Tipo_Form: type });
+            window.location.href = `/case/${response.data.id}`;
+        } catch (err: any) {
+            console.error(err);
+            alert(
+                "Erro ao criar caso: " +
+                    (err.response?.data?.error || err.message),
+            );
+        }
+    }
 
     onMount(() => {
         // Listen for profile image updates
@@ -18,6 +45,13 @@
     });
 </script>
 
+{#if showCaseTypeSelection}
+    <CaseTypeSelection
+        on:select={handleCaseTypeSelect}
+        on:close={closeCaseSelection}
+    />
+{/if}
+
 <div
     class="min-h-screen flex flex-col items-center justify-center p-4 relative"
 >
@@ -25,7 +59,8 @@
         class="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full text-center z-10"
     >
         <h1 class="text-3xl font-bold text-save-primary mb-2">
-            Bem-vindo ao aplicativo SAVe, {userName}!
+            Bem-vindo ao Sistema de Avaliação e Vitimização eletrônico, <br
+            />{userName}!
         </h1>
 
         <div class="flex justify-center mb-8">
@@ -54,7 +89,7 @@
             </a>
 
             <button
-                on:click={() => alert("Funcionalidade em desenvolvimento")}
+                on:click={openCaseSelection}
                 class="bg-save-primary text-white py-4 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center"
             >
                 Criar Novo Caso
@@ -69,12 +104,12 @@
                 </a>
             {/if}
 
-            <button
-                on:click={() => alert("Funcionalidade em desenvolvimento")}
-                class="bg-gray-600 text-white py-4 px-6 rounded-lg font-bold text-lg hover:bg-gray-700 transition-colors shadow-md flex items-center justify-center"
+            <a
+                href="/dashboards"
+                class="bg-gray-600 text-white py-4 px-6 rounded-lg font-bold text-lg hover:bg-gray-700 transition-colors shadow-md flex items-center justify-center no-underline"
             >
                 Dashboards
-            </button>
+            </a>
         </div>
     </div>
 </div>

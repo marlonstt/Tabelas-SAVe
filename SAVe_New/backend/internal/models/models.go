@@ -563,3 +563,47 @@ type SAVe_protecao_seguranca_adolescente struct {
 func (SAVe_protecao_seguranca_adolescente) TableName() string {
 	return "\"SAVe_protecao_seguranca_adolescente\""
 }
+
+type SAVe_Acompanhamentos struct {
+	ID               uint   `gorm:"primaryKey" json:"ID"`
+	ID_Caso          int    `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
+	Data             string `gorm:"column:\"Data\"" json:"Data"`
+	Tipo_Atendimento string `gorm:"column:\"Tipo_Atendimento\"" json:"Tipo_Atendimento"`
+	Sintese          string `gorm:"column:\"Sintese\"" json:"Sintese"`
+	Encaminhamento   string `gorm:"column:\"Encaminhamento\"" json:"Encaminhamento"`
+	Responsaveis     string `gorm:"column:\"Responsaveis\"" json:"Responsaveis"`
+}
+
+func (SAVe_Acompanhamentos) TableName() string {
+	return "\"SAVe_Acompanhamentos\""
+}
+
+type SAVe_Vitimizacao struct {
+	ID_Caso                     int    `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
+	Depoimento_Repetitivo       bool   `gorm:"column:\"Depoimento_Repetitivo\"" json:"Depoimento_Repetitivo"`
+	Espec_Depoimento            string `gorm:"column:\"Espec_Depoimento\"" json:"Espec_Depoimento"`
+	Falta_Atendimento           bool   `gorm:"column:\"Falta_Atendimento\"" json:"Falta_Atendimento"`
+	Espec_Falta_Atendimento     string `gorm:"column:\"Espec_Falta_Atendimento\"" json:"Espec_Falta_Atendimento"`
+	Demora_Justica              bool   `gorm:"column:\"Demora_Justica\"" json:"Demora_Justica"`
+	Espec_Demora                string `gorm:"column:\"Espec_Demora\"" json:"Espec_Demora"`
+	Discriminacao_Institucional bool   `gorm:"column:\"Discriminacao_Institucional\"" json:"Discriminacao_Institucional"`
+	Espec_Discriminacao         string `gorm:"column:\"Espec_Discriminacao\"" json:"Espec_Discriminacao"`
+	Violencia_Institucional     bool   `gorm:"column:\"Violencia_Institucional\"" json:"Violencia_Institucional"`
+	Espec_Violencia_Inst        string `gorm:"column:\"Espec_Violencia_Inst\"" json:"Espec_Violencia_Inst"`
+	Ameaca_Institucional        bool   `gorm:"column:\"Ameaca_Institucional\"" json:"Ameaca_Institucional"`
+	Espec_Ameaca_Inst           string `gorm:"column:\"Espec_Ameaca_Inst\"" json:"Espec_Ameaca_Inst"`
+	Culpabilizacao              bool   `gorm:"column:\"Culpabilizacao\"" json:"Culpabilizacao"`
+	Espec_Culpabilizacao        string `gorm:"column:\"Espec_Culpabilizacao\"" json:"Espec_Culpabilizacao"`
+	Estigmatizacao              bool   `gorm:"column:\"Estigmatizacao\"" json:"Estigmatizacao"`
+	Espec_Estigmatizacao        string `gorm:"column:\"Espec_Estigmatizacao\"" json:"Espec_Estigmatizacao"`
+	Exploracao_Midiatica        bool   `gorm:"column:\"Exploracao_Midiatica\"" json:"Exploracao_Midiatica"`
+	Espec_Midia                 string `gorm:"column:\"Espec_Midia\"" json:"Espec_Midia"`
+	Isolamento_Social           bool   `gorm:"column:\"Isolamento_Social\"" json:"Isolamento_Social"`
+	Espec_Isolamento            string `gorm:"column:\"Espec_Isolamento\"" json:"Espec_Isolamento"`
+	Perda_Credibilidade         bool   `gorm:"column:\"Perda_Credibilidade\"" json:"Perda_Credibilidade"`
+	Espec_Perda_Credibilidade   string `gorm:"column:\"Espec_Perda_Credibilidade\"" json:"Espec_Perda_Credibilidade"`
+}
+
+func (SAVe_Vitimizacao) TableName() string {
+	return "\"SAVe_Vitimizacao\""
+}

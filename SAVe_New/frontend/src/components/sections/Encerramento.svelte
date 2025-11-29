@@ -9,6 +9,7 @@
     let saving = false;
     let saveTimeout: any;
     let lastSavedData: string = "";
+    let saveStatus = "";
 
     // Reset data when caseId changes
     $: if (caseId) {
@@ -25,8 +26,8 @@
 
     async function loadData() {
         try {
-            const response = await api.get(`/cases/${caseId}/encerramento`);
-            data = response.data || {};
+            const response = await api.get(`/cases/${caseId}`);
+            data = response.data.encerramento || {};
         } catch (err: any) {
             if (err.response && err.response.status === 404) {
                 console.log(
@@ -61,27 +62,48 @@
         loadData();
     });
 
+    async function manualSave() {
+        if (saving) return;
+        saving = true;
+        saveStatus = "Salvando...";
+
+        try {
+            await api.put(`/cases/${caseId}/encerramento`, data);
+            saveStatus = "Salvo com sucesso! ✅";
+            lastSavedData = JSON.stringify(data);
+            setTimeout(() => (saveStatus = ""), 3000);
+        } catch (err) {
+            console.error("Error saving data:", err);
+            saveStatus = "Erro ao salvar ❌";
+        } finally {
+            saving = false;
+        }
+    }
+
     function autosave() {
-        if (loading) return;
+        if (loading || saving) return;
 
         const currentData = JSON.stringify(data);
         if (currentData === lastSavedData) return;
 
         clearTimeout(saveTimeout);
-        saving = true;
-
         saveTimeout = setTimeout(async () => {
+            if (saving) return; // Double check
+            saving = true;
+            saveStatus = "Salvando...";
             try {
-                // await api.put(`/cases/${caseId}/encerramento`, data);
+                await api.put(`/cases/${caseId}/encerramento`, data);
                 console.log("Autosaving Encerramento...", data);
-                await new Promise((r) => setTimeout(r, 500));
+                saveStatus = "Salvo! ✅";
                 lastSavedData = currentData;
+                setTimeout(() => (saveStatus = ""), 2000);
             } catch (err) {
                 console.error("Error autosaving", err);
+                saveStatus = "Erro ao salvar ❌";
             } finally {
                 saving = false;
             }
-        }, 1000);
+        }, 2000);
     }
 
     $: if (data) autosave();
@@ -94,91 +116,64 @@
         ) {
             return;
         }
-        try {
-            await api.post(`/cases/${caseId}/archive`, data);
-            alert("Caso encerrado com sucesso!");
-            window.location.href = "/dashboard";
-        } catch (err) {
-            console.error(err);
-            alert("Erro ao encerrar caso");
+        // Logic to finalize (e.g., set date if empty and save)
+        if (!data.Data_Encerramento) {
+            data.Data_Encerramento = new Date().toISOString().split("T")[0];
         }
+        await manualSave();
     }
 </script>
 
-<div class="bg-white rounded shadow p-6 relative">
-    <!-- Autosave Indicator -->
-    <div
-        class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={!saving}
-        class:opacity-100={saving}
-    >
-        <span class="text-save-primary flex items-center">
-            <span class="material-icons text-sm mr-1 animate-spin">sync</span>
-            Salvando...
-        </span>
-    </div>
-    <div
-        class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving || loading}
-        class:opacity-100={!saving && !loading}
-    >
-        <span class="text-green-600 flex items-center">
-            <span class="material-icons text-sm mr-1">check</span>
-            Salvo
-        </span>
+<div class="space-y-4 p-4">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-gray-800">Encerramento do Caso</h2>
+        <!-- Manual Save Button and Status -->
+        <div class="flex items-center space-x-4">
+            <span
+                class="text-sm font-medium"
+                class:text-green-600={saveStatus.includes("✅")}
+                class:text-red-600={saveStatus.includes("❌")}
+                >{saveStatus}</span
+            >
+            <button
+                class="bg-save-primary text-white px-4 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                on:click={manualSave}
+                disabled={saving || loading}
+            >
+                {saving ? "Salvando..." : "Salvar"}
+            </button>
+        </div>
     </div>
 
     {#if loading}
         <p>Carregando...</p>
     {:else}
-        <div class="space-y-6">
-            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <span class="material-icons text-yellow-400"
-                            >warning</span
-                        >
-                    </div>
-                    <div class="ml-3">
-                        <p class="text-sm text-yellow-700">
-                            O encerramento do caso indica que não haverá mais
-                            acompanhamentos ativos. Certifique-se de que todas
-                            as etapas foram concluídas.
-                        </p>
-                    </div>
-                </div>
-            </div>
+        <div class="grid grid-cols-1 gap-4">
+            <label class="block">
+                <span class="text-gray-700">Data de Encerramento</span>
+                <input
+                    type="date"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                    bind:value={data.Data_Encerramento}
+                    on:input={autosave}
+                />
+            </label>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <label class="block">
-                    <span class="text-gray-700">Data de Encerramento</span>
-                    <input
-                        type="date"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                        bind:value={data.Data_Encerramento}
-                    />
-                </label>
-
-                <label class="block">
-                    <span class="text-gray-700">Motivo do Encerramento</span>
-                    <select
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                        bind:value={data.Forma_Encerramento}
-                    >
-                        <option value="">Selecione...</option>
-                        <option value="Conclusão do Plano"
-                            >Conclusão do Plano de Acompanhamento</option
-                        >
-                        <option value="Evasão">Evasão / Perda de Contato</option
-                        >
-                        <option value="Transferência"
-                            >Transferência para outro serviço</option
-                        >
-                        <option value="Óbito">Óbito</option>
-                        <option value="Outros">Outros</option>
-                    </select>
-                </label>
-            </div>
+            <label class="block">
+                <span class="text-gray-700">Forma de Encerramento</span>
+                <select
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                    bind:value={data.Forma_Encerramento}
+                    on:change={autosave}
+                >
+                    <option value="">Selecione...</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Evasão">Evasão</option>
+                    <option value="Transferência">Transferência</option>
+                    <option value="Óbito">Óbito</option>
+                    <option value="Outros">Outros</option>
+                </select>
+            </label>
 
             {#if data.Forma_Encerramento === "Outros"}
                 <label class="block">
@@ -187,6 +182,7 @@
                         type="text"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                         bind:value={data.Especifique_Outros}
+                        on:input={autosave}
                     />
                 </label>
             {/if}
@@ -197,6 +193,7 @@
                     type="text"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                     bind:value={data.Encaminhamento_Pos_Alta}
+                    on:input={autosave}
                 />
             </label>
 
@@ -206,6 +203,7 @@
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                     rows="4"
                     bind:value={data.Observacao}
+                    on:input={autosave}
                 ></textarea>
             </label>
         </div>

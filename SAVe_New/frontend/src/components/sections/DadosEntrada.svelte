@@ -41,9 +41,10 @@
 
     async function loadData() {
         try {
-            const response = await api.get(`/cases/${caseId}/dados-entrada`);
+            const response = await api.get(`/cases/${caseId}`);
             // Merge response data
             const backendData = response.data.dadosEntrada || {};
+            console.log("Backend Data Loaded:", backendData);
             const casosVinculadosData = response.data.casosVinculados || {};
 
             data = { ...data, ...backendData };
@@ -70,6 +71,11 @@
             } else {
                 data.crimes = [];
             }
+
+            // Map Classificacao_vitima to Tipo_Vitima for the dropdown
+            if (data.Classificacao_vitima) {
+                data.Tipo_Vitima = data.Classificacao_vitima;
+            }
         } catch (err: any) {
             if (err.response && err.response.status === 404) {
                 // Case exists but no data for this section yet -> Init empty
@@ -91,19 +97,23 @@
     }
 
     onMount(() => {
-        loadData();
+        if (caseId) {
+            loadData();
+        }
     });
 
     function autosave() {
-        if (loading) return;
+        if (loading || saving) return; // Prevent autosave if already saving
 
         const currentData = JSON.stringify(data);
         if (currentData === lastSavedData) return;
 
         clearTimeout(saveTimeout);
-        saving = true;
+        // saving = true; // Don't set saving here, set it inside timeout or it blocks manual save immediately
 
         saveTimeout = setTimeout(async () => {
+            if (saving) return; // Double check inside timeout
+            saving = true;
             try {
                 await api.put(`/cases/${caseId}/dados-entrada`, data);
                 console.log("Autosaving...", data);
@@ -143,6 +153,31 @@
             data.crimes = [...data.crimes, crime];
         }
         autosave();
+    }
+
+    async function manualSave() {
+        console.log(
+            "Manual save clicked. Loading:",
+            loading,
+            "Saving:",
+            saving,
+        );
+        if (loading || saving) return;
+
+        clearTimeout(saveTimeout); // Cancel any pending autosave
+        saving = true;
+
+        console.log("Saving data:", JSON.parse(JSON.stringify(data))); // Deep copy to log current state
+        try {
+            await api.put(`/cases/${caseId}/dados-entrada`, data);
+            lastSavedData = JSON.stringify(data);
+            alert("Dados salvos com sucesso!");
+        } catch (err) {
+            console.error("Error saving", err);
+            alert("Erro ao salvar dados. Tente novamente.");
+        } finally {
+            saving = false;
+        }
     }
 </script>
 
@@ -492,6 +527,17 @@
                         bind:value={data.Observacao}
                     ></textarea>
                 </label>
+            </div>
+
+            <!-- Manual Save Button -->
+            <div class="md:col-span-2 flex justify-end mt-4">
+                <button
+                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                    on:click={manualSave}
+                    disabled={saving || loading}
+                >
+                    {saving ? "Salvando..." : "Salvar Dados"}
+                </button>
             </div>
         </div>
     {/if}

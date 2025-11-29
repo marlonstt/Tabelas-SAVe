@@ -571,16 +571,21 @@
 
     async function loadData() {
         try {
-            const response = await api.get(`/cases/${caseId}/identificacao`);
-            const loadedData = response.data || {};
+            const response = await api.get(`/cases/${caseId}`);
+            const rootData = response.data || {};
+            const identificacaoData = rootData.identificacao || {};
+            const telefonesData = rootData.telefones || [];
+            const emailsData = rootData.emails || [];
+            const enderecosData = rootData.enderecos || [];
 
-            // Map backend data to frontend structure if needed, or just assign
-            data = { ...data, ...loadedData };
-
-            // Ensure arrays exist
-            if (!data.telefones) data.telefones = [];
-            if (!data.emails) data.emails = [];
-            if (!data.enderecos) data.enderecos = [];
+            // Map backend data to frontend structure
+            data = {
+                ...data,
+                ...identificacaoData,
+                telefones: telefonesData,
+                emails: emailsData,
+                enderecos: enderecosData,
+            };
         } catch (err: any) {
             console.error("Error loading identificacao:", err);
         } finally {
@@ -594,19 +599,21 @@
     });
 
     function autosave() {
-        if (loading) return;
+        if (loading || saving) return;
 
         const currentData = JSON.stringify(data);
         if (currentData === lastSavedData) return;
 
         clearTimeout(saveTimeout);
-        saving = true;
+        // saving = true;
 
         saveTimeout = setTimeout(async () => {
+            if (saving) return;
+            saving = true;
             try {
                 await api.put(`/cases/${caseId}/identificacao`, data);
                 // console.log("Autosaving Identificacao...", data);
-                await new Promise((r) => setTimeout(r, 500));
+                // await new Promise((r) => setTimeout(r, 500));
                 lastSavedData = currentData;
             } catch (err) {
                 console.error("Error autosaving", err);
@@ -614,6 +621,31 @@
                 saving = false;
             }
         }, 1000);
+    }
+
+    async function manualSave() {
+        console.log(
+            "Manual save clicked. Loading:",
+            loading,
+            "Saving:",
+            saving,
+        );
+        if (loading || saving) return;
+
+        clearTimeout(saveTimeout);
+        saving = true;
+
+        console.log("Saving data:", JSON.parse(JSON.stringify(data)));
+        try {
+            await api.put(`/cases/${caseId}/identificacao`, data);
+            lastSavedData = JSON.stringify(data);
+            alert("Dados salvos com sucesso!");
+        } catch (err) {
+            console.error("Error saving", err);
+            alert("Erro ao salvar dados. Tente novamente.");
+        } finally {
+            saving = false;
+        }
     }
 
     $: if (data) autosave();
@@ -803,177 +835,6 @@
                         </select>
                     </label>
                 </div>
-            </div>
-
-            <!-- Documentação Civil -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Documentação Civil
-                </h3>
-                <div class="mb-4">
-                    <span class="text-gray-700 block mb-2">Situação:</span>
-                    <div class="flex gap-4">
-                        <label class="inline-flex items-center">
-                            <input
-                                type="radio"
-                                class="form-radio text-save-primary"
-                                bind:group={data.DC_situacao}
-                                value="Possui"
-                            />
-                            <span class="ml-2">Possui</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="radio"
-                                class="form-radio text-save-primary"
-                                bind:group={data.DC_situacao}
-                                value="Nunca teve"
-                            />
-                            <span class="ml-2">Nunca teve</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="radio"
-                                class="form-radio text-save-primary"
-                                bind:group={data.DC_situacao}
-                                value="Perda/Roubo/Danificado/Extravio"
-                            />
-                            <span class="ml-2"
-                                >Perda/Roubo/Danificado/Extravio</span
-                            >
-                        </label>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <label class="block">
-                        <span class="text-gray-700">CPF</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.DC_CPF}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">RG</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.DC_RG}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700">CTPS</span>
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.DC_CTPS}
-                        />
-                    </label>
-                </div>
-            </div>
-
-            <!-- Endereços -->
-            <div class="border-b pb-4">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold text-gray-700">
-                        Endereço(s)
-                    </h3>
-                    <button
-                        class="text-sm text-save-primary hover:underline"
-                        on:click={addEndereco}>+ Incluir endereço</button
-                    >
-                </div>
-
-                {#each data.enderecos as endereco, i}
-                    <div
-                        class="bg-gray-50 p-4 rounded-md mb-4 border border-gray-200 relative"
-                    >
-                        <button
-                            class="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                            on:click={() => removeEndereco(i)}
-                        >
-                            <span class="material-icons">delete</span>
-                        </button>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <label class="block md:col-span-2">
-                                <span class="text-gray-700">Endereço</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                                    bind:value={endereco.Endereco}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700">Nº</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                                    bind:value={endereco.Numero}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700">Complemento</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                                    bind:value={endereco.Complemento}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700">Bairro</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                                    bind:value={endereco.Bairro}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700">Cidade</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                                    bind:value={endereco.Cidade}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700">UF</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                                    bind:value={endereco.UF}
-                                />
-                            </label>
-                            <label class="block">
-                                <span class="text-gray-700">CEP</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                                    bind:value={endereco.CEP}
-                                />
-                            </label>
-                            <div class="md:col-span-3">
-                                <span class="text-gray-700 block mb-2"
-                                    >Situação de Moradia:</span
-                                >
-                                <div class="flex gap-4 flex-wrap">
-                                    {#each ["Casa própria", "Aluguel", "Em situação de rua", "Outro"] as situacao}
-                                        <label class="inline-flex items-center">
-                                            <input
-                                                type="radio"
-                                                class="form-radio text-save-primary"
-                                                bind:group={
-                                                    endereco.Moradia_Situacao
-                                                }
-                                                value={situacao}
-                                            />
-                                            <span class="ml-2">{situacao}</span>
-                                        </label>
-                                    {/each}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {/each}
             </div>
 
             <!-- Contatos -->
@@ -1179,6 +1040,16 @@
                         </select>
                     </label>
                 </div>
+            </div>
+            <!-- Manual Save Button -->
+            <div class="md:col-span-2 flex justify-end mt-4">
+                <button
+                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                    on:click={manualSave}
+                    disabled={saving || loading}
+                >
+                    {saving ? "Salvando..." : "Salvar Dados"}
+                </button>
             </div>
         </div>
     {/if}
