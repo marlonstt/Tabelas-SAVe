@@ -58,30 +58,54 @@ func GetCaseById(c *gin.Context) {
 	database.DB.First(&casosVinculados, id)
 
 	// Add other tables here...
+	var encerramento models.SAVe_Encerramento
+	database.DB.First(&encerramento, id)
+
 	var situacaoJuridica models.SAVe_Situacao_Juridica
 	database.DB.First(&situacaoJuridica, id)
 
 	var situacaoJuridica2 models.SAVe_Situacao_Juridica2
 	database.DB.First(&situacaoJuridica2, id)
 
-	var processos []models.SAVe_Situacao_Juridica_Incluir_processo
-	database.DB.Where("\"ID_Caso\" = ?", id).Find(&processos)
+	var situacaoJuridicaIP []models.SAVe_Situacao_Juridica_Incluir_processo
+	database.DB.Where("\"ID_Caso\" = ?", id).Find(&situacaoJuridicaIP)
 
 	var saude models.SAVe_Saude
-	database.DB.First(&saude, id)
+	if err := database.DB.Where("\"ID_Caso\" = ?", id).First(&saude).Error; err != nil {
+		// Handle error or ignore if record not found
+	}
+
+	var habitacaoTerritorio models.SAVe_Habitacao_territorio
+	if err := database.DB.Where("\"ID_Caso\" = ?", id).First(&habitacaoTerritorio).Error; err != nil {
+		// Handle error or ignore if record not found
+	}
+
+	var assistencia models.SAVe_Assistencia
+	if err := database.DB.Where("\"ID_Caso\" = ?", id).First(&assistencia).Error; err != nil {
+		// Handle error or ignore if record not found
+	}
+
+	var ensinoTrabRenda models.SAVe_Ensino_trab_renda
+	if err := database.DB.Where("\"ID_Caso\" = ?", id).First(&ensinoTrabRenda).Error; err != nil {
+		// Handle error or ignore if record not found
+	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"geral":             geral,
-		"dadosEntrada":      dadosEntrada,
-		"identificacao":     identificacao,
-		"telefones":         telefones,
-		"emails":            emails,
-		"enderecos":         enderecos,
-		"casosVinculados":   casosVinculados,
-		"situacaoJuridica":  situacaoJuridica,
-		"situacaoJuridica2": situacaoJuridica2,
-		"processos":         processos,
-		"saude":             saude,
+		"geral":               geral,
+		"dadosEntrada":        dadosEntrada,
+		"identificacao":       identificacao,
+		"telefones":           telefones,
+		"emails":              emails,
+		"enderecos":           enderecos,
+		"casosVinculados":     casosVinculados,
+		"encerramento":        encerramento,
+		"situacaoJuridica":    situacaoJuridica,
+		"situacaoJuridica2":   situacaoJuridica2,
+		"processos":           situacaoJuridicaIP,
+		"saude":               saude,
+		"habitacaoTerritorio": habitacaoTerritorio,
+		"assistencia":         assistencia,
+		"ensinoTrabRenda":     ensinoTrabRenda,
 	})
 }
 
@@ -615,6 +639,90 @@ func UpdateCaseSection(c *gin.Context) {
 
 		tx.Commit()
 		c.JSON(http.StatusOK, gin.H{"message": "Saude updated successfully"})
+
+	case "habitacao-territorio":
+		var input models.SAVe_Habitacao_territorio
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		input.ID_Caso = id
+
+		tx := database.DB.Begin()
+		var count int64
+		tx.Model(&models.SAVe_Habitacao_territorio{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create habitacao territorio: " + err.Error()})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_Habitacao_territorio{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update habitacao territorio: " + err.Error()})
+				return
+			}
+		}
+
+		tx.Commit()
+		c.JSON(http.StatusOK, gin.H{"message": "Habitacao Territorio updated successfully"})
+
+	case "assistencia":
+		var input models.SAVe_Assistencia
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		input.ID_Caso = uint(id)
+
+		tx := database.DB.Begin()
+		var count int64
+		tx.Model(&models.SAVe_Assistencia{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create assistencia: " + err.Error()})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_Assistencia{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update assistencia: " + err.Error()})
+				return
+			}
+		}
+
+		tx.Commit()
+		c.JSON(http.StatusOK, gin.H{"message": "Assistencia updated successfully"})
+
+	case "ensino-trab-renda":
+		var input models.SAVe_Ensino_trab_renda
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		input.ID_Caso = id
+
+		tx := database.DB.Begin()
+		var count int64
+		tx.Model(&models.SAVe_Ensino_trab_renda{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create ensino trab renda: " + err.Error()})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_Ensino_trab_renda{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update ensino trab renda: " + err.Error()})
+				return
+			}
+		}
+
+		tx.Commit()
+		c.JSON(http.StatusOK, gin.H{"message": "Ensino Trab Renda updated successfully"})
 
 	default:
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid section"})

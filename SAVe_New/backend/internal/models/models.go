@@ -280,3 +280,148 @@ type SAVe_Saude struct {
 func (SAVe_Saude) TableName() string {
 	return "\"SAVe_Saude\""
 }
+
+type SAVe_Habitacao_territorio struct {
+	ID_Caso                                  int    `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
+	Moradia_regular                          bool   `gorm:"column:\"Moradia_regular\"" json:"Moradia_regular"`
+	Moradia_regular_esp                      string `gorm:"column:\"Moradia_regular_esp\"" json:"Moradia_regular_esp"`
+	Moradia_Irregular                        bool   `gorm:"column:\"Moradia_Irregular\"" json:"Moradia_Irregular"`
+	Moradia_Irregular_esp                    string `gorm:"column:\"Moradia_Irregular_esp\"" json:"Moradia_Irregular_esp"`
+	Moradia_Emergencial                      bool   `gorm:"column:\"Moradia_Emergencial\"" json:"Moradia_Emergencial"`
+	Moradia_Emergencial_esp                  string `gorm:"column:\"Moradia_Emergencial_esp\"" json:"Moradia_Emergencial_esp"`
+	Territorio                               string `gorm:"column:\"Territorio\"" json:"Territorio"`
+	Comunidade_tradicional                   string `gorm:"column:\"Comunidade_tradicional\"" json:"Comunidade_tradicional"`
+	Comunidade_tradicional_esp               string `gorm:"column:\"Comunidade_tradicional_esp\"" json:"Comunidade_tradicional_esp"`
+	Reconhecido_fund_palmares                string `gorm:"column:\"Reconhecido_fund_palmares\"" json:"Reconhecido_fund_palmares"`
+	Reconhecido_orgao_publico                string `gorm:"column:\"Reconhecido_orgao_publico\"" json:"Reconhecido_orgao_publico"`
+	Reconhecido_funai                        string `gorm:"column:\"Reconhecido_funai\"" json:"Reconhecido_funai"`
+	Titulado_Incra                           string `gorm:"column:\"titulado_Incra\"" json:"titulado_Incra"`
+	Estrutura_Mat_predominante               string `gorm:"column:\"Estrutura_Mat_predominante\"" json:"Estrutura_Mat_predominante"`
+	Estrutura_Mat_predominante_esp           string `gorm:"column:\"Estrutura_Mat_predominante_esp\"" json:"Estrutura_Mat_predominante_esp"`
+	Estrutura_Insta_eletricas_hidraulica     string `gorm:"column:\"Estrutura_Insta_eletricas_hidraulica\"" json:"Estrutura_Insta_eletricas_hidraulica"`
+	Estrutura_Insta_eletricas_hidraulica_esp string `gorm:"column:\"Estrutura_Insta_eletricas_hidraulica_esp\"" json:"Estrutura_Insta_eletricas_hidraulica_esp"`
+	Estrutura_paredes_revesti                string `gorm:"column:\"Estrutura_paredes_revesti\"" json:"Estrutura_paredes_revesti"`
+	Estrutura_danos_eventos_naturais         string `gorm:"column:\"Estrutura_danos_eventos_naturais\"" json:"Estrutura_danos_eventos_naturais"`
+	Estrutura_danos_eventos_naturais_esp     string `gorm:"column:\"Estrutura_danos_eventos_naturais_esp\"" json:"Estrutura_danos_eventos_naturais_esp"`
+	Estrutura_Risco_geologico                string `gorm:"column:\"Estrutura_Risco_geologico\"" json:"Estrutura_Risco_geologico"`
+	Estrutura_Risco_geologico_esp            string `gorm:"column:\"Estrutura_Risco_geologico_esp\"" json:"Estrutura_Risco_geologico_esp"`
+	Estrutura_Acesso_internet                string `gorm:"column:\"Estrutura_Acesso_internet\"" json:"Estrutura_Acesso_internet"`
+	Estrutura_Acesso_internet_esp            string `gorm:"column:\"Estrutura_Acesso_internet_esp\"" json:"Estrutura_Acesso_internet_esp"`
+	Fatores_risco_ambiental_infra            bool   `gorm:"column:\"Fatores_risco_ambiental_infra\"" json:"Fatores_risco_ambiental_infra"`
+	Fatores_risco_ambiental_infra_esp        string `gorm:"column:\"Fatores_risco_ambiental_infra_esp\"" json:"Fatores_risco_ambiental_infra_esp"`
+	Conflitos_Urbanos_Criminalidade          bool   `gorm:"column:\"Conflitos_Urbanos_Criminalidade\"" json:"Conflitos_Urbanos_Criminalidade"`
+	Conflitos_Urbanos_Criminalidade_esp      string `gorm:"column:\"Conflitos_Urbanos_Criminalidade_esp\"" json:"Conflitos_Urbanos_Criminalidade_esp"`
+	Conflitos_fundiarios_Agrarios            bool   `gorm:"column:\"Conflitos_fundiarios_Agrarios\"" json:"Conflitos_fundiarios_Agrarios"`
+	Conflitos_fundiarios_Agrarios_esp        string `gorm:"column:\"Conflitos_fundiarios_Agrarios_esp\"" json:"Conflitos_fundiarios_Agrarios_esp"`
+	Fatores_risco_outros                     bool   `gorm:"column:\"Fatores_risco_outros\"" json:"Fatores_risco_outros"`
+	Fatores_risco_outros_esp                 string `gorm:"column:\"Fatores_risco_outros_esp\"" json:"Fatores_risco_outros_esp"`
+	RV_Mudanca_domicilio                     string `gorm:"column:\"RV_Mudanca_domicilio\"" json:"RV_Mudanca_domicilio"`
+	RV_Mudanca_domicilio_esp                 string `gorm:"column:\"RV_Mudanca_domicilio_esp\"" json:"RV_Mudanca_domicilio_esp"`
+}
+
+func (SAVe_Habitacao_territorio) TableName() string {
+	return "\"SAVe_Habitacao_territorio\""
+}
+
+type SAVe_Assistencia struct {
+	ID                                uint      `gorm:"primaryKey" json:"ID"`
+	ID_Caso                           uint      `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
+	Cad_unico                         string    `gorm:"column:\"Cad_unico\"" json:"Cad_unico"`
+	Status_cad_unico                  string    `gorm:"column:\"Status_cad_unico\"" json:"Status_cad_unico"`
+	SPSB_Acesso_cras                  string    `gorm:"column:\"SPSB_Acesso_cras\"" json:"SPSB_Acesso_cras"`
+	SPSB_Servicos_acessados           string    `gorm:"column:\"SPSB_Servicos_acessados\"" json:"SPSB_Servicos_acessados"`
+	SPSB_Servicos_acessados_esp       string    `gorm:"column:\"SPSB_Servicos_acessados_esp\"" json:"SPSB_Servicos_acessados_esp"`
+	SPSB_Contato_cras_nome            string    `gorm:"column:\"SPSB_Contato_cras_nome\"" json:"SPSB_Contato_cras_nome"`
+	SPSB_Contato_cras_tel             string    `gorm:"column:\"SPSB_Contato_cras_tel\"" json:"SPSB_Contato_cras_tel"`
+	SPSB_Contato_cras_email           string    `gorm:"column:\"SPSB_Contato_cras_email\"" json:"SPSB_Contato_cras_email"`
+	SPSB_Nome_servico                 string    `gorm:"column:\"SPSB_Nome_servico\"" json:"SPSB_Nome_servico"`
+	SPSB_Endereco_servico             string    `gorm:"column:\"SPSB_Endereco_servico\"" json:"SPSB_Endereco_servico"`
+	SPSEMC_Acesso_creas               string    `gorm:"column:\"SPSEMC_Acesso_creas\"" json:"SPSEMC_Acesso_creas"`
+	SPSEMC_Servicos_acessados         string    `gorm:"column:\"SPSEMC_Servicos_acessados\"" json:"SPSEMC_Servicos_acessados"`
+	SPSEMC_Servicos_acessados_esp     string    `gorm:"column:\"SPSEMC_Servicos_acessados_esp\"" json:"SPSEMC_Servicos_acessados_esp"`
+	SPSEMC_Contato_creas_nome         string    `gorm:"column:\"SPSEMC_Contato_creas_nome\"" json:"SPSEMC_Contato_creas_nome"`
+	SPSEMC_Contato_creas_tel          string    `gorm:"column:\"SPSEMC_Contato_creas_tel\"" json:"SPSEMC_Contato_creas_tel"`
+	SPSEMC_Contato_creas_email        string    `gorm:"column:\"SPSEMC_Contato_creas_email\"" json:"SPSEMC_Contato_creas_email"`
+	SPSEMC_Nome_servico               string    `gorm:"column:\"SPSEMC_Nome_servico\"" json:"SPSEMC_Nome_servico"`
+	SPSEMC_Endereco_servico           string    `gorm:"column:\"SPSEMC_Endereco_servico\"" json:"SPSEMC_Endereco_servico"`
+	SPSEAC_Inserido_acolhimentoInst   string    `gorm:"column:\"SPSEAC_Inserido_acolhimentoInst\"" json:"SPSEAC_Inserido_acolhimentoInst"`
+	SPSEAC_Modalidade_acolhimentoInst string    `gorm:"column:\"SPSEAC_Modalidade_acolhimentoInst\"" json:"SPSEAC_Modalidade_acolhimentoInst"`
+	SPSEAC_Inserido_acolhimentorep    string    `gorm:"column:\"SPSEAC_Inserido_acolhimentorep\"" json:"SPSEAC_Inserido_acolhimentorep"`
+	SPSEAC_acolhimentorep_desc        string    `gorm:"column:\"SPSEAC_acolhimentorep_desc\"" json:"SPSEAC_acolhimentorep_desc"`
+	SPSEAC_Inserido_familia           string    `gorm:"column:\"SPSEAC_Inserido_familia\"" json:"SPSEAC_Inserido_familia"`
+	SPSEAC_nome_familia               string    `gorm:"column:\"SPSEAC_nome_familia\"" json:"SPSEAC_nome_familia"`
+	SPSEAC_Inserido_calamidade        string    `gorm:"column:\"SPSEAC_Inserido_calamidade\"" json:"SPSEAC_Inserido_calamidade"`
+	SPSEAC_desc_calamidade            string    `gorm:"column:\"SPSEAC_desc_calamidade\"" json:"SPSEAC_desc_calamidade"`
+	SPSEAC_tec_ref_nome               string    `gorm:"column:\"SPSEAC_tec_ref_nome\"" json:"SPSEAC_tec_ref_nome"`
+	SPSEAC_tec_ref_tel                string    `gorm:"column:\"SPSEAC_tec_ref_tel\"" json:"SPSEAC_tec_ref_tel"`
+	SPSEAC_tec_ref_email              string    `gorm:"column:\"SPSEAC_tec_ref_email\"" json:"SPSEAC_tec_ref_email"`
+	SPSEAC_nome_servico               string    `gorm:"column:\"SPSEAC_nome_servico\"" json:"SPSEAC_nome_servico"`
+	SPSEAC_endereco_servico           string    `gorm:"column:\"SPSEAC_endereco_servico\"" json:"SPSEAC_endereco_servico"`
+	BSA_recebe_beneficios             string    `gorm:"column:\"BSA_recebe_beneficios\"" json:"BSA_recebe_beneficios"`
+	BSA_Tipo_beneficio                string    `gorm:"column:\"BSA_Tipo_beneficio\"" json:"BSA_Tipo_beneficio"`
+	BSA_transf_renda_inf              string    `gorm:"column:\"BSA_transf_renda_inf\"" json:"BSA_transf_renda_inf"`
+	BSA_Ben_trab_inf                  string    `gorm:"column:\"BSA_Ben_trab_inf\"" json:"BSA_Ben_trab_inf"`
+	BSA_Ben_hab_inf                   string    `gorm:"column:\"BSA_Ben_hab_inf\"" json:"BSA_Ben_hab_inf"`
+	BSA_Ben_as_inf                    string    `gorm:"column:\"BSA_Ben_as_inf\"" json:"BSA_Ben_as_inf"`
+	BSA_Ben_educ_inf                  string    `gorm:"column:\"BSA_Ben_educ_inf\"" json:"BSA_Ben_educ_inf"`
+	BSA_Ben_atr_inf                   string    `gorm:"column:\"BSA_Ben_atr_inf\"" json:"BSA_Ben_atr_inf"`
+	BSA_Ben_pdi_inf                   string    `gorm:"column:\"BSA_Ben_pdi_inf\"" json:"BSA_Ben_pdi_inf"`
+	BSA_Ben_emer_inf                  string    `gorm:"column:\"BSA_Ben_emer_inf\"" json:"BSA_Ben_emer_inf"`
+	BSA_transf_renda_esp              string    `gorm:"column:\"BSA_transf_renda_esp\"" json:"BSA_transf_renda_esp"`
+	BSA_Ben_trab_esp                  string    `gorm:"column:\"BSA_Ben_trab_esp\"" json:"BSA_Ben_trab_esp"`
+	BSA_Ben_hab_esp                   string    `gorm:"column:\"BSA_Ben_hab_esp\"" json:"BSA_Ben_hab_esp"`
+	BSA_Ben_as_esp                    string    `gorm:"column:\"BSA_Ben_as_esp\"" json:"BSA_Ben_as_esp"`
+	BSA_Ben_educ_esp                  string    `gorm:"column:\"BSA_Ben_educ_esp\"" json:"BSA_Ben_educ_esp"`
+	BSA_Ben_atr_esp                   string    `gorm:"column:\"BSA_Ben_atr_esp\"" json:"BSA_Ben_atr_esp"`
+	BSA_Ben_pdi_esp                   string    `gorm:"column:\"BSA_Ben_pdi_esp\"" json:"BSA_Ben_pdi_esp"`
+	BSA_Ben_emer_esp                  string    `gorm:"column:\"BSA_Ben_emer_esp\"" json:"BSA_Ben_emer_esp"`
+	BSA_outras_formas                 string    `gorm:"column:\"BSA_outras_formas\"" json:"BSA_outras_formas"`
+	BSA_direito_beneficios            string    `gorm:"column:\"BSA_direito_beneficios\"" json:"BSA_direito_beneficios"`
+	BSA_direito_beneficios_esp        string    `gorm:"column:\"BSA_direito_beneficios_esp\"" json:"BSA_direito_beneficios_esp"`
+	BSA_demandas_assist               string    `gorm:"column:\"BSA_demandas_assist\"" json:"BSA_demandas_assist"`
+	BSA_demandas_assist_desc          string    `gorm:"column:\"BSA_demandas_assist_desc\"" json:"BSA_demandas_assist_desc"`
+	BSA_tec_ref_nome                  string    `gorm:"column:\"BSA_tec_ref_nome\"" json:"BSA_tec_ref_nome"`
+	BSA_tec_ref_tel                   string    `gorm:"column:\"BSA_tec_ref_tel\"" json:"BSA_tec_ref_tel"`
+	BSA_tec_ref_email                 string    `gorm:"column:\"BSA_tec_ref_email\"" json:"BSA_tec_ref_email"`
+	BSA_seg_alimentar                 string    `gorm:"column:\"BSA_seg_alimentar\"" json:"BSA_seg_alimentar"`
+	CreatedAt                         time.Time `json:"created_at"`
+	UpdatedAt                         time.Time `json:"updated_at"`
+}
+
+func (SAVe_Assistencia) TableName() string {
+	return "\"SAVe_Assistencia\""
+}
+
+type SAVe_Ensino_trab_renda struct {
+	ID_Caso                      uint      `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
+	Grau_escolaridade            string    `gorm:"column:\"Grau_escolaridade\"" json:"Grau_escolaridade"`
+	Estuda_atualmente            string    `gorm:"column:\"Estuda_atualmente\"" json:"Estuda_atualmente"`
+	Nome_instituicao             string    `gorm:"column:\"Nome_instituicao\"" json:"Nome_instituicao"`
+	Tipo_instituicao             string    `gorm:"column:\"Tipo_instituicao\"" json:"Tipo_instituicao"`
+	Retorno_estudos              string    `gorm:"column:\"Retorno_estudos\"" json:"Retorno_estudos"`
+	Situacao_trabalho            string    `gorm:"column:\"Situacao_trabalho\"" json:"Situacao_trabalho"`
+	Profissao                    string    `gorm:"column:\"Profissao\"" json:"Profissao"`
+	Valor_renda                  string    `gorm:"column:\"Valor_renda\"" json:"Valor_renda"`
+	Valor_renda_esp              string    `gorm:"column:\"Valor_renda_esp\"" json:"Valor_renda_esp"`
+	TR_Prejuizo_trabalho         string    `gorm:"column:\"TR_Prejuizo_trabalho\"" json:"TR_Prejuizo_trabalho"`
+	TR_tipo_prejuizo             string    `gorm:"column:\"TR_tipo_prejuizo\"" json:"TR_tipo_prejuizo"`
+	TR_descricao_prejuizo        string    `gorm:"column:\"TR_descricao_prejuizo\"" json:"TR_descricao_prejuizo"`
+	PT_prejuizo_patrimonio       string    `gorm:"column:\"PT_prejuizo_patrimonio\"" json:"PT_prejuizo_patrimonio"`
+	PT_Descricao_pp              string    `gorm:"column:\"PT_Descricao_pp\"" json:"PT_Descricao_pp"`
+	VE_prejuizo_escolar          string    `gorm:"column:\"VE_prejuizo_escolar\"" json:"VE_prejuizo_escolar"`
+	VE_tipo_PE                   string    `gorm:"column:\"VE_tipo_PE\"" json:"VE_tipo_PE"`
+	VE_descricao_pe              string    `gorm:"column:\"VE_descricao_pe\"" json:"VE_descricao_pe"`
+	Demanda_educacional          bool      `gorm:"column:\"Demanda_educacional\"" json:"Demanda_educacional"`
+	Desc_demanda_educacional     string    `gorm:"column:\"Desc_demanda_educacional\"" json:"Desc_demanda_educacional"`
+	Demanda_trabalhista          bool      `gorm:"column:\"Demanda_trabalhista\"" json:"Demanda_trabalhista"`
+	Desc_demanda_trabalhista     string    `gorm:"column:\"Desc_demanda_trabalhista\"" json:"Desc_demanda_trabalhista"`
+	Esta_Afastado                string    `gorm:"column:\"Esta_Afastado\"" json:"Esta_Afastado"`
+	Motivo_afastamento           string    `gorm:"column:\"Motivo_afastamento\"" json:"Motivo_afastamento"`
+	Motivo_Afastamento_Detalhado string    `gorm:"column:\"Motivo_Afastamento_Detalhado\"" json:"Motivo_Afastamento_Detalhado"`
+	CreatedAt                    time.Time `json:"created_at"`
+	UpdatedAt                    time.Time `json:"updated_at"`
+}
+
+func (SAVe_Ensino_trab_renda) TableName() string {
+	return "save_ensino_trab_renda"
+}

@@ -1,779 +1,1041 @@
-<script lang="ts">
+<script>
     import { onMount } from "svelte";
     import api from "../../lib/api";
 
-    export let caseId: string;
+    export let caseId;
 
-    let data: any = {};
+    let data = {
+        ID_Caso: caseId,
+        Moradia_regular: false,
+        Moradia_regular_esp: "",
+        Moradia_Irregular: false,
+        Moradia_Irregular_esp: "",
+        Moradia_Emergencial: false,
+        Moradia_Emergencial_esp: "",
+        Territorio: "",
+        Comunidade_tradicional: "",
+        Comunidade_tradicional_esp: "",
+        Reconhecido_fund_palmares: "",
+        Reconhecido_orgao_publico: "",
+        Reconhecido_funai: "",
+        titulado_Incra: "",
+        Estrutura_Mat_predominante: "",
+        Estrutura_Mat_predominante_esp: "",
+        Estrutura_Insta_eletricas_hidraulica: "",
+        Estrutura_Insta_eletricas_hidraulica_esp: "",
+        Estrutura_paredes_revesti: "",
+        Estrutura_danos_eventos_naturais: "",
+        Estrutura_danos_eventos_naturais_esp: "",
+        Estrutura_Risco_geologico: "",
+        Estrutura_Risco_geologico_esp: "",
+        Estrutura_Acesso_internet: "",
+        Estrutura_Acesso_internet_esp: "",
+        Fatores_risco_ambiental_infra: false,
+        Fatores_risco_ambiental_infra_esp: "",
+        Conflitos_Urbanos_Criminalidade: false,
+        Conflitos_Urbanos_Criminalidade_esp: "",
+        Conflitos_fundiarios_Agrarios: false,
+        Conflitos_fundiarios_Agrarios_esp: "",
+        Fatores_risco_outros: false,
+        Fatores_risco_outros_esp: "",
+        RV_Mudanca_domicilio: "",
+        RV_Mudanca_domicilio_esp: "",
+    };
+
     let loading = true;
-    let saving = false;
-    let saveTimeout: any;
-    let lastSavedData: string = "";
+    let saveStatus = "";
+
+    // Helper variables for Territorio checkboxes
+    let territorioUrbano = false;
+    let territorioRural = false;
+    let territorioPeriferico = false;
+    let territorioTradicional = false;
+
+    // Helper variables for Comunidade Tradicional checkboxes
+    let comunidadeIndigena = false;
+    let comunidadeQuilombola = false;
+    let comunidadeRibeirinho = false;
+    let comunidadeCigano = false;
+    let comunidadeOutro = false;
 
     onMount(async () => {
-        try {
-            const response = await api.get(`/cases/${caseId}/territorio`);
-            data = response.data || {};
-        } catch (err) {
-            console.warn("Backend unavailable, using Mock Data for Territorio");
-            data = {
-                Moradia_regular: false,
-                Moradia_regular_esp: "",
-                Moradia_Irregular: false,
-                Moradia_Irregular_esp: "",
-                Moradia_Emergencial: false,
-                Moradia_Emergencial_esp: "",
-
-                Territorio: "",
-                Comunidade_tradicional: "Não",
-                Comunidade_tradicional_esp: "",
-
-                titulado_Incra: "Não",
-                Reconhecido_funai: "Não",
-                Reconhecido_fund_palmares: "Não",
-                Reconhecido_orgao_publico: "Não",
-
-                Estrutura_Mat_predominante: "Sim",
-                Estrutura_Mat_predominante_esp: "",
-                Estrutura_Insta_eletricas_hidraulica: "Sim",
-                Estrutura_Insta_eletricas_hidraulica_esp: "",
-                Estrutura_Risco_geologico: "Não",
-                Estrutura_Risco_geologico_esp: "",
-                Estrutura_Acesso_internet: "Sim",
-                Estrutura_Acesso_internet_esp: "",
-                Estrutura_danos_eventos_naturais: "Não",
-                Estrutura_danos_eventos_naturais_esp: "",
-                Estrutura_paredes_revesti: "",
-
-                Fatores_risco_ambiental_infra: false,
-                Fatores_risco_ambiental_infra_esp: "",
-                Conflitos_Urbanos_Criminalidade: false,
-                Conflitos_Urbanos_Criminalidade_esp: "",
-                Conflitos_fundiarios_Agrarios: false,
-                Conflitos_fundiarios_Agrarios_esp: "",
-                Fatores_risco_outros: false,
-                Fatores_risco_outros_esp: "",
-
-                RV_Mudanca_domicilio: "Não",
-                RV_Mudanca_domicilio_esp: "",
-
-                Tempo_Situacao_Rua: "",
-                Sit_Rua_Risco_Violencia: "",
-                Tem_Contato_Familiar: "Não",
-                Frequenta_Instituicao_Acolhimento: "Não",
-                Especifique_Instituicao_Acolhimento: "",
-                Expectativas_Futuro: "",
-                Nomes_Vinculos_Afetivos: "",
-            };
-        } finally {
-            loading = false;
-            lastSavedData = JSON.stringify(data);
-        }
+        await loadData();
     });
 
-    function autosave() {
-        if (loading) return;
+    async function loadData() {
+        try {
+            const response = await api.get(`/cases/${caseId}`);
+            if (
+                response.data.habitacao_territorio &&
+                response.data.habitacao_territorio.ID_Caso
+            ) {
+                data = { ...data, ...response.data.habitacao_territorio };
 
-        const currentData = JSON.stringify(data);
-        if (currentData === lastSavedData) return;
+                // Parse Territorio string to checkboxes
+                if (data.Territorio) {
+                    territorioUrbano = data.Territorio.includes("Urbano");
+                    territorioRural = data.Territorio.includes("Rural");
+                    territorioPeriferico =
+                        data.Territorio.includes("Periférico");
+                    territorioTradicional =
+                        data.Territorio.includes("Tradicional");
+                }
 
-        clearTimeout(saveTimeout);
-        saving = true;
-
-        saveTimeout = setTimeout(async () => {
-            try {
-                // await api.put(`/cases/${caseId}/territorio`, data);
-                console.log("Autosaving Territorio...", data);
-                await new Promise((r) => setTimeout(r, 500));
-                lastSavedData = currentData;
-            } catch (err) {
-                console.error("Error autosaving", err);
-            } finally {
-                saving = false;
+                // Parse Comunidade Tradicional string to checkboxes
+                if (data.Comunidade_tradicional) {
+                    comunidadeIndigena =
+                        data.Comunidade_tradicional.includes("Indigena");
+                    comunidadeQuilombola =
+                        data.Comunidade_tradicional.includes("Quilombola");
+                    comunidadeRibeirinho =
+                        data.Comunidade_tradicional.includes("Ribeirinho");
+                    comunidadeCigano =
+                        data.Comunidade_tradicional.includes("Cigano");
+                    comunidadeOutro =
+                        data.Comunidade_tradicional.includes("Outro");
+                }
             }
-        }, 1000);
+        } catch (error) {
+            console.error("Error loading data:", error);
+        } finally {
+            loading = false;
+        }
     }
 
-    $: if (data) autosave();
+    async function autosave() {
+        saveStatus = "Salvando...";
+        try {
+            // Update Territorio string
+            let territorios = [];
+            if (territorioUrbano) territorios.push("Urbano");
+            if (territorioRural) territorios.push("Rural");
+            if (territorioPeriferico) territorios.push("Periférico");
+            if (territorioTradicional) territorios.push("Tradicional");
+            data.Territorio = territorios.join("; ");
+
+            // Update Comunidade Tradicional string
+            let comunidades = [];
+            if (comunidadeIndigena) comunidades.push("Indigena");
+            if (comunidadeQuilombola) comunidades.push("Quilombola");
+            if (comunidadeRibeirinho) comunidades.push("Ribeirinho");
+            if (comunidadeCigano) comunidades.push("Cigano");
+            if (comunidadeOutro) comunidades.push("Outro");
+            data.Comunidade_tradicional = comunidades.join("; ");
+
+            await api.put(`/cases/${caseId}/habitacao-territorio`, data);
+            saveStatus = "Salvo! ✅";
+            setTimeout(() => (saveStatus = ""), 2000);
+        } catch (error) {
+            console.error("Error saving data:", error);
+            saveStatus = "Erro ao salvar ❌";
+        }
+    }
+
+    function handleCheckboxChange() {
+        autosave();
+    }
 </script>
 
-<div class="bg-white rounded shadow p-6 relative">
-    <!-- Autosave Indicator -->
+<div class="p-4 space-y-6">
     <div
-        class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={!saving}
-        class:opacity-100={saving}
+        class="flex justify-between items-center sticky top-0 bg-white z-10 p-2 shadow-sm"
     >
-        <span class="text-save-primary flex items-center">
-            <span class="material-icons text-sm mr-1 animate-spin">sync</span>
-            Salvando...
-        </span>
-    </div>
-    <div
-        class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving || loading}
-        class:opacity-100={!saving && !loading}
-    >
-        <span class="text-green-600 flex items-center">
-            <span class="material-icons text-sm mr-1">check</span>
-            Salvo
+        <h2 class="text-xl font-bold text-gray-800">Habitação e Território</h2>
+        <span
+            class="text-sm font-medium {saveStatus.includes('Erro')
+                ? 'text-red-600'
+                : 'text-green-600'}"
+        >
+            {saveStatus}
         </span>
     </div>
 
     {#if loading}
-        <p>Carregando...</p>
+        <div class="flex justify-center p-8">
+            <div
+                class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
+            ></div>
+        </div>
     {:else}
-        <div class="space-y-6">
-            <!-- Tipo de Moradia -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Tipo de Moradia
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Container Moradia -->
+            <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                <h3 class="text-lg font-semibold text-blue-900 mb-4">
+                    Moradia
                 </h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="p-3 border rounded hover:bg-gray-50">
-                        <label class="flex items-center space-x-3 mb-2">
+
+                <div class="space-y-4">
+                    <!-- Moradia Regular -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="flex items-center space-x-2">
                             <input
                                 type="checkbox"
-                                class="h-5 w-5 text-indigo-600"
                                 bind:checked={data.Moradia_regular}
+                                on:change={autosave}
+                                class="form-checkbox h-5 w-5 text-blue-600 rounded"
                             />
                             <span class="text-gray-700 font-medium"
-                                >Moradia Regular</span
+                                >Regular</span
                             >
                         </label>
                         {#if data.Moradia_regular}
-                            <input
-                                type="text"
-                                class="w-full px-3 py-2 border border-gray-300 rounded mt-2"
-                                placeholder="Especifique..."
-                                bind:value={data.Moradia_regular_esp}
-                            />
+                            <div class="ml-7">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 mb-1"
+                                    >Especifique:</label
+                                >
+                                <select
+                                    bind:value={data.Moradia_regular_esp}
+                                    on:change={autosave}
+                                    class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                >
+                                    <option value="">Selecione...</option>
+                                    <option value="Casa propria - quitada "
+                                        >Casa propria - quitada
+                                    </option>
+                                    <option value="Casa própria - financiada"
+                                        >Casa própria - financiada</option
+                                    >
+                                    <option value="Alugada">Alugada</option>
+                                </select>
+                            </div>
                         {/if}
                     </div>
-                    <div class="p-3 border rounded hover:bg-gray-50">
-                        <label class="flex items-center space-x-3 mb-2">
+
+                    <!-- Moradia Irregular -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="flex items-center space-x-2">
                             <input
                                 type="checkbox"
-                                class="h-5 w-5 text-indigo-600"
                                 bind:checked={data.Moradia_Irregular}
+                                on:change={autosave}
+                                class="form-checkbox h-5 w-5 text-blue-600 rounded"
                             />
                             <span class="text-gray-700 font-medium"
-                                >Moradia Irregular</span
+                                >Irregular</span
                             >
                         </label>
                         {#if data.Moradia_Irregular}
-                            <input
-                                type="text"
-                                class="w-full px-3 py-2 border border-gray-300 rounded mt-2"
-                                placeholder="Especifique..."
-                                bind:value={data.Moradia_Irregular_esp}
-                            />
+                            <div class="ml-7">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 mb-1"
+                                    >Especifique:</label
+                                >
+                                <select
+                                    bind:value={data.Moradia_Irregular_esp}
+                                    on:change={autosave}
+                                    class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                >
+                                    <option value="">Selecione...</option>
+                                    <option value="Ocupação">Ocupação</option>
+                                    <option value="Situação de rua"
+                                        >Situação de rua</option
+                                    >
+                                </select>
+                            </div>
                         {/if}
                     </div>
-                    <div class="p-3 border rounded hover:bg-gray-50">
-                        <label class="flex items-center space-x-3 mb-2">
+
+                    <!-- Moradia Emergencial -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="flex items-center space-x-2">
                             <input
                                 type="checkbox"
-                                class="h-5 w-5 text-indigo-600"
                                 bind:checked={data.Moradia_Emergencial}
+                                on:change={autosave}
+                                class="form-checkbox h-5 w-5 text-blue-600 rounded"
                             />
                             <span class="text-gray-700 font-medium"
-                                >Moradia Emergencial</span
+                                >Emergencial</span
                             >
                         </label>
                         {#if data.Moradia_Emergencial}
-                            <input
-                                type="text"
-                                class="w-full px-3 py-2 border border-gray-300 rounded mt-2"
-                                placeholder="Especifique..."
-                                bind:value={data.Moradia_Emergencial_esp}
-                            />
+                            <div class="ml-7">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 mb-1"
+                                    >Especifique:</label
+                                >
+                                <select
+                                    bind:value={data.Moradia_Emergencial_esp}
+                                    on:change={autosave}
+                                    class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                >
+                                    <option value="">Selecione...</option>
+                                    <option value="Acolhimento institucional"
+                                        >Acolhimento institucional</option
+                                    >
+                                    <option value="Moradia cedida/emprestada"
+                                        >Moradia cedida/emprestada</option
+                                    >
+                                    <option
+                                        value="Acolhida com familiares ou amigos"
+                                        >Acolhida com familiares ou amigos</option
+                                    >
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
                         {/if}
                     </div>
                 </div>
             </div>
 
-            <!-- Território e Comunidade -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Território e Comunidade
+            <!-- Container Território -->
+            <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                <h3 class="text-lg font-semibold text-blue-900 mb-4">
+                    Território
                 </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <label class="block">
-                        <span class="text-gray-700 font-semibold"
-                            >Território</span
-                        >
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Territorio}
-                        />
-                    </label>
-                    <div>
-                        <span class="text-gray-700 font-semibold block mb-2"
-                            >Comunidade Tradicional?</span
-                        >
-                        <div class="flex gap-4">
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Sim"
-                                    bind:group={data.Comunidade_tradicional}
-                                /><span class="ml-2">Sim</span></label
-                            >
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Não"
-                                    bind:group={data.Comunidade_tradicional}
-                                /><span class="ml-2">Não</span></label
-                            >
-                        </div>
-                        {#if data.Comunidade_tradicional === "Sim"}
-                            <input
-                                type="text"
-                                class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                placeholder="Qual?"
-                                bind:value={data.Comunidade_tradicional_esp}
-                            />
-                        {/if}
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <h4 class="text-sm font-semibold mb-3 text-gray-700">
-                        Reconhecimentos
-                    </h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <span class="text-gray-700 block mb-1"
-                                >Titulado INCRA?</span
-                            >
-                            <div class="flex gap-4">
-                                <label class="inline-flex items-center"
-                                    ><input
-                                        type="radio"
-                                        class="form-radio"
-                                        value="Sim"
-                                        bind:group={data.titulado_Incra}
-                                    /><span class="ml-2">Sim</span></label
-                                >
-                                <label class="inline-flex items-center"
-                                    ><input
-                                        type="radio"
-                                        class="form-radio"
-                                        value="Não"
-                                        bind:group={data.titulado_Incra}
-                                    /><span class="ml-2">Não</span></label
-                                >
-                            </div>
-                        </div>
-                        <div>
-                            <span class="text-gray-700 block mb-1"
-                                >Reconhecido FUNAI?</span
-                            >
-                            <div class="flex gap-4">
-                                <label class="inline-flex items-center"
-                                    ><input
-                                        type="radio"
-                                        class="form-radio"
-                                        value="Sim"
-                                        bind:group={data.Reconhecido_funai}
-                                    /><span class="ml-2">Sim</span></label
-                                >
-                                <label class="inline-flex items-center"
-                                    ><input
-                                        type="radio"
-                                        class="form-radio"
-                                        value="Não"
-                                        bind:group={data.Reconhecido_funai}
-                                    /><span class="ml-2">Não</span></label
-                                >
-                            </div>
-                        </div>
-                        <div>
-                            <span class="text-gray-700 block mb-1"
-                                >Reconhecido Fund. Palmares?</span
-                            >
-                            <div class="flex gap-4">
-                                <label class="inline-flex items-center"
-                                    ><input
-                                        type="radio"
-                                        class="form-radio"
-                                        value="Sim"
-                                        bind:group={
-                                            data.Reconhecido_fund_palmares
-                                        }
-                                    /><span class="ml-2">Sim</span></label
-                                >
-                                <label class="inline-flex items-center"
-                                    ><input
-                                        type="radio"
-                                        class="form-radio"
-                                        value="Não"
-                                        bind:group={
-                                            data.Reconhecido_fund_palmares
-                                        }
-                                    /><span class="ml-2">Não</span></label
-                                >
-                            </div>
-                        </div>
-                        <div>
-                            <span class="text-gray-700 block mb-1"
-                                >Reconhecido Órgão Público?</span
-                            >
-                            <div class="flex gap-4">
-                                <label class="inline-flex items-center"
-                                    ><input
-                                        type="radio"
-                                        class="form-radio"
-                                        value="Sim"
-                                        bind:group={
-                                            data.Reconhecido_orgao_publico
-                                        }
-                                    /><span class="ml-2">Sim</span></label
-                                >
-                                <label class="inline-flex items-center"
-                                    ><input
-                                        type="radio"
-                                        class="form-radio"
-                                        value="Não"
-                                        bind:group={
-                                            data.Reconhecido_orgao_publico
-                                        }
-                                    /><span class="ml-2">Não</span></label
-                                >
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Estrutura da Moradia -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Estrutura da Moradia
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <span class="text-gray-700 font-semibold block mb-2"
-                            >Material Predominante Adequado?</span
-                        >
-                        <div class="flex gap-4">
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Sim"
-                                    bind:group={data.Estrutura_Mat_predominante}
-                                /><span class="ml-2">Sim</span></label
-                            >
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Não"
-                                    bind:group={data.Estrutura_Mat_predominante}
-                                /><span class="ml-2">Não</span></label
-                            >
-                        </div>
-                        {#if data.Estrutura_Mat_predominante === "Não"}
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="flex items-center space-x-2">
                             <input
-                                type="text"
-                                class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                placeholder="Especifique..."
-                                bind:value={data.Estrutura_Mat_predominante_esp}
+                                type="checkbox"
+                                bind:checked={territorioUrbano}
+                                on:change={handleCheckboxChange}
+                                class="form-checkbox h-5 w-5 text-blue-600 rounded"
                             />
-                        {/if}
-                    </div>
-                    <div>
-                        <span class="text-gray-700 font-semibold block mb-2"
-                            >Instalações Elétricas/Hidráulicas Adequadas?</span
-                        >
-                        <div class="flex gap-4">
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Sim"
-                                    bind:group={
-                                        data.Estrutura_Insta_eletricas_hidraulica
-                                    }
-                                /><span class="ml-2">Sim</span></label
+                            <span class="text-gray-700 font-medium">Urbano</span
                             >
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Não"
-                                    bind:group={
-                                        data.Estrutura_Insta_eletricas_hidraulica
-                                    }
-                                /><span class="ml-2">Não</span></label
-                            >
-                        </div>
-                        {#if data.Estrutura_Insta_eletricas_hidraulica === "Não"}
+                        </label>
+                        <label class="flex items-center space-x-2">
                             <input
-                                type="text"
-                                class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                placeholder="Especifique..."
-                                bind:value={
-                                    data.Estrutura_Insta_eletricas_hidraulica_esp
-                                }
+                                type="checkbox"
+                                bind:checked={territorioPeriferico}
+                                on:change={handleCheckboxChange}
+                                class="form-checkbox h-5 w-5 text-blue-600 rounded"
                             />
-                        {/if}
-                    </div>
-                    <div>
-                        <span class="text-gray-700 font-semibold block mb-2"
-                            >Risco Geológico?</span
-                        >
-                        <div class="flex gap-4">
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Sim"
-                                    bind:group={data.Estrutura_Risco_geologico}
-                                /><span class="ml-2">Sim</span></label
+                            <span class="text-gray-700 font-medium"
+                                >Periférico</span
                             >
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Não"
-                                    bind:group={data.Estrutura_Risco_geologico}
-                                /><span class="ml-2">Não</span></label
-                            >
-                        </div>
-                        {#if data.Estrutura_Risco_geologico === "Sim"}
+                        </label>
+                        <label class="flex items-center space-x-2">
                             <input
-                                type="text"
-                                class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                placeholder="Especifique..."
-                                bind:value={data.Estrutura_Risco_geologico_esp}
+                                type="checkbox"
+                                bind:checked={territorioRural}
+                                on:change={handleCheckboxChange}
+                                class="form-checkbox h-5 w-5 text-blue-600 rounded"
                             />
-                        {/if}
-                    </div>
-                    <div>
-                        <span class="text-gray-700 font-semibold block mb-2"
-                            >Acesso à Internet?</span
-                        >
-                        <div class="flex gap-4">
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Sim"
-                                    bind:group={data.Estrutura_Acesso_internet}
-                                /><span class="ml-2">Sim</span></label
-                            >
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Não"
-                                    bind:group={data.Estrutura_Acesso_internet}
-                                /><span class="ml-2">Não</span></label
-                            >
-                        </div>
-                        {#if data.Estrutura_Acesso_internet === "Sim"}
+                            <span class="text-gray-700 font-medium">Rural</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
                             <input
-                                type="text"
-                                class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                placeholder="Especifique..."
-                                bind:value={data.Estrutura_Acesso_internet_esp}
+                                type="checkbox"
+                                bind:checked={territorioTradicional}
+                                on:change={handleCheckboxChange}
+                                class="form-checkbox h-5 w-5 text-blue-600 rounded"
                             />
-                        {/if}
-                    </div>
-                    <div>
-                        <span class="text-gray-700 font-semibold block mb-2"
-                            >Danos por Eventos Naturais?</span
-                        >
-                        <div class="flex gap-4">
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Sim"
-                                    bind:group={
-                                        data.Estrutura_danos_eventos_naturais
-                                    }
-                                /><span class="ml-2">Sim</span></label
+                            <span class="text-gray-700 font-medium"
+                                >Tradicional</span
                             >
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Não"
-                                    bind:group={
-                                        data.Estrutura_danos_eventos_naturais
-                                    }
-                                /><span class="ml-2">Não</span></label
-                            >
-                        </div>
-                        {#if data.Estrutura_danos_eventos_naturais === "Sim"}
-                            <input
-                                type="text"
-                                class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                placeholder="Especifique..."
-                                bind:value={
-                                    data.Estrutura_danos_eventos_naturais_esp
-                                }
-                            />
-                        {/if}
+                        </label>
                     </div>
-                    <label class="block">
-                        <span class="text-gray-700 font-semibold"
-                            >Paredes/Revestimento</span
-                        >
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Estrutura_paredes_revesti}
-                        />
-                    </label>
-                </div>
-            </div>
 
-            <!-- Fatores de Risco e Mudança -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Fatores de Risco e Mudança
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div class="p-3 border rounded hover:bg-gray-50">
-                        <label class="flex items-center space-x-3 mb-2">
-                            <input
-                                type="checkbox"
-                                class="h-5 w-5 text-indigo-600"
-                                bind:checked={
-                                    data.Fatores_risco_ambiental_infra
-                                }
-                            />
-                            <span class="text-gray-700 font-medium"
-                                >Risco Ambiental/Infraestrutura</span
-                            >
-                        </label>
-                        {#if data.Fatores_risco_ambiental_infra}
-                            <input
-                                type="text"
-                                class="w-full px-3 py-2 border border-gray-300 rounded mt-2"
-                                placeholder="Especifique..."
-                                bind:value={
-                                    data.Fatores_risco_ambiental_infra_esp
-                                }
-                            />
-                        {/if}
-                    </div>
-                    <div class="p-3 border rounded hover:bg-gray-50">
-                        <label class="flex items-center space-x-3 mb-2">
-                            <input
-                                type="checkbox"
-                                class="h-5 w-5 text-indigo-600"
-                                bind:checked={
-                                    data.Conflitos_Urbanos_Criminalidade
-                                }
-                            />
-                            <span class="text-gray-700 font-medium"
-                                >Conflitos Urbanos/Criminalidade</span
-                            >
-                        </label>
-                        {#if data.Conflitos_Urbanos_Criminalidade}
-                            <input
-                                type="text"
-                                class="w-full px-3 py-2 border border-gray-300 rounded mt-2"
-                                placeholder="Especifique..."
-                                bind:value={
-                                    data.Conflitos_Urbanos_Criminalidade_esp
-                                }
-                            />
-                        {/if}
-                    </div>
-                    <div class="p-3 border rounded hover:bg-gray-50">
-                        <label class="flex items-center space-x-3 mb-2">
-                            <input
-                                type="checkbox"
-                                class="h-5 w-5 text-indigo-600"
-                                bind:checked={
-                                    data.Conflitos_fundiarios_Agrarios
-                                }
-                            />
-                            <span class="text-gray-700 font-medium"
-                                >Conflitos Fundiários/Agrários</span
-                            >
-                        </label>
-                        {#if data.Conflitos_fundiarios_Agrarios}
-                            <input
-                                type="text"
-                                class="w-full px-3 py-2 border border-gray-300 rounded mt-2"
-                                placeholder="Especifique..."
-                                bind:value={
-                                    data.Conflitos_fundiarios_Agrarios_esp
-                                }
-                            />
-                        {/if}
-                    </div>
-                    <div class="p-3 border rounded hover:bg-gray-50">
-                        <label class="flex items-center space-x-3 mb-2">
-                            <input
-                                type="checkbox"
-                                class="h-5 w-5 text-indigo-600"
-                                bind:checked={data.Fatores_risco_outros}
-                            />
-                            <span class="text-gray-700 font-medium"
-                                >Outros Fatores de Risco</span
-                            >
-                        </label>
-                        {#if data.Fatores_risco_outros}
-                            <input
-                                type="text"
-                                class="w-full px-3 py-2 border border-gray-300 rounded mt-2"
-                                placeholder="Especifique..."
-                                bind:value={data.Fatores_risco_outros_esp}
-                            />
-                        {/if}
-                    </div>
-                </div>
-                <div>
-                    <span class="text-gray-700 font-semibold block mb-2"
-                        >Houve mudança de domicílio?</span
-                    >
-                    <div class="flex gap-4">
-                        <label class="inline-flex items-center"
-                            ><input
-                                type="radio"
-                                class="form-radio"
-                                value="Sim"
-                                bind:group={data.RV_Mudanca_domicilio}
-                            /><span class="ml-2">Sim</span></label
+                    {#if territorioTradicional}
+                        <div
+                            class="mt-4 p-4 bg-gray-50 rounded border border-gray-200"
                         >
-                        <label class="inline-flex items-center"
-                            ><input
-                                type="radio"
-                                class="form-radio"
-                                value="Não"
-                                bind:group={data.RV_Mudanca_domicilio}
-                            /><span class="ml-2">Não</span></label
-                        >
-                    </div>
-                    {#if data.RV_Mudanca_domicilio === "Sim"}
-                        <input
-                            type="text"
-                            class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            placeholder="Motivo/Detalhes"
-                            bind:value={data.RV_Mudanca_domicilio_esp}
-                        />
+                            <h4
+                                class="text-md font-semibold text-blue-800 mb-3"
+                            >
+                                Comunidade Tradicional
+                            </h4>
+
+                            <div class="space-y-3">
+                                <!-- Indigena -->
+                                <div class="flex flex-col">
+                                    <label class="flex items-center space-x-2">
+                                        <input
+                                            type="checkbox"
+                                            bind:checked={comunidadeIndigena}
+                                            on:change={handleCheckboxChange}
+                                            class="form-checkbox h-5 w-5 text-blue-600 rounded"
+                                        />
+                                        <span class="text-gray-700"
+                                            >Território Indígena</span
+                                        >
+                                    </label>
+                                    {#if comunidadeIndigena}
+                                        <div class="ml-7 mt-2">
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 mb-1"
+                                                >É reconhecida pelo FUNAI?</label
+                                            >
+                                            <div class="flex space-x-4">
+                                                <label
+                                                    class="inline-flex items-center"
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        bind:group={
+                                                            data.Reconhecido_funai
+                                                        }
+                                                        value="Sim"
+                                                        on:change={autosave}
+                                                        class="form-radio text-blue-600"
+                                                    />
+                                                    <span class="ml-2">Sim</span
+                                                    >
+                                                </label>
+                                                <label
+                                                    class="inline-flex items-center"
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        bind:group={
+                                                            data.Reconhecido_funai
+                                                        }
+                                                        value="Não"
+                                                        on:change={autosave}
+                                                        class="form-radio text-blue-600"
+                                                    />
+                                                    <span class="ml-2">Não</span
+                                                    >
+                                                </label>
+                                            </div>
+                                        </div>
+                                    {/if}
+                                </div>
+
+                                <!-- Quilombola -->
+                                <div class="flex flex-col">
+                                    <label class="flex items-center space-x-2">
+                                        <input
+                                            type="checkbox"
+                                            bind:checked={comunidadeQuilombola}
+                                            on:change={handleCheckboxChange}
+                                            class="form-checkbox h-5 w-5 text-blue-600 rounded"
+                                        />
+                                        <span class="text-gray-700"
+                                            >Território Quilombola</span
+                                        >
+                                    </label>
+                                    {#if comunidadeQuilombola}
+                                        <div class="ml-7 mt-2">
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 mb-1"
+                                                >É reconhecido pela Fundação
+                                                Palmares?</label
+                                            >
+                                            <div class="flex space-x-4">
+                                                <label
+                                                    class="inline-flex items-center"
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        bind:group={
+                                                            data.Reconhecido_fund_palmares
+                                                        }
+                                                        value="Sim"
+                                                        on:change={autosave}
+                                                        class="form-radio text-blue-600"
+                                                    />
+                                                    <span class="ml-2">Sim</span
+                                                    >
+                                                </label>
+                                                <label
+                                                    class="inline-flex items-center"
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        bind:group={
+                                                            data.Reconhecido_fund_palmares
+                                                        }
+                                                        value="Não"
+                                                        on:change={autosave}
+                                                        class="form-radio text-blue-600"
+                                                    />
+                                                    <span class="ml-2">Não</span
+                                                    >
+                                                </label>
+                                            </div>
+                                        </div>
+                                    {/if}
+                                </div>
+
+                                <!-- Ribeirinho -->
+                                <label class="flex items-center space-x-2">
+                                    <input
+                                        type="checkbox"
+                                        bind:checked={comunidadeRibeirinho}
+                                        on:change={handleCheckboxChange}
+                                        class="form-checkbox h-5 w-5 text-blue-600 rounded"
+                                    />
+                                    <span class="text-gray-700"
+                                        >Território Ribeirinho</span
+                                    >
+                                </label>
+
+                                <!-- Cigano -->
+                                <label class="flex items-center space-x-2">
+                                    <input
+                                        type="checkbox"
+                                        bind:checked={comunidadeCigano}
+                                        on:change={handleCheckboxChange}
+                                        class="form-checkbox h-5 w-5 text-blue-600 rounded"
+                                    />
+                                    <span class="text-gray-700"
+                                        >Território Cigano</span
+                                    >
+                                </label>
+
+                                <!-- Outro -->
+                                <div class="flex flex-col">
+                                    <label class="flex items-center space-x-2">
+                                        <input
+                                            type="checkbox"
+                                            bind:checked={comunidadeOutro}
+                                            on:change={handleCheckboxChange}
+                                            class="form-checkbox h-5 w-5 text-blue-600 rounded"
+                                        />
+                                        <span class="text-gray-700"
+                                            >Outro território tradicional</span
+                                        >
+                                    </label>
+                                    {#if comunidadeOutro}
+                                        <div class="ml-7 mt-2 space-y-2">
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-medium text-gray-700 mb-1"
+                                                    >Possui reconhecimento de
+                                                    outro órgão público?</label
+                                                >
+                                                <div class="flex space-x-4">
+                                                    <label
+                                                        class="inline-flex items-center"
+                                                    >
+                                                        <input
+                                                            type="radio"
+                                                            bind:group={
+                                                                data.Reconhecido_orgao_publico
+                                                            }
+                                                            value="Sim"
+                                                            on:change={autosave}
+                                                            class="form-radio text-blue-600"
+                                                        />
+                                                        <span class="ml-2"
+                                                            >Sim</span
+                                                        >
+                                                    </label>
+                                                    <label
+                                                        class="inline-flex items-center"
+                                                    >
+                                                        <input
+                                                            type="radio"
+                                                            bind:group={
+                                                                data.Reconhecido_orgao_publico
+                                                            }
+                                                            value="Não"
+                                                            on:change={autosave}
+                                                            class="form-radio text-blue-600"
+                                                        />
+                                                        <span class="ml-2"
+                                                            >Não</span
+                                                        >
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-medium text-gray-700 mb-1"
+                                                    >Especifique:</label
+                                                >
+                                                <input
+                                                    type="text"
+                                                    bind:value={
+                                                        data.Comunidade_tradicional_esp
+                                                    }
+                                                    on:blur={autosave}
+                                                    class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                />
+                                            </div>
+                                        </div>
+                                    {/if}
+                                </div>
+
+                                <!-- Titulado Incra -->
+                                <div class="mt-4 pt-4 border-t border-gray-200">
+                                    <label
+                                        class="block text-sm font-medium text-gray-700 mb-1"
+                                        >O território tradicional está titulado
+                                        pelo Incra?</label
+                                    >
+                                    <div class="flex space-x-4">
+                                        <label class="inline-flex items-center">
+                                            <input
+                                                type="radio"
+                                                bind:group={data.titulado_Incra}
+                                                value="Sim"
+                                                on:change={autosave}
+                                                class="form-radio text-blue-600"
+                                            />
+                                            <span class="ml-2">Sim</span>
+                                        </label>
+                                        <label class="inline-flex items-center">
+                                            <input
+                                                type="radio"
+                                                bind:group={data.titulado_Incra}
+                                                value="Não"
+                                                on:change={autosave}
+                                                class="form-radio text-blue-600"
+                                            />
+                                            <span class="ml-2">Não</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     {/if}
                 </div>
             </div>
+        </div>
 
-            <!-- População em Situação de Rua -->
-            <div class="border-b pb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    População em Situação de Rua
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <label class="block">
-                        <span class="text-gray-700 font-semibold"
-                            >Tempo em situação de rua</span
-                        >
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Tempo_Situacao_Rua}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700 font-semibold"
-                            >Risco de violência</span
-                        >
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Sit_Rua_Risco_Violencia}
-                        />
-                    </label>
-                    <div>
-                        <span class="text-gray-700 font-semibold block mb-2"
-                            >Tem contato familiar?</span
-                        >
-                        <div class="flex gap-4">
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Sim"
-                                    bind:group={data.Tem_Contato_Familiar}
-                                /><span class="ml-2">Sim</span></label
+        <!-- Additional Fields Container -->
+        <div class="bg-white p-4 rounded-lg shadow border border-gray-200 mt-6">
+            <h3 class="text-lg font-semibold text-blue-900 mb-4">
+                Estrutura e Condições
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Material Predominante -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Qual o material predominante?</label
+                    >
+                    <select
+                        bind:value={data.Estrutura_Mat_predominante}
+                        on:change={autosave}
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                        <option value="">Selecione...</option>
+                        <option value="Alvenaria">Alvenaria</option>
+                        <option value="Madeira">Madeira</option>
+                        <option value="Mista">Mista</option>
+                        <option value="Adobo">Adobo</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                    {#if data.Estrutura_Mat_predominante === "Outro"}
+                        <div class="mt-2">
+                            <label
+                                class="block text-sm font-medium text-gray-700 mb-1"
+                                >Especifique:</label
                             >
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Não"
-                                    bind:group={data.Tem_Contato_Familiar}
-                                /><span class="ml-2">Não</span></label
-                            >
-                        </div>
-                    </div>
-                    <div>
-                        <span class="text-gray-700 font-semibold block mb-2"
-                            >Frequenta instituição de acolhimento?</span
-                        >
-                        <div class="flex gap-4">
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Sim"
-                                    bind:group={
-                                        data.Frequenta_Instituicao_Acolhimento
-                                    }
-                                /><span class="ml-2">Sim</span></label
-                            >
-                            <label class="inline-flex items-center"
-                                ><input
-                                    type="radio"
-                                    class="form-radio"
-                                    value="Não"
-                                    bind:group={
-                                        data.Frequenta_Instituicao_Acolhimento
-                                    }
-                                /><span class="ml-2">Não</span></label
-                            >
-                        </div>
-                        {#if data.Frequenta_Instituicao_Acolhimento === "Sim"}
                             <input
                                 type="text"
-                                class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                placeholder="Qual?"
-                                bind:value={
-                                    data.Especifique_Instituicao_Acolhimento
-                                }
+                                bind:value={data.Estrutura_Mat_predominante_esp}
+                                on:blur={autosave}
+                                class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                placeholder="Ex: Papelão, Plástico"
                             />
+                        </div>
+                    {/if}
+                </div>
+
+                <!-- Instalações Elétricas/Hidráulicas -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Possui instalações elétricas e hidráulicas?</label
+                    >
+                    <select
+                        bind:value={data.Estrutura_Insta_eletricas_hidraulica}
+                        on:change={autosave}
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                        <option value="">Selecione...</option>
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
+                    {#if data.Estrutura_Insta_eletricas_hidraulica === "Sim"}
+                        <div class="mt-2">
+                            <label
+                                class="block text-sm font-medium text-gray-700 mb-1"
+                                >Especifique:</label
+                            >
+                            <input
+                                type="text"
+                                bind:value={
+                                    data.Estrutura_Insta_eletricas_hidraulica_esp
+                                }
+                                on:blur={autosave}
+                                class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                placeholder="Ex: água do açude"
+                            />
+                        </div>
+                    {/if}
+                </div>
+
+                <!-- Paredes e Revestimentos -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Possui paredes e revestimentos?</label
+                    >
+                    <select
+                        bind:value={data.Estrutura_paredes_revesti}
+                        on:change={autosave}
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                        <option value="">Selecione...</option>
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
+                </div>
+
+                <!-- Acesso à Internet -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Possui acesso à internet?</label
+                    >
+                    <select
+                        bind:value={data.Estrutura_Acesso_internet}
+                        on:change={autosave}
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                        <option value="">Selecione...</option>
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
+                    {#if data.Estrutura_Acesso_internet === "Sim"}
+                        <div class="mt-2">
+                            <label
+                                class="block text-sm font-medium text-gray-700 mb-1"
+                                >Especifique:</label
+                            >
+                            <input
+                                type="text"
+                                bind:value={data.Estrutura_Acesso_internet_esp}
+                                on:blur={autosave}
+                                class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            />
+                        </div>
+                    {/if}
+                </div>
+
+                <!-- Danos por Eventos Naturais -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >O imóvel já sofreu danos por eventos naturais?</label
+                    >
+                    <select
+                        bind:value={data.Estrutura_danos_eventos_naturais}
+                        on:change={autosave}
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                        <option value="">Selecione...</option>
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
+                    {#if data.Estrutura_danos_eventos_naturais === "Sim"}
+                        <div class="mt-2">
+                            <label
+                                class="block text-sm font-medium text-gray-700 mb-1"
+                                >Especifique os danos:</label
+                            >
+                            <input
+                                type="text"
+                                bind:value={
+                                    data.Estrutura_danos_eventos_naturais_esp
+                                }
+                                on:blur={autosave}
+                                class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            />
+                        </div>
+                    {/if}
+                </div>
+
+                <!-- Riscos Geológicos -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >O entorno do imóvel apresenta riscos geológicos?</label
+                    >
+                    <select
+                        bind:value={data.Estrutura_Risco_geologico}
+                        on:change={autosave}
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                        <option value="">Selecione...</option>
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
+                    {#if data.Estrutura_Risco_geologico === "Sim"}
+                        <div class="mt-2">
+                            <label
+                                class="block text-sm font-medium text-gray-700 mb-1"
+                                >Especifique os riscos:</label
+                            >
+                            <input
+                                type="text"
+                                bind:value={data.Estrutura_Risco_geologico_esp}
+                                on:blur={autosave}
+                                class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            />
+                        </div>
+                    {/if}
+                </div>
+            </div>
+            <!-- Território - Fatores de risco -->
+            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <h3 class="text-lg font-semibold text-save-primary mb-4">
+                    Território - Fatores de risco
+                </h3>
+
+                <div class="space-y-4">
+                    <!-- Risco ambiental e de infraestrutura -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="checkbox"
+                                bind:checked={
+                                    data.Fatores_risco_ambiental_infra
+                                }
+                                on:change={() => {
+                                    autosave();
+                                    if (!data.Fatores_risco_ambiental_infra) {
+                                        data.Fatores_risco_ambiental_infra_esp =
+                                            "";
+                                        autosave();
+                                    }
+                                }}
+                                class="form-checkbox h-5 w-5 text-save-primary rounded border-gray-300 focus:ring-save-primary"
+                            />
+                            <span class="ml-2 text-gray-700"
+                                >Risco ambiental e de infraestrutura</span
+                            >
+                        </label>
+
+                        {#if data.Fatores_risco_ambiental_infra}
+                            <div class="ml-7 animate-fade-in">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 mb-1"
+                                >
+                                    Especifique
+                                </label>
+                                <select
+                                    bind:value={
+                                        data.Fatores_risco_ambiental_infra_esp
+                                    }
+                                    on:change={autosave}
+                                    class="w-full max-w-md rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring-save-primary sm:text-sm"
+                                >
+                                    <option value="">Selecione...</option>
+                                    <option value="Alagamento"
+                                        >Alagamento</option
+                                    >
+                                    <option value="Deslizamento de terra"
+                                        >Deslizamento de terra</option
+                                    >
+                                    <option value="Barragens">Barragens</option>
+                                    <option value="Residuos tóxicos"
+                                        >Residuos tóxicos</option
+                                    >
+                                </select>
+                            </div>
                         {/if}
                     </div>
-                    <label class="block">
-                        <span class="text-gray-700 font-semibold"
-                            >Expectativas de futuro</span
+
+                    <!-- Conflitos urbanos e criminalidade -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="checkbox"
+                                bind:checked={
+                                    data.Conflitos_Urbanos_Criminalidade
+                                }
+                                on:change={() => {
+                                    autosave();
+                                    if (!data.Conflitos_Urbanos_Criminalidade) {
+                                        data.Conflitos_Urbanos_Criminalidade_esp =
+                                            "";
+                                        autosave();
+                                    }
+                                }}
+                                class="form-checkbox h-5 w-5 text-save-primary rounded border-gray-300 focus:ring-save-primary"
+                            />
+                            <span class="ml-2 text-gray-700"
+                                >Conflitos urbanos e criminalidade</span
+                            >
+                        </label>
+
+                        {#if data.Conflitos_Urbanos_Criminalidade}
+                            <div class="ml-7 animate-fade-in">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 mb-1"
+                                >
+                                    Especifique
+                                </label>
+                                <select
+                                    bind:value={
+                                        data.Conflitos_Urbanos_Criminalidade_esp
+                                    }
+                                    on:change={autosave}
+                                    class="w-full max-w-md rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring-save-primary sm:text-sm"
+                                >
+                                    <option value="">Selecione...</option>
+                                    <option value="Pontos de tráfico"
+                                        >Pontos de tráfico</option
+                                    >
+                                    <option value="Facções">Facções</option>
+                                    <option value="Milícias armadas"
+                                        >Milícias armadas</option
+                                    >
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+                        {/if}
+                    </div>
+
+                    <!-- Conflitos fundiários ou agrários -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="checkbox"
+                                bind:checked={
+                                    data.Conflitos_fundiarios_Agrarios
+                                }
+                                on:change={() => {
+                                    autosave();
+                                    if (!data.Conflitos_fundiarios_Agrarios) {
+                                        data.Conflitos_fundiarios_Agrarios_esp =
+                                            "";
+                                        autosave();
+                                    }
+                                }}
+                                class="form-checkbox h-5 w-5 text-save-primary rounded border-gray-300 focus:ring-save-primary"
+                            />
+                            <span class="ml-2 text-gray-700"
+                                >Conflitos fundiários ou agrários</span
+                            >
+                        </label>
+
+                        {#if data.Conflitos_fundiarios_Agrarios}
+                            <div class="ml-7 animate-fade-in">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 mb-1"
+                                >
+                                    Especifique
+                                </label>
+                                <select
+                                    bind:value={
+                                        data.Conflitos_fundiarios_Agrarios_esp
+                                    }
+                                    on:change={autosave}
+                                    class="w-full max-w-md rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring-save-primary sm:text-sm"
+                                >
+                                    <option value="">Selecione...</option>
+                                    <option value="Facções">Facções</option>
+                                    <option value="Milícias armadas"
+                                        >Milícias armadas</option
+                                    >
+                                    <option value="Deslocamento forçados"
+                                        >Deslocamento forçados</option
+                                    >
+                                    <option value="Desmatamento ilegal"
+                                        >Desmatamento ilegal</option
+                                    >
+                                    <option value="Contaminação do solo"
+                                        >Contaminação do solo</option
+                                    >
+                                    <option
+                                        value="Trabalho análogo à escravidão"
+                                        >Trabalho análogo à escravidão</option
+                                    >
+                                </select>
+                            </div>
+                        {/if}
+                    </div>
+
+                    <!-- Outros riscos -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="checkbox"
+                                bind:checked={data.Fatores_risco_outros}
+                                on:change={() => {
+                                    autosave();
+                                    if (!data.Fatores_risco_outros) {
+                                        data.Fatores_risco_outros_esp = "";
+                                        autosave();
+                                    }
+                                }}
+                                class="form-checkbox h-5 w-5 text-save-primary rounded border-gray-300 focus:ring-save-primary"
+                            />
+                            <span class="ml-2 text-gray-700">Outros riscos</span
+                            >
+                        </label>
+
+                        {#if data.Fatores_risco_outros}
+                            <div class="ml-7 animate-fade-in">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 mb-1"
+                                >
+                                    Especifique
+                                </label>
+                                <input
+                                    type="text"
+                                    bind:value={data.Fatores_risco_outros_esp}
+                                    on:blur={autosave}
+                                    class="w-full max-w-md rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring-save-primary sm:text-sm"
+                                />
+                            </div>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+            <!-- Repercussões da vitimização -->
+            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <h3 class="text-lg font-semibold text-save-primary mb-4">
+                    Repercussões da vitimização
+                </h3>
+
+                <div class="space-y-4">
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-2"
                         >
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Expectativas_Futuro}
-                        />
-                    </label>
-                    <label class="block">
-                        <span class="text-gray-700 font-semibold"
-                            >Nomes/Vínculos afetivos</span
-                        >
-                        <input
-                            type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Nomes_Vinculos_Afetivos}
-                        />
-                    </label>
+                            A Vítima precisa ou precisou se mudar de domicílio
+                            em decorrência da vitimização?
+                        </label>
+                        <div class="flex space-x-4">
+                            <label class="inline-flex items-center">
+                                <input
+                                    type="radio"
+                                    bind:group={data.RV_Mudanca_domicilio}
+                                    value="Sim"
+                                    on:change={autosave}
+                                    class="form-radio h-4 w-4 text-save-primary border-gray-300 focus:ring-save-primary"
+                                />
+                                <span class="ml-2 text-gray-700">Sim</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input
+                                    type="radio"
+                                    bind:group={data.RV_Mudanca_domicilio}
+                                    value="Não"
+                                    on:change={() => {
+                                        data.RV_Mudanca_domicilio_esp = "";
+                                        autosave();
+                                    }}
+                                    class="form-radio h-4 w-4 text-save-primary border-gray-300 focus:ring-save-primary"
+                                />
+                                <span class="ml-2 text-gray-700">Não</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    {#if data.RV_Mudanca_domicilio === "Sim"}
+                        <div class="animate-fade-in">
+                            <label
+                                class="block text-sm font-medium text-gray-700 mb-1"
+                            >
+                                Especifique quais meios o ameaçador possui de
+                                concretizar a ameaça:
+                            </label>
+                            <input
+                                type="text"
+                                bind:value={data.RV_Mudanca_domicilio_esp}
+                                on:blur={autosave}
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring-save-primary sm:text-sm"
+                            />
+                        </div>
+                    {/if}
                 </div>
             </div>
         </div>
