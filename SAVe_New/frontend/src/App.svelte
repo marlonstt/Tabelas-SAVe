@@ -65,7 +65,13 @@
 {#if currentPath === "/login" || !isAuthenticated}
   <Login />
 {:else}
-  <div class="min-h-screen bg-gray-100 flex flex-col">
+  <div class="min-h-screen bg-gray-100 flex flex-col relative">
+    <!-- Footer Vinheta -->
+    <img
+      src="/CasaLilian-vinheta.png"
+      alt="Vinheta Casa Lilian"
+      class="fixed bottom-0 left-0 w-full h-auto object-cover opacity-50 pointer-events-none z-0"
+    />
     <!-- Navbar -->
     <header class="bg-save-primary text-white shadow-md z-50 relative">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -132,7 +138,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 overflow-auto">
+    <main class="flex-1 overflow-auto relative z-10">
       {#if currentPath === "/menu"}
         <TelaEntrada />
       {:else if currentPath === "/admin/users"}

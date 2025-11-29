@@ -19,7 +19,7 @@
 </script>
 
 <div
-    class="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4 relative"
+    class="min-h-screen flex flex-col items-center justify-center p-4 relative"
 >
     <div
         class="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full text-center z-10"
@@ -76,27 +76,5 @@
                 Dashboards
             </button>
         </div>
-    </div>
-
-    <!-- Logos Rodapé -->
-    <div
-        class="absolute bottom-8 left-8 opacity-50 hover:opacity-100 transition-opacity"
-    >
-        <img
-            src="/logo_casa_lilian_real.png"
-            alt="Casa Lilian"
-            class="h-[60px]"
-            style="mix-blend-mode: multiply;"
-        />
-    </div>
-    <div
-        class="absolute bottom-8 right-8 opacity-50 hover:opacity-100 transition-opacity"
-    >
-        <img
-            src="/logo_mpmg_real.png"
-            alt="MPMG"
-            class="h-[60px]"
-            style="mix-blend-mode: multiply;"
-        />
     </div>
 </div>

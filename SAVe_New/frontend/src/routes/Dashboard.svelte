@@ -93,7 +93,6 @@
 
   function toggleSort() {
     sortOrder = sortOrder === "asc" ? "desc" : "asc";
-    // Sorting is handled by the reactive statement above
   }
 </script>
 
