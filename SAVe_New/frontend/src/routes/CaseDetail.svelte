@@ -113,6 +113,21 @@
       activeTab = "dadosEntrada";
     }
   }
+
+  async function reopenCase() {
+    if (!confirm("Tem certeza que deseja reabrir este caso?")) {
+      return;
+    }
+
+    try {
+      await api.put(`/cases/${id}/reopen`);
+      alert("Caso reaberto com sucesso!");
+      window.location.reload();
+    } catch (err) {
+      console.error("Error reopening case:", err);
+      alert("Erro ao reabrir caso");
+    }
+  }
 </script>
 
 {#if loading}
@@ -155,27 +170,39 @@
         </p>
       </div>
 
-      <div
-        class="flex items-center bg-white/10 backdrop-blur-sm p-1 rounded-lg border border-white/20"
-      >
-        <button
-          on:click={() => (formType = "breve")}
-          class="px-4 py-1.5 text-sm rounded-md transition-all duration-200 {formType ===
-          'breve'
-            ? 'bg-white text-save-primary font-bold shadow-sm'
-            : 'text-blue-100 hover:bg-white/10'}"
+      <div class="flex items-center gap-3">
+        {#if caseData.geral?.Encerrado === "Sim"}
+          <button
+            on:click={reopenCase}
+            class="px-3 py-1.5 text-xs font-medium rounded-md bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200 shadow-sm flex items-center gap-1"
+          >
+            <span class="material-icons text-sm">lock_open</span>
+            Reabrir Caso
+          </button>
+        {/if}
+
+        <div
+          class="flex items-center bg-white/10 backdrop-blur-sm p-1 rounded-lg border border-white/20"
         >
-          Versão Breve
-        </button>
-        <button
-          on:click={() => (formType = "completo")}
-          class="px-4 py-1.5 text-sm rounded-md transition-all duration-200 {formType ===
-          'completo'
-            ? 'bg-white text-save-primary font-bold shadow-sm'
-            : 'text-blue-100 hover:bg-white/10'}"
-        >
-          Versão Completa
-        </button>
+          <button
+            on:click={() => (formType = "breve")}
+            class="px-4 py-1.5 text-sm rounded-md transition-all duration-200 {formType ===
+            'breve'
+              ? 'bg-white text-save-primary font-bold shadow-sm'
+              : 'text-blue-100 hover:bg-white/10'}"
+          >
+            Versão Breve
+          </button>
+          <button
+            on:click={() => (formType = "completo")}
+            class="px-4 py-1.5 text-sm rounded-md transition-all duration-200 {formType ===
+            'completo'
+              ? 'bg-white text-save-primary font-bold shadow-sm'
+              : 'text-blue-100 hover:bg-white/10'}"
+          >
+            Versão Completa
+          </button>
+        </div>
       </div>
     </div>
 

@@ -122,6 +122,10 @@
             if (comunidadeOutro) comunidades.push("Outro");
             data.Comunidade_tradicional = comunidades.join("; ");
 
+            // Ensure ID_Caso is an integer
+            data.ID_Caso = parseInt(caseId);
+
+            console.log("Saving Territorio data:", data);
             await api.put(`/cases/${caseId}/habitacao-territorio`, data);
             saveStatus = "Salvo! ✅";
             setTimeout(() => (saveStatus = ""), 2000);

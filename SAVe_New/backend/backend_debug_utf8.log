@@ -1,0 +1,591 @@
+﻿go : SERVER STARTING - 
+DEBUG BUILD
+No linha:1 caractere:1
++ go run 
+cmd/server/main.go > backe
+nd_debug_territorio.log 
+2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpe    cified: 
+(SERVER     STARTING - 
+DEBUG     BUILD:String) [ 
+   ], RemoteExcepti    on
+    + FullyQualified    
+ErrorId : Native    
+CommandError
+ 
+2025/11/29 21:52:56 
+Connected to database 
+successfully
+
+2025/11/29 21:52:56 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/database/db.go:36
+[0m[33m[14.393ms] [34;1m[rows:1][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = CURRENT_SCHEMA() AND table_name = '"SAVe_Geral"' AND table_type = 'BASE TABLE'
+
+2025/11/29 21:52:56 
+ERROR: Failed to migrate 
+database: ERRO: rela├º├úo 
+"SAVe_Geral" j├í existe 
+(SQLSTATE 42P07)
+2025/11/29 21:52:56 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/database/db.go:36 [35;1mERRO: rela├º├úo "SAVe_Geral" j├í existe (SQLSTATE 42P07)
+[0m[33m[12.006ms] [34;1m[rows:0][0m CREATE TABLE "SAVe_Geral" ("ID_Caso" bigserial,"Num_Processo" text,"Tipo_Vitima" text,"Comarca" text,"Data" text,"Tipo_Form" text,"Anexos_Info" text,"Paginas_Visitadas" text,"Encerrado" text,"Nome" text,"Tipo_Crime" text,PRIMARY KEY ("ID_Caso"))
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/login                --> save-backend/internal/handlers.Login (5 handlers)
+[GIN-debug] POST   /api/change-password      --> save-backend/internal/handlers.ChangePassword (6 handlers)
+[GIN-debug] POST   /api/update-profile-image --> save-backend/internal/handlers.UpdateProfileImage (6 handlers)
+[GIN-debug] GET    /api/admin/users          --> save-backend/internal/handlers.GetUsers (7 handlers)
+[GIN-debug] POST   /api/admin/users          --> save-backend/internal/handlers.Register (7 handlers)
+[GIN-debug] PUT    /api/admin/users/:id      --> save-backend/internal/handlers.UpdateUser (7 handlers)
+[GIN-debug] DELETE /api/admin/users/:id      --> save-backend/internal/handlers.DeleteUser (7 handlers)
+[GIN-debug] GET    /api/cases                --> save-backend/internal/handlers.GetAllCases (6 handlers)
+[GIN-debug] POST   /api/cases                --> save-backend/internal/handlers.CreateCase (6 handlers)
+[GIN-debug] GET    /api/cases/:id            --> save-backend/internal/handlers.GetCaseById (6 handlers)
+[GIN-debug] DELETE /api/cases/:id            --> save-backend/internal/handlers.DeleteCase (6 handlers)
+[GIN-debug] POST   /api/cases/:id/archive    --> save-backend/internal/handlers.ArchiveCase (6 handlers)
+[GIN-debug] PUT    /api/cases/:id/:section   --> save-backend/internal/handlers.UpdateCaseSection (6 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8080
+INCOMING REQUEST: OPTIONS 
+/api/cases/6
+[GIN] 2025/11/29 - 21:53:55 | 204 |       505.6┬Ás |             ::1 | OPTIONS  "/api/cases/6"
+INCOMING REQUEST: GET 
+/api/cases/6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:38
+[0m[33m[4.962ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Geral" WHERE "SAVe_Geral"."ID_Caso" = 6 ORDER BY "SAVe_Geral"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:44
+[0m[33m[5.076ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_DadosDeEntrada" WHERE "SAVe_DadosDeEntrada"."ID_Caso" = 6 ORDER BY "SAVe_DadosDeEntrada"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:47
+[0m[33m[3.725ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Identificacao" WHERE "SAVe_Identificacao"."ID_Caso" = 6 ORDER BY "SAVe_Identificacao"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:50
+[0m[33m[2.048ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_telefone" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:53
+[0m[33m[2.455ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_email" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:56
+[0m[33m[2.504ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_endereco" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:59
+[0m[33m[3.530ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Casos_Vinculados" WHERE "SAVe_Casos_Vinculados"."ID_Caso" = 6 ORDER BY "SAVe_Casos_Vinculados"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:63 [35;1mrecord not found
+[0m[33m[1.022ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Encerramento" WHERE "SAVe_Encerramento"."ID_Caso" = 6 ORDER BY "SAVe_Encerramento"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:66
+[0m[33m[4.311ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica" WHERE "SAVe_Situacao_Juridica"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:69
+[0m[33m[3.528ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica2" WHERE "SAVe_Situacao_Juridica2"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica2"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:72
+[0m[33m[1.896ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Situacao_Juridica_Incluir_processo" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:75 [35;1mrecord not found
+[0m[33m[2.987ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Saude" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Saude"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:80 [35;1mrecord not found
+[0m[33m[1.742ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Habitacao_territorio" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Habitacao_territorio"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:85 [35;1mrecord not found
+[0m[33m[23.493ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Assistencia" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Assistencia"."id" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:90 [35;1mrecord not found
+[0m[33m[2.805ms] [34;1m[rows:0][0m SELECT * FROM "save_ensino_trab_renda" WHERE "ID_Caso" = 6 ORDER BY "save_ensino_trab_renda"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:95 [35;1mrecord not found
+[0m[33m[2.395ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Vinculos"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:100
+[0m[33m[9.018ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos_Apoio" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:103 [35;1mrecord not found
+[0m[33m[16.424ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca" WHERE "ID_Caso" = 6 ORDER BY "SAVe_protecao_seguranca"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:111
+[0m[33m[7.025ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_ameacadores" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:117
+[0m[33m[4.639ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_adolescente" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:123
+[0m[33m[18.253ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Acompanhamentos" WHERE "ID_Caso" = 6
+[GIN] 2025/11/29 - 21:53:55 | 200 |    132.2478ms |             ::1 | GET      "/api/cases/6"
+INCOMING REQUEST: GET 
+/api/cases/6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:38
+[0m[33m[0.505ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Geral" WHERE "SAVe_Geral"."ID_Caso" = 6 ORDER BY "SAVe_Geral"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:44
+[0m[33m[0.708ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_DadosDeEntrada" WHERE "SAVe_DadosDeEntrada"."ID_Caso" = 6 ORDER BY "SAVe_DadosDeEntrada"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:47
+[0m[33m[0.527ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Identificacao" WHERE "SAVe_Identificacao"."ID_Caso" = 6 ORDER BY "SAVe_Identificacao"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:50
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_telefone" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:53
+[0m[33m[0.528ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_email" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:56
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_endereco" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:59
+[0m[33m[1.015ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Casos_Vinculados" WHERE "SAVe_Casos_Vinculados"."ID_Caso" = 6 ORDER BY "SAVe_Casos_Vinculados"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:63 [35;1mrecord not found
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Encerramento" WHERE "SAVe_Encerramento"."ID_Caso" = 6 ORDER BY "SAVe_Encerramento"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:66
+[0m[33m[0.526ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica" WHERE "SAVe_Situacao_Juridica"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:69
+[0m[33m[0.545ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica2" WHERE "SAVe_Situacao_Juridica2"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica2"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:72
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Situacao_Juridica_Incluir_processo" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:75 [35;1mrecord not found
+[0m[33m[0.514ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Saude" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Saude"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:80 [35;1mrecord not found
+[0m[33m[0.531ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Habitacao_territorio" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Habitacao_territorio"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:85 [35;1mrecord not found
+[0m[33m[0.689ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Assistencia" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Assistencia"."id" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:90 [35;1mrecord not found
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "save_ensino_trab_renda" WHERE "ID_Caso" = 6 ORDER BY "save_ensino_trab_renda"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:95 [35;1mrecord not found
+[0m[33m[0.524ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Vinculos"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:100
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos_Apoio" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:103 [35;1mrecord not found
+[0m[33m[1.402ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca" WHERE "ID_Caso" = 6 ORDER BY "SAVe_protecao_seguranca"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:111
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_ameacadores" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:117
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_adolescente" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:123
+[0m[33m[0.529ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Acompanhamentos" WHERE "ID_Caso" = 6
+[GIN] 2025/11/29 - 21:53:55 | 200 |     10.0977ms |             ::1 | GET      "/api/cases/6"
+INCOMING REQUEST: GET 
+/api/cases/6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:38
+[0m[33m[0.642ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Geral" WHERE "SAVe_Geral"."ID_Caso" = 6 ORDER BY "SAVe_Geral"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:44
+[0m[33m[0.576ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_DadosDeEntrada" WHERE "SAVe_DadosDeEntrada"."ID_Caso" = 6 ORDER BY "SAVe_DadosDeEntrada"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:47
+[0m[33m[0.559ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Identificacao" WHERE "SAVe_Identificacao"."ID_Caso" = 6 ORDER BY "SAVe_Identificacao"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:50
+[0m[33m[0.515ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_telefone" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:53
+[0m[33m[0.655ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_email" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:56
+[0m[33m[3.655ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_endereco" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:59
+[0m[33m[2.014ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Casos_Vinculados" WHERE "SAVe_Casos_Vinculados"."ID_Caso" = 6 ORDER BY "SAVe_Casos_Vinculados"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:63 [35;1mrecord not found
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Encerramento" WHERE "SAVe_Encerramento"."ID_Caso" = 6 ORDER BY "SAVe_Encerramento"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:66
+[0m[33m[2.005ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica" WHERE "SAVe_Situacao_Juridica"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:69
+[0m[33m[0.000ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica2" WHERE "SAVe_Situacao_Juridica2"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica2"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:72
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Situacao_Juridica_Incluir_processo" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:75 [35;1mrecord not found
+[0m[33m[1.871ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Saude" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Saude"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:80 [35;1mrecord not found
+[0m[33m[0.688ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Habitacao_territorio" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Habitacao_territorio"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:85 [35;1mrecord not found
+[0m[33m[0.563ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Assistencia" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Assistencia"."id" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:90 [35;1mrecord not found
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "save_ensino_trab_renda" WHERE "ID_Caso" = 6 ORDER BY "save_ensino_trab_renda"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:95 [35;1mrecord not found
+[0m[33m[0.522ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Vinculos"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:100
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos_Apoio" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:103 [35;1mrecord not found
+[0m[33m[0.700ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca" WHERE "ID_Caso" = 6 ORDER BY "SAVe_protecao_seguranca"."ID_Caso" LIMIT 1
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:111
+[0m[33m[0.525ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_ameacadores" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:117
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_adolescente" WHERE "ID_Caso" = 6
+
+2025/11/29 21:53:55 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:123
+[0m[33m[0.634ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Acompanhamentos" WHERE "ID_Caso" = 6
+[GIN] 2025/11/29 - 21:53:55 | 200 |     17.8315ms |             ::1 | GET      "/api/cases/6"
+INCOMING REQUEST: OPTIONS 
+/api/cases/6
+[GIN] 2025/11/29 - 21:54:00 | 204 |            0s |             ::1 | OPTIONS  "/api/cases/6"
+INCOMING REQUEST: GET 
+/api/cases/6
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:38
+[0m[33m[1.596ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Geral" WHERE "SAVe_Geral"."ID_Caso" = 6 ORDER BY "SAVe_Geral"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:44
+[0m[33m[1.375ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_DadosDeEntrada" WHERE "SAVe_DadosDeEntrada"."ID_Caso" = 6 ORDER BY "SAVe_DadosDeEntrada"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:47
+[0m[33m[1.282ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Identificacao" WHERE "SAVe_Identificacao"."ID_Caso" = 6 ORDER BY "SAVe_Identificacao"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:50
+[0m[33m[0.513ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_telefone" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:53
+[0m[33m[0.615ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_email" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:56
+[0m[33m[1.263ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_endereco" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:59
+[0m[33m[1.484ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Casos_Vinculados" WHERE "SAVe_Casos_Vinculados"."ID_Caso" = 6 ORDER BY "SAVe_Casos_Vinculados"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:00 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:63 [35;1mrecord not found
+[0m[33m[0.831ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Encerramento" WHERE "SAVe_Encerramento"."ID_Caso" = 6 ORDER BY "SAVe_Encerramento"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:66
+[0m[33m[0.606ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica" WHERE "SAVe_Situacao_Juridica"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:69
+[0m[33m[0.995ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica2" WHERE "SAVe_Situacao_Juridica2"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica2"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:72
+[0m[33m[0.513ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Situacao_Juridica_Incluir_processo" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:00 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:75 [35;1mrecord not found
+[0m[33m[1.804ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Saude" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Saude"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:00 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:80 [35;1mrecord not found
+[0m[33m[1.269ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Habitacao_territorio" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Habitacao_territorio"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:00 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:85 [35;1mrecord not found
+[0m[33m[0.793ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Assistencia" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Assistencia"."id" LIMIT 1
+
+2025/11/29 21:54:00 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:90 [35;1mrecord not found
+[0m[33m[2.229ms] [34;1m[rows:0][0m SELECT * FROM "save_ensino_trab_renda" WHERE "ID_Caso" = 6 ORDER BY "save_ensino_trab_renda"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:00 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:95 [35;1mrecord not found
+[0m[33m[1.165ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Vinculos"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:100
+[0m[33m[0.932ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos_Apoio" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:00 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:103 [35;1mrecord not found
+[0m[33m[1.475ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca" WHERE "ID_Caso" = 6 ORDER BY "SAVe_protecao_seguranca"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:111
+[0m[33m[0.953ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_ameacadores" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:117
+[0m[33m[0.888ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_adolescente" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:00 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:123
+[0m[33m[1.038ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Acompanhamentos" WHERE "ID_Caso" = 6
+[GIN] 2025/11/29 - 21:54:00 | 200 |     26.8747ms |             ::1 | GET      "/api/cases/6"
+INCOMING REQUEST: OPTIONS 
+/api/cases/6/saude
+[GIN] 2025/11/29 - 21:54:05 | 204 |      1.5257ms |             ::1 | OPTIONS  "/api/cases/6/saude"
+INCOMING REQUEST: PUT 
+/api/cases/6/saude
+
+2025/11/29 21:54:05 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:681
+[0m[33m[1.733ms] [34;1m[rows:1][0m SELECT count(*) FROM "SAVe_Saude" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:05 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:683 [35;1mERRO: coluna "RS_Contato_telefone" da rela├º├úo "SAVe_Saude" n├úo existe (SQLSTATE 42703)
+[0m[33m[2.116ms] [34;1m[rows:0][0m INSERT INTO "SAVe_Saude" ("HS_Pessoa_deficiencia","HS_Pessoa_deficiencia_tipo","HS_Condicao_saude","HS_Condicao_saude_acompanhamento","HS_Condicao_saude_tipo","HS_Cond_saude_nao_perma","HS_Cond_saude_nao_perma_acomp","HS_Cond_saude_nao_perma_desc","HS_Aux_saude","HS_Aux_saude_acomp","HS_Aux_saude_desc","HS_Vitim_sexual","HS_Vitim_sexual_acomp","HS_Vitim_sexual_desc","HS_Medic_continua","HS_Medic_continua_desc","HS_Medic_psiq","HS_Medic_psiq_desc","FR_Alcool","FR_Alcool_freq","FR_Cigarro","FR_Cigarro_freq","FR_Subst_psicoativas","FR_Subst_psicoativas_freq","FR_Apoio","FR_Apoio_desc","RS_Acomp_publica","RS_Acomp_publica_tipo","RS_Acomp_RAPS","RS_Acomp_RAPS_centro","RS_Acomp_RAPS_especif","RS_Plano_saude","RS_Plano_saude_especif","RS_Contato_nome","RS_Contato_telefone","RS_Contato_email","IV_Houve_Impacto_Saude","IV_Lesoes_Nao_Fatais","IV_Defic_vitimizacao","IV_Defic_vitimizacao_tipo","IV_Problemas_De_Saude","IV_Comp_Cogn_Comport","IV_Comp_Cogn_Comport_tipo","IV_Outro","IV_Outro_espec","IV_Impacto_Saude_Mental_tipos","IV_ISTOutros_esp","ID_Caso") VALUES ('Sim','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','',false,'','',false,false,'',false,'','','',6) RETURNING "ID_Caso"
+2025/11/29 21:54:05 Error 
+creating SAVe_Saude: 
+ERRO: coluna 
+"RS_Contato_telefone" da 
+rela├º├úo "SAVe_Saude" 
+n├úo existe (SQLSTATE 
+42703)
+[GIN] 2025/11/29 - 21:54:05 | 500 |      6.4984ms |             ::1 | PUT      "/api/cases/6/saude"
+INCOMING REQUEST: OPTIONS 
+/api/cases/6
+[GIN] 2025/11/29 - 21:54:09 | 204 |            0s |             ::1 | OPTIONS  "/api/cases/6"
+INCOMING REQUEST: GET 
+/api/cases/6
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:38
+[0m[33m[2.671ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Geral" WHERE "SAVe_Geral"."ID_Caso" = 6 ORDER BY "SAVe_Geral"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:44
+[0m[33m[0.671ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_DadosDeEntrada" WHERE "SAVe_DadosDeEntrada"."ID_Caso" = 6 ORDER BY "SAVe_DadosDeEntrada"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:47
+[0m[33m[3.022ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Identificacao" WHERE "SAVe_Identificacao"."ID_Caso" = 6 ORDER BY "SAVe_Identificacao"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:50
+[0m[33m[1.074ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_telefone" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:53
+[0m[33m[1.251ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_email" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:56
+[0m[33m[1.306ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_endereco" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:59
+[0m[33m[0.519ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Casos_Vinculados" WHERE "SAVe_Casos_Vinculados"."ID_Caso" = 6 ORDER BY "SAVe_Casos_Vinculados"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:09 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:63 [35;1mrecord not found
+[0m[33m[0.591ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Encerramento" WHERE "SAVe_Encerramento"."ID_Caso" = 6 ORDER BY "SAVe_Encerramento"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:66
+[0m[33m[1.944ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica" WHERE "SAVe_Situacao_Juridica"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:69
+[0m[33m[1.111ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica2" WHERE "SAVe_Situacao_Juridica2"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica2"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:72
+[0m[33m[1.214ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Situacao_Juridica_Incluir_processo" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:09 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:75 [35;1mrecord not found
+[0m[33m[1.554ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Saude" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Saude"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:09 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:80 [35;1mrecord not found
+[0m[33m[1.564ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Habitacao_territorio" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Habitacao_territorio"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:09 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:85 [35;1mrecord not found
+[0m[33m[2.808ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Assistencia" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Assistencia"."id" LIMIT 1
+
+2025/11/29 21:54:09 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:90 [35;1mrecord not found
+[0m[33m[1.107ms] [34;1m[rows:0][0m SELECT * FROM "save_ensino_trab_renda" WHERE "ID_Caso" = 6 ORDER BY "save_ensino_trab_renda"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:09 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:95 [35;1mrecord not found
+[0m[33m[2.663ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Vinculos"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:100
+[0m[33m[1.256ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos_Apoio" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:09 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:103 [35;1mrecord not found
+[0m[33m[1.662ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca" WHERE "ID_Caso" = 6 ORDER BY "SAVe_protecao_seguranca"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:111
+[0m[33m[1.089ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_ameacadores" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:117
+[0m[33m[1.156ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_adolescente" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:09 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:123
+[0m[33m[1.198ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Acompanhamentos" WHERE "ID_Caso" = 6
+[GIN] 2025/11/29 - 21:54:09 | 200 |     35.1252ms |             ::1 | GET      "/api/cases/6"
+INCOMING REQUEST: OPTIONS 
+/api/cases/6/habitacao-ter
+ritorio
+[GIN] 2025/11/29 - 21:54:11 | 204 |            0s |             ::1 | OPTIONS  "/api/cases/6/habitacao-territorio"
+INCOMING REQUEST: PUT /api
+/cases/6/habitacao-territo
+rio
+[GIN] 2025/11/29 - 21:54:11 | 400 |       512.2┬Ás |             ::1 | PUT      "/api/cases/6/habitacao-territorio"
+INCOMING REQUEST: PUT /api
+/cases/6/habitacao-territo
+rio
+[GIN] 2025/11/29 - 21:54:16 | 400 |            0s |             ::1 | PUT      "/api/cases/6/habitacao-territorio"
+INCOMING REQUEST: OPTIONS 
+/api/cases/6
+[GIN] 2025/11/29 - 21:54:18 | 204 |            0s |             ::1 | OPTIONS  "/api/cases/6"
+INCOMING REQUEST: GET 
+/api/cases/6
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:38
+[0m[33m[1.826ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Geral" WHERE "SAVe_Geral"."ID_Caso" = 6 ORDER BY "SAVe_Geral"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:44
+[0m[33m[1.178ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_DadosDeEntrada" WHERE "SAVe_DadosDeEntrada"."ID_Caso" = 6 ORDER BY "SAVe_DadosDeEntrada"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:47
+[0m[33m[1.151ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Identificacao" WHERE "SAVe_Identificacao"."ID_Caso" = 6 ORDER BY "SAVe_Identificacao"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:50
+[0m[33m[0.509ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_telefone" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:53
+[0m[33m[0.555ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_email" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:56
+[0m[33m[0.549ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_endereco" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:59
+[0m[33m[1.090ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Casos_Vinculados" WHERE "SAVe_Casos_Vinculados"."ID_Caso" = 6 ORDER BY "SAVe_Casos_Vinculados"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:18 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:63 [35;1mrecord not found
+[0m[33m[0.508ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Encerramento" WHERE "SAVe_Encerramento"."ID_Caso" = 6 ORDER BY "SAVe_Encerramento"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:66
+[0m[33m[1.681ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica" WHERE "SAVe_Situacao_Juridica"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:69
+[0m[33m[0.891ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica2" WHERE "SAVe_Situacao_Juridica2"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica2"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:72
+[0m[33m[0.507ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Situacao_Juridica_Incluir_processo" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:18 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:75 [35;1mrecord not found
+[0m[33m[0.693ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Saude" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Saude"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:18 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:80 [35;1mrecord not found
+[0m[33m[1.023ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Habitacao_territorio" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Habitacao_territorio"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:18 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:85 [35;1mrecord not found
+[0m[33m[1.325ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Assistencia" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Assistencia"."id" LIMIT 1
+
+2025/11/29 21:54:18 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:90 [35;1mrecord not found
+[0m[33m[0.507ms] [34;1m[rows:0][0m SELECT * FROM "save_ensino_trab_renda" WHERE "ID_Caso" = 6 ORDER BY "save_ensino_trab_renda"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:18 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:95 [35;1mrecord not found
+[0m[33m[0.757ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Vinculos"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:100
+[0m[33m[0.734ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos_Apoio" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:18 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:103 [35;1mrecord not found
+[0m[33m[1.159ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca" WHERE "ID_Caso" = 6 ORDER BY "SAVe_protecao_seguranca"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:111
+[0m[33m[0.657ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_ameacadores" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:117
+[0m[33m[0.416ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_adolescente" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:18 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:123
+[0m[33m[1.044ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Acompanhamentos" WHERE "ID_Caso" = 6
+[GIN] 2025/11/29 - 21:54:18 | 200 |     19.9234ms |             ::1 | GET      "/api/cases/6"
+INCOMING REQUEST: OPTIONS 
+/api/cases/6/assistencia
+[GIN] 2025/11/29 - 21:54:21 | 204 |            0s |             ::1 | OPTIONS  "/api/cases/6/assistencia"
+INCOMING REQUEST: PUT 
+/api/cases/6/assistencia
+
+2025/11/29 21:54:21 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:739
+[0m[33m[1.216ms] [34;1m[rows:1][0m SELECT count(*) FROM "SAVe_Assistencia" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:21 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:741 [35;1mERRO: coluna "BSA_outras_formas" da rela├º├úo "SAVe_Assistencia" n├úo existe (SQLSTATE 42703)
+[0m[33m[1.084ms] [34;1m[rows:0][0m INSERT INTO "SAVe_Assistencia" ("ID_Caso","Cad_unico","Status_cad_unico","SPSB_Acesso_cras","SPSB_Servicos_acessados","SPSB_Servicos_acessados_esp","SPSB_Contato_cras_nome","SPSB_Contato_cras_tel","SPSB_Contato_cras_email","SPSB_Nome_servico","SPSB_Endereco_servico","SPSEMC_Acesso_creas","SPSEMC_Servicos_acessados","SPSEMC_Servicos_acessados_esp","SPSEMC_Contato_creas_nome","SPSEMC_Contato_creas_tel","SPSEMC_Contato_creas_email","SPSEMC_Nome_servico","SPSEMC_Endereco_servico","SPSEAC_Inserido_acolhimentoInst","SPSEAC_Modalidade_acolhimentoInst","SPSEAC_Inserido_acolhimentorep","SPSEAC_acolhimentorep_desc","SPSEAC_Inserido_familia","SPSEAC_nome_familia","SPSEAC_Inserido_calamidade","SPSEAC_desc_calamidade","SPSEAC_tec_ref_nome","SPSEAC_tec_ref_tel","SPSEAC_tec_ref_email","SPSEAC_nome_servico","SPSEAC_endereco_servico","BSA_recebe_beneficios","BSA_Tipo_beneficio","BSA_transf_renda_inf","BSA_Ben_trab_inf","BSA_Ben_hab_inf","BSA_Ben_as_inf","BSA_Ben_educ_inf","BSA_Ben_atr_inf","BSA_Ben_pdi_inf","BSA_Ben_emer_inf","BSA_transf_renda_esp","BSA_Ben_trab_esp","BSA_Ben_hab_esp","BSA_Ben_as_esp","BSA_Ben_educ_esp","BSA_Ben_atr_esp","BSA_Ben_pdi_esp","BSA_Ben_emer_esp","BSA_outras_formas","BSA_direito_beneficios","BSA_direito_beneficios_esp","BSA_demandas_assist","BSA_demandas_assist_desc","BSA_tec_ref_nome","BSA_tec_ref_tel","BSA_tec_ref_email","BSA_seg_alimentar","created_at","updated_at") VALUES (6,'','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','2025-11-29 21:54:21.994','2025-11-29 21:54:21.994') RETURNING "id"
+[GIN] 2025/11/29 - 21:54:21 | 500 |      5.6117ms |             ::1 | PUT      "/api/cases/6/assistencia"
+INCOMING REQUEST: OPTIONS 
+/api/cases/6/ensino-trab-r
+enda
+[GIN] 2025/11/29 - 21:54:23 | 204 |            0s |             ::1 | OPTIONS  "/api/cases/6/ensino-trab-renda"
+INCOMING REQUEST: GET /api
+/cases/6/ensino-trab-renda
+[GIN] 2025/11/29 - 21:54:24 | 404 |            0s |             ::1 | GET      "/api/cases/6/ensino-trab-renda"
+INCOMING REQUEST: PUT /api
+/cases/6/ensino-trab-renda
+
+2025/11/29 21:54:28 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:767
+[0m[33m[2.655ms] [34;1m[rows:1][0m SELECT count(*) FROM "save_ensino_trab_renda" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:28 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:769 [35;1mERRO: coluna "Profissao" da rela├º├úo "save_ensino_trab_renda" n├úo existe (SQLSTATE 42703)
+[0m[33m[1.686ms] [34;1m[rows:0][0m INSERT INTO "save_ensino_trab_renda" ("Grau_escolaridade","Estuda_atualmente","Nome_instituicao","Tipo_instituicao","Retorno_estudos","Situacao_trabalho","Profissao","Valor_renda","Valor_renda_esp","TR_Prejuizo_trabalho","TR_tipo_prejuizo","TR_descricao_prejuizo","PT_prejuizo_patrimonio","PT_Descricao_pp","VE_prejuizo_escolar","VE_tipo_PE","VE_descricao_pe","Demanda_educacional","Desc_demanda_educacional","Demanda_trabalhista","Desc_demanda_trabalhista","Esta_Afastado","Motivo_afastamento","Motivo_Afastamento_Detalhado","created_at","updated_at","ID_Caso") VALUES ('M├®dio Completo','','','','','','','','','','','','','','','','',false,'',false,'','','','','2025-11-29 21:54:28.42','2025-11-29 21:54:28.42',6) RETURNING "ID_Caso"
+[GIN] 2025/11/29 - 21:54:28 | 500 |      6.0128ms |             ::1 | PUT      "/api/cases/6/ensino-trab-renda"
+INCOMING REQUEST: OPTIONS 
+/api/cases/6
+[GIN] 2025/11/29 - 21:54:31 | 204 |            0s |             ::1 | OPTIONS  "/api/cases/6"
+INCOMING REQUEST: GET 
+/api/cases/6
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:38
+[0m[33m[2.149ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Geral" WHERE "SAVe_Geral"."ID_Caso" = 6 ORDER BY "SAVe_Geral"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:44
+[0m[33m[1.033ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_DadosDeEntrada" WHERE "SAVe_DadosDeEntrada"."ID_Caso" = 6 ORDER BY "SAVe_DadosDeEntrada"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:47
+[0m[33m[0.587ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Identificacao" WHERE "SAVe_Identificacao"."ID_Caso" = 6 ORDER BY "SAVe_Identificacao"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:50
+[0m[33m[0.602ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_telefone" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:53
+[0m[33m[0.780ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_email" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:56
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Identificacao_endereco" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:59
+[0m[33m[0.569ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Casos_Vinculados" WHERE "SAVe_Casos_Vinculados"."ID_Caso" = 6 ORDER BY "SAVe_Casos_Vinculados"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:31 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:63 [35;1mrecord not found
+[0m[33m[0.512ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Encerramento" WHERE "SAVe_Encerramento"."ID_Caso" = 6 ORDER BY "SAVe_Encerramento"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:66
+[0m[33m[0.612ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica" WHERE "SAVe_Situacao_Juridica"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:69
+[0m[33m[0.887ms] [34;1m[rows:1][0m SELECT * FROM "SAVe_Situacao_Juridica2" WHERE "SAVe_Situacao_Juridica2"."ID_Caso" = 6 ORDER BY "SAVe_Situacao_Juridica2"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:72
+[0m[33m[0.636ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Situacao_Juridica_Incluir_processo" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:31 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:75 [35;1mrecord not found
+[0m[33m[1.006ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Saude" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Saude"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:31 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:80 [35;1mrecord not found
+[0m[33m[0.891ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Habitacao_territorio" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Habitacao_territorio"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:31 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:85 [35;1mrecord not found
+[0m[33m[1.035ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Assistencia" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Assistencia"."id" LIMIT 1
+
+2025/11/29 21:54:31 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:90 [35;1mrecord not found
+[0m[33m[1.237ms] [34;1m[rows:0][0m SELECT * FROM "save_ensino_trab_renda" WHERE "ID_Caso" = 6 ORDER BY "save_ensino_trab_renda"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:31 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:95 [35;1mrecord not found
+[0m[33m[0.963ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos" WHERE "ID_Caso" = 6 ORDER BY "SAVe_Vinculos"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:100
+[0m[33m[1.095ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Vinculos_Apoio" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:31 [31;1mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:103 [35;1mrecord not found
+[0m[33m[1.038ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca" WHERE "ID_Caso" = 6 ORDER BY "SAVe_protecao_seguranca"."ID_Caso" LIMIT 1
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:111
+[0m[33m[0.700ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_ameacadores" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:117
+[0m[33m[1.189ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_protecao_seguranca_adolescente" WHERE "ID_Caso" = 6
+
+2025/11/29 21:54:31 [32mC:/Users/User/Desktop/SAVe_Svelt e GoLang/Tabelas SAVe/SAVe_New/backend/internal/handlers/cases.go:123
+[0m[33m[0.569ms] [34;1m[rows:0][0m SELECT * FROM "SAVe_Acompanhamentos" WHERE "ID_Caso" = 6
+[GIN] 2025/11/29 - 21:54:31 | 200 |     21.6293ms |             ::1 | GET      "/api/cases/6"

@@ -109,18 +109,62 @@
     $: if (data) autosave();
 
     async function finalizeCase() {
+        console.log("finalizeCase called");
         if (
             !confirm(
                 "Tem certeza que deseja encerrar este caso? Esta ação arquivará o caso.",
             )
         ) {
+            console.log("User cancelled finalization");
             return;
         }
-        // Logic to finalize (e.g., set date if empty and save)
+        console.log("User confirmed, proceeding with finalization");
+
+        // Set date if empty
         if (!data.Data_Encerramento) {
             data.Data_Encerramento = new Date().toISOString().split("T")[0];
         }
+
+        console.log("Calling manualSave with data:", data);
         await manualSave();
+
+        // Mark case as archived in SAVe_Geral
+        try {
+            await api.put(`/cases/${caseId}/archive`, data);
+            console.log("Case marked as archived");
+            saveStatus = "Caso encerrado e arquivado com sucesso! ✅";
+            setTimeout(() => {
+                // Redirect to cases list after 2 seconds
+                window.location.href = "/";
+            }, 2000);
+        } catch (err) {
+            console.error("Error archiving case:", err);
+            saveStatus = "Dados salvos, mas erro ao arquivar caso ⚠️";
+        }
+
+        console.log("Finalization complete");
+    }
+
+    async function reopenCase() {
+        if (!confirm("Tem certeza que deseja reabrir este caso?")) {
+            return;
+        }
+
+        saving = true;
+        saveStatus = "Reabrindo caso...";
+
+        try {
+            await api.put(`/cases/${caseId}/reopen`);
+            saveStatus = "Caso reaberto com sucesso! ✅";
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 2000);
+        } catch (err) {
+            console.error("Error reopening case:", err);
+            saveStatus = "Erro ao reabrir caso ❌";
+        } finally {
+            saving = false;
+        }
     }
 </script>
 
@@ -212,6 +256,7 @@
             <button
                 class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition shadow flex items-center"
                 on:click={finalizeCase}
+                disabled={saving || loading}
             >
                 <span class="material-icons mr-2">lock</span> Encerrar Caso
             </button>

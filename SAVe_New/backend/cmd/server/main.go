@@ -69,7 +69,8 @@ func main() {
 				cases.POST("", handlers.CreateCase)
 				cases.GET("/:id", handlers.GetCaseById)
 				cases.DELETE("/:id", handlers.DeleteCase)
-				cases.POST("/:id/archive", handlers.ArchiveCase)
+				cases.PUT("/:id/archive", handlers.ArchiveCase)
+				cases.PUT("/:id/reopen", handlers.ReopenCase)
 				cases.PUT("/:id/:section", handlers.UpdateCaseSection)
 			}
 		}

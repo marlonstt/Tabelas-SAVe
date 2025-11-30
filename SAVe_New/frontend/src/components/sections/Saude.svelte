@@ -109,9 +109,9 @@
 
     async function loadData() {
         try {
-            const response = await api.get(`/cases/${id}`);
-            if (response.saude) {
-                data = { ...data, ...response.saude };
+            const response = await api.get(`/cases/${caseId}`);
+            if (response.data.saude) {
+                data = { ...data, ...response.data.saude };
             }
         } catch (error) {
             console.error("Error loading data:", error);
@@ -122,7 +122,7 @@
         saving = true;
         saveMessage = "Salvando...";
         try {
-            await api.put(`/cases/${id}/saude`, { saude: data });
+            await api.put(`/cases/${caseId}/saude`, { saude: data });
             saveMessage = "Salvo com sucesso! ✅";
             setTimeout(() => (saveMessage = ""), 3000);
         } catch (error) {
@@ -140,7 +140,7 @@
         clearTimeout(saveTimeout);
         saveTimeout = setTimeout(async () => {
             try {
-                await api.put(`/cases/${id}/saude`, { saude: data });
+                await api.put(`/cases/${caseId}/saude`, { saude: data });
                 saveMessage = "Salvo! ✅";
                 setTimeout(() => (saveMessage = ""), 2000);
             } catch (error) {

@@ -13,10 +13,8 @@
 
     onMount(async () => {
         try {
-            const response = await api.get(
-                `/cases/${caseId}/ensino-trab-renda`,
-            );
-            data = response.data || {};
+            const response = await api.get(`/cases/${caseId}`);
+            data = response.data.ensinoTrabRenda || {};
         } catch (err) {
             console.warn(
                 "Backend unavailable, using Mock Data for EnsinoTrabRenda",

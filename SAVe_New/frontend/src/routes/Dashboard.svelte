@@ -276,7 +276,10 @@
           <tbody class="bg-white divide-y divide-gray-200">
             {#each filteredCases as c (c.ID_Caso)}
               <tr
-                class="hover:bg-gray-50 transition-colors cursor-pointer"
+                class="hover:bg-gray-50 transition-colors cursor-pointer {c.Encerrado ===
+                'Sim'
+                  ? 'bg-gray-300'
+                  : ''}"
                 on:click={() => (window.location.href = `/case/${c.ID_Caso}`)}
               >
                 <td

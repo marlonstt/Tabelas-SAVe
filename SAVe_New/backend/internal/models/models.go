@@ -138,11 +138,12 @@ func (SAVe_Usuarios) TableName() string {
 // Add other structs as needed...
 
 type SAVe_Encerramento struct {
-	ID_Caso            int    `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
-	Observacao         string `gorm:"column:\"Observacao\"" json:"Observacao"`
-	Data               string `gorm:"column:\"Data\"" json:"Data_Encerramento"`
-	Forma_Encerramento string `gorm:"column:\"Forma_Encerramento_Caso\"" json:"Forma_Encerramento"`
-	Especifique_Outros string `gorm:"column:\"Especifique_Outros\"" json:"Especifique_Outros"`
+	ID_Caso                 int    `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
+	Observacao              string `gorm:"column:\"Observacao\"" json:"Observacao"`
+	Data                    string `gorm:"column:\"Data\"" json:"Data_Encerramento"`
+	Forma_Encerramento      string `gorm:"column:\"Forma_Encerramento_Caso\"" json:"Forma_Encerramento"`
+	Especifique_Outros      string `gorm:"column:\"Especifique_Outros\"" json:"Especifique_Outros"`
+	Encaminhamento_Pos_Alta string `gorm:"column:\"Encaminhamento_Pos_Alta\"" json:"Encaminhamento_Pos_Alta"`
 }
 
 func (SAVe_Encerramento) TableName() string {
@@ -606,4 +607,28 @@ type SAVe_Vitimizacao struct {
 
 func (SAVe_Vitimizacao) TableName() string {
 	return "\"SAVe_Vitimizacao\""
+}
+
+// SAVe_Agressor model (1:N relationship)
+type SAVe_Agressor struct {
+	ID           int    `gorm:"primaryKey;autoIncrement;column:\"ID\"" json:"ID"`
+	ID_Caso      int    `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
+	Tipo         string `gorm:"column:\"Tipo\"" json:"Tipo"`
+	Nome         string `gorm:"column:\"Nome\"" json:"Nome"`
+	Apelido      string `gorm:"column:\"Apelido\"" json:"Apelido"`
+	Idade        int    `gorm:"column:\"Idade\"" json:"Idade"`
+	Sexo         string `gorm:"column:\"Sexo\"" json:"Sexo"`
+	Raca         string `gorm:"column:\"Raca\"" json:"Raca"`
+	Relacao      string `gorm:"column:\"Relacao\"" json:"Relacao"`
+	Ocupacao     string `gorm:"column:\"Ocupacao\"" json:"Ocupacao"`
+	Renda        string `gorm:"column:\"Renda\"" json:"Renda"`
+	Escolaridade string `gorm:"column:\"Escolaridade\"" json:"Escolaridade"`
+	Endereco     string `gorm:"column:\"Endereco\"" json:"Endereco"`
+	Antecedentes string `gorm:"column:\"Antecedentes\"" json:"Antecedentes"`
+	Uso_Drogas   string `gorm:"column:\"Uso_Drogas\"" json:"Uso_Drogas"`
+	Porte_Arma   string `gorm:"column:\"Porte_Arma\"" json:"Porte_Arma"`
+}
+
+func (SAVe_Agressor) TableName() string {
+	return "\"SAVe_Agressor\""
 }

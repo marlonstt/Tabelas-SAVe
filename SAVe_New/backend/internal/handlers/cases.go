@@ -62,6 +62,9 @@ func GetCaseById(c *gin.Context) {
 	var encerramento models.SAVe_Encerramento
 	database.DB.First(&encerramento, id)
 
+	var agressores []models.SAVe_Agressor
+	database.DB.Where("\"ID_Caso\" = ?", id).Find(&agressores)
+
 	var situacaoJuridica models.SAVe_Situacao_Juridica
 	database.DB.First(&situacaoJuridica, id)
 
@@ -134,6 +137,7 @@ func GetCaseById(c *gin.Context) {
 		"enderecos":           enderecos,
 		"casosVinculados":     casosVinculados,
 		"encerramento":        encerramento,
+		"agressor":            agressores,
 		"situacaoJuridica":    situacaoJuridica,
 		"situacaoJuridica2":   situacaoJuridica2,
 		"processos":           situacaoJuridicaIP,
@@ -784,8 +788,9 @@ func UpdateCaseSection(c *gin.Context) {
 
 	case "vinculos":
 		var input struct {
-			Vinculos      models.SAVe_Vinculos         `json:"vinculos"`
-			VinculosApoio []models.SAVe_Vinculos_Apoio `json:"vinculosApoio"`
+			Vinculos        models.SAVe_Vinculos          `json:"vinculos"`
+			VinculosApoio   []models.SAVe_Vinculos_Apoio  `json:"vinculosApoio"`
+			Acompanhamentos []models.SAVe_Acompanhamentos `json:"acompanhamentos"`
 		}
 
 		if err := c.ShouldBindJSON(&input); err != nil {
@@ -833,14 +838,7 @@ func UpdateCaseSection(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "Acompanhamentos updated successfully"})
 
 	case "vitimizacao":
-		var input struct {
-			models.SAVe_Vitimizacao
-			Secundaria models.SAVe_Vitimizacao `json:"Secundaria"` // Frontend sends nested objects, but we flatten or handle as needed.
-			// Wait, looking at frontend data structure:
-			// data = { Secundaria: { ... }, Terciaria: { ... } }
-			// But the model SAVe_Vitimizacao is flat.
-			// I need to map the nested frontend structure to the flat model.
-		}
+
 		// Actually, let's bind to a struct that matches frontend, then map to model.
 		var frontendInput struct {
 			Secundaria map[string]interface{} `json:"Secundaria"`
@@ -996,7 +994,134 @@ func UpdateCaseSection(c *gin.Context) {
 
 		c.JSON(http.StatusOK, gin.H{"message": "Protecao Seguranca updated successfully"})
 
+	case "agressor":
+		var input struct {
+			Agressores []models.SAVe_Agressor `json:"agressores"`
+		}
+
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		tx := database.DB.Begin()
+
+		// Delete all existing agressores for this case
+		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Agressor{}).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old agressores"})
+			return
+		}
+
+		// Create new ones
+		for _, agressor := range input.Agressores {
+			agressor.ID_Caso = id
+			agressor.ID = 0 // Ensure new ID
+			if err := tx.Create(&agressor).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create agressor"})
+				return
+			}
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Agressor data saved successfully"})
+
+	case "encerramento":
+		var input models.SAVe_Encerramento
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		input.ID_Caso = id
+		tx := database.DB.Begin()
+
+		var count int64
+		tx.Model(&models.SAVe_Encerramento{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create encerramento: " + err.Error()})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_Encerramento{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update encerramento: " + err.Error()})
+				return
+			}
+		}
+
+		tx.Commit()
+		c.JSON(http.StatusOK, gin.H{"message": "Encerramento updated successfully"})
+
+	case "acompanhamentos":
+		// Redirect to vinculos endpoint
+		var input struct {
+			Acompanhamentos []models.SAVe_Acompanhamentos `json:"acompanhamentos"`
+		}
+
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		tx := database.DB.Begin()
+
+		// Delete all existing acompanhamentos for this case
+		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Acompanhamentos{}).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old acompanhamentos"})
+			return
+		}
+
+		// Create new ones
+		for _, acomp := range input.Acompanhamentos {
+			acomp.ID_Caso = id
+			acomp.ID = 0 // Ensure new ID
+			if err := tx.Create(&acomp).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create acompanhamento"})
+				return
+			}
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Acompanhamentos updated successfully"})
+
 	default:
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid section"})
 	}
+}
+
+// ReopenCase marks a case as active again (Encerrado = "Não")
+func ReopenCase(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	// TODO: Add admin permission check here
+	// For now, allowing all authenticated users to reopen
+
+	// Update Encerrado field in SAVe_Geral
+	if err := database.DB.Model(&models.SAVe_Geral{}).
+		Where("\"ID_Caso\" = ?", id).
+		Update("\"Encerrado\"", "Não").Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to reopen case"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Case reopened successfully"})
 }
