@@ -9,16 +9,22 @@
     let saving = false;
     let saveTimeout: any;
     let lastSavedData: string = "";
+    let saveStatus = "";
 
-    onMount(async () => {
+    // Reactive loading when caseId changes
+    $: if (caseId) {
+        loading = true;
+        loadData();
+    }
+
+    async function loadData() {
         try {
-            const response = await api.get(
-                `/cases/${caseId}/sintese-analitica`,
-            );
-            data = response.data || {};
+            const response = await api.get(`/cases/${caseId}`);
+            data = response.data.sinteseAnalitica || {};
+            console.log("SinteseAnalitica Data Loaded:", data);
         } catch (err) {
             console.warn(
-                "Backend unavailable, using Mock Data for SinteseAnalitica",
+                "Backend unavailable or error, using Mock Data for SinteseAnalitica",
             );
             data = {
                 Unidade_Analitica:
@@ -34,7 +40,7 @@
             loading = false;
             lastSavedData = JSON.stringify(data);
         }
-    });
+    }
 
     function autosave() {
         if (loading) return;
@@ -43,16 +49,19 @@
         if (currentData === lastSavedData) return;
 
         clearTimeout(saveTimeout);
-        saving = true;
-
         saveTimeout = setTimeout(async () => {
+            if (saving) return;
+            saving = true;
+            saveStatus = "Salvando...";
             try {
-                // await api.put(`/cases/${caseId}/sintese-analitica`, data);
+                await api.put(`/cases/${caseId}/sintese-analitica`, data);
                 console.log("Autosaving SinteseAnalitica...", data);
-                await new Promise((r) => setTimeout(r, 500));
+                saveStatus = "Salvo! ✅";
                 lastSavedData = currentData;
+                setTimeout(() => (saveStatus = ""), 2000);
             } catch (err) {
                 console.error("Error autosaving", err);
+                saveStatus = "Erro ao salvar ❌";
             } finally {
                 saving = false;
             }
@@ -79,9 +88,17 @@
         class:opacity-0={saving || loading}
         class:opacity-100={!saving && !loading}
     >
-        <span class="text-green-600 flex items-center">
-            <span class="material-icons text-sm mr-1">check</span>
-            Salvo
+        <span
+            class="flex items-center {saveStatus.includes('Erro')
+                ? 'text-red-600'
+                : 'text-green-600'}"
+        >
+            {#if saveStatus.includes("Erro")}
+                <span class="material-icons text-sm mr-1">error</span>
+            {:else if saveStatus.includes("Salvo")}
+                <span class="material-icons text-sm mr-1">check</span>
+            {/if}
+            {saveStatus || "Salvo"}
         </span>
     </div>
 

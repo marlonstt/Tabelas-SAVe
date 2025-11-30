@@ -14,43 +14,65 @@
     let lastSavedData: string = "";
     let saveStatus = "";
 
-    onMount(async () => {
+    // Reactive loading when caseId changes
+    $: if (caseId) {
+        loading = true;
+        loadData();
+    }
+
+    async function loadData() {
         try {
             const response = await api.get(`/cases/${caseId}`);
+            const backendData = response.data.vitimizacao || {};
+
+            console.log("Vitimizacao Backend Data:", backendData);
+
+            // Map FLAT backend data to NESTED frontend structure
             data = {
-                Secundaria: response.data.vitimizacao?.Secundaria || {},
-                Terciaria: response.data.vitimizacao?.Terciaria || {},
+                Secundaria: {
+                    Depoimento_Repetitivo: backendData.Depoimento_Repetitivo,
+                    Espec_Depoimento: backendData.Espec_Depoimento,
+                    Falta_Atendimento: backendData.Falta_Atendimento,
+                    Espec_Falta_Atendimento:
+                        backendData.Espec_Falta_Atendimento,
+                    Demora_Justica: backendData.Demora_Justica,
+                    Espec_Demora: backendData.Espec_Demora,
+                    Discriminacao_Institucional:
+                        backendData.Discriminacao_Institucional,
+                    Espec_Discriminacao: backendData.Espec_Discriminacao,
+                    Violencia_Institucional:
+                        backendData.Violencia_Institucional,
+                    Espec_Violencia_Inst: backendData.Espec_Violencia_Inst,
+                    Ameaca_Institucional: backendData.Ameaca_Institucional,
+                    Espec_Ameaca_Inst: backendData.Espec_Ameaca_Inst,
+                },
+                Terciaria: {
+                    Culpabilizacao: backendData.Culpabilizacao,
+                    Espec_Culpabilizacao: backendData.Espec_Culpabilizacao,
+                    Estigmatizacao: backendData.Estigmatizacao,
+                    Espec_Estigmatizacao: backendData.Espec_Estigmatizacao,
+                    Exploracao_Midiatica: backendData.Exploracao_Midiatica,
+                    Espec_Midia: backendData.Espec_Midia,
+                    Isolamento_Social: backendData.Isolamento_Social,
+                    Espec_Isolamento: backendData.Espec_Isolamento,
+                    Perda_Credibilidade: backendData.Perda_Credibilidade,
+                    Espec_Perda_Credibilidade:
+                        backendData.Espec_Perda_Credibilidade,
+                },
             };
         } catch (err) {
             console.warn(
-                "Backend unavailable, using Mock Data for Vitimizacao",
+                "Backend unavailable or error, using Mock Data for Vitimizacao",
             );
-            data = {
-                Secundaria: {
-                    Depoimento_Repetitivo: true,
-                    Espec_Depoimento: "Teve que repetir a história 3 vezes",
-                    Falta_Atendimento: false,
-                    Demora_Justica: true,
-                    Discriminacao_Institucional: false,
-                    Violencia_Institucional: false,
-                    Ameaca_Institucional: false,
-                },
-                Terciaria: {
-                    Culpabilizacao: true,
-                    Espec_Culpabilizacao: "Família culpa a vítima",
-                    Estigmatizacao: false,
-                    Isolamento_Social: true,
-                    Perda_Credibilidade: false,
-                },
-            };
+            // Keep empty or set default if needed
         } finally {
             loading = false;
             lastSavedData = JSON.stringify(data);
         }
-    });
+    }
 
     async function manualSave() {
-        if (saving) return;
+        if (saving || loading) return;
         saving = true;
         saveStatus = "Salvando...";
 

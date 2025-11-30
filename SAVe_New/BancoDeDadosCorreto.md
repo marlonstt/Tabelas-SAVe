@@ -28,7 +28,40 @@ PORT=8080
 
 > **Atenção:** Se a senha estiver incorreta (ex: `postgres`), o backend falhará ao conectar e retornará erro 500. O frontend, ao receber erro 500, exibirá "Backend unavailable, using Mock Data". Para evitar o Mock, o backend **precisa** conectar com a senha acima.
 
-## 3. Como Rodar o Backend Corretamente
+## 3. Tabelas Necessárias no Banco de Dados
+
+O banco `save_db` **DEVE** conter as seguintes tabelas para funcionar corretamente:
+
+### Tabelas 1:1 (Uma linha por caso)
+- `SAVe_Geral` - Informações gerais do caso
+- `SAVe_DadosDeEntrada` - Dados de entrada
+- `SAVe_Identificacao` - Identificação da vítima
+- `SAVe_Situacao_Juridica` - Situação jurídica
+- `SAVe_Saude` - Informações de saúde
+- `SAVe_Habitacao_territorio` - Habitação e território
+- `SAVe_Assistencia` - Assistência social
+- `SAVe_Ensino_trab_renda` - Ensino, trabalho e renda
+- `SAVe_Vinculos` - Vínculos familiares
+- `SAVe_protecao_seguranca` - Proteção e segurança
+- `SAVe_Vitimizacao` - Vitimização secundária e terciária ⭐ **NOVA**
+- `SAVe_Encerramento` - Dados de encerramento
+- `SAVe_Casos_Vinculados` - Casos relacionados
+
+### Tabelas 1:N (Múltiplas linhas por caso)
+- `SAVe_Identificacao_telefone` - Telefones da vítima
+- `SAVe_Identificacao_email` - Emails da vítima
+- `SAVe_Identificacao_endereco` - Endereços da vítima
+- `SAVe_Situacao_Juridica2` - Processos judiciais
+- `SAVe_Vinculos_Apoio` - Rede de apoio
+- `SAVe_protecao_seguranca_ameacadores` - Ameaçadores
+- `SAVe_protecao_seguranca_adolescente` - Adolescentes envolvidos
+- `SAVe_Agressor` - Agressores ⭐ **NOVA**
+- `SAVe_Acompanhamentos` - Acompanhamentos do caso
+
+### Tabela de Sistema
+- `users` - Usuários do sistema
+
+## 4. Como Rodar o Backend Corretamente
 
 Para iniciar o servidor com a configuração correta:
 
@@ -40,14 +73,30 @@ Para iniciar o servidor com a configuração correta:
     ```
 4.  Aguarde a mensagem de confirmação de que o servidor está rodando na porta `8080`.
 
-## 4. Verificação
+## 5. Verificação do Banco de Dados
+
+### Verificar Conexão
 
 Para confirmar que está usando o banco real:
 - Acesse `http://localhost:8080/api/cases/6` (ou outro ID existente).
 - Se retornar um JSON com os dados, o banco está conectado.
 - Se der erro de conexão ou 500, verifique a senha no `.env`.
 
-## 5. Solução de Problemas Comuns
+### Verificar Tabelas
+
+Execute o script de verificação:
+
+```bash
+cd backend
+go run check_tables.go
+```
+
+Este script irá:
+- ✅ Verificar conexão com o banco
+- ✅ Listar todas as tabelas existentes
+- ⚠️ Mostrar quais tabelas estão faltando
+
+## 6. Solução de Problemas Comuns
 
 ### Erro 500 mesmo com senha correta
 
@@ -59,5 +108,32 @@ Se a senha estiver correta e você ainda receber um erro 500, verifique os logs 
 
 **Solução:**
 - Verifique se todas as tabelas necessárias foram criadas no PostgreSQL.
-- Exemplo recente: A tabela `SAVe_Acompanhamentos` estava faltando e precisou ser criada manualmente.
-- Certifique-se de que o esquema do banco (`tables.sql`) está sincronizado com os modelos do Go (`models.go`).
+- Use o script `check_tables.go` para identificar tabelas faltantes.
+- Crie as tabelas faltantes usando os scripts de migração ou manualmente.
+
+### Frontend mostrando "Mock Data"
+
+Se o frontend exibir "Backend unavailable, using Mock Data":
+
+1. **Verifique se o backend está rodando:** Acesse `http://localhost:8080/api/cases`
+2. **Verifique a senha no `.env`:** Deve ser `86076448`
+3. **Verifique os logs do backend:** Procure por erros de conexão
+4. **Verifique se as tabelas existem:** Use `check_tables.go`
+
+## 7. Confirmação de Uso do Banco Real
+
+**✅ VOCÊ ESTÁ USANDO O BANCO DE DADOS REAL SE:**
+- O backend conecta com sucesso (`Connected to database successfully`)
+- Todas as tabelas listadas acima existem no banco `save_db`
+- O frontend carrega dados de casos existentes (não dados de exemplo)
+- Alterações feitas no frontend são salvas e persistem após recarregar a página
+
+**❌ VOCÊ ESTÁ USANDO MOCK SE:**
+- Frontend exibe mensagem "Backend unavailable, using Mock Data"
+- Dados mostrados são sempre os mesmos (casos de exemplo)
+- Alterações não são salvas após recarregar a página
+
+---
+
+**Última atualização:** 30/11/2025  
+**Tabelas adicionadas recentemente:** `SAVe_Vitimizacao`, `SAVe_Agressor`

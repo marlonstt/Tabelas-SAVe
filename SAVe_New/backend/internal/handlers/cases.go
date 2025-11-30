@@ -128,6 +128,16 @@ func GetCaseById(c *gin.Context) {
 		return
 	}
 
+	var vitimizacao models.SAVe_Vitimizacao
+	if err := database.DB.Where("\"ID_Caso\" = ?", id).First(&vitimizacao).Error; err != nil {
+		// Handle error or ignore if record not found (it might not exist yet)
+	}
+
+	var sinteseAnalitica models.SAVe_SinteseAnalitica
+	if err := database.DB.Where("\"ID_Caso\" = ?", id).First(&sinteseAnalitica).Error; err != nil {
+		// Handle error or ignore
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"geral":               geral,
 		"dadosEntrada":        dadosEntrada,
@@ -151,6 +161,8 @@ func GetCaseById(c *gin.Context) {
 		"ameacadores":         ameacadores,
 		"adolescentes":        adolescentes,
 		"acompanhamentos":     acompanhamentos,
+		"vitimizacao":         vitimizacao,
+		"sinteseAnalitica":    sinteseAnalitica,
 	})
 }
 
@@ -725,74 +737,6 @@ func UpdateCaseSection(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update habitacao territorio: " + err.Error()})
 				return
 			}
-		}
-
-		tx.Commit()
-		c.JSON(http.StatusOK, gin.H{"message": "Habitacao Territorio updated successfully"})
-
-	case "assistencia":
-		var input models.SAVe_Assistencia
-		if err := c.ShouldBindJSON(&input); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		input.ID_Caso = uint(id)
-
-		tx := database.DB.Begin()
-		var count int64
-		tx.Model(&models.SAVe_Assistencia{}).Where("\"ID_Caso\" = ?", id).Count(&count)
-		if count == 0 {
-			if err := tx.Create(&input).Error; err != nil {
-				tx.Rollback()
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create assistencia: " + err.Error()})
-				return
-			}
-		} else {
-			if err := tx.Model(&models.SAVe_Assistencia{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
-				tx.Rollback()
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update assistencia: " + err.Error()})
-				return
-			}
-		}
-
-		tx.Commit()
-		c.JSON(http.StatusOK, gin.H{"message": "Assistencia updated successfully"})
-
-	case "ensino-trab-renda":
-		var input models.SAVe_Ensino_trab_renda
-		if err := c.ShouldBindJSON(&input); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		input.ID_Caso = uint(id)
-
-		tx := database.DB.Begin()
-		var count int64
-		tx.Model(&models.SAVe_Ensino_trab_renda{}).Where("\"ID_Caso\" = ?", id).Count(&count)
-		if count == 0 {
-			if err := tx.Create(&input).Error; err != nil {
-				tx.Rollback()
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create ensino trab renda: " + err.Error()})
-				return
-			}
-		} else {
-			if err := tx.Model(&models.SAVe_Ensino_trab_renda{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
-				tx.Rollback()
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update ensino trab renda: " + err.Error()})
-				return
-			}
-		}
-
-		tx.Commit()
-		c.JSON(http.StatusOK, gin.H{"message": "Ensino Trab Renda updated successfully"})
-
-	case "vinculos":
-		var input struct {
-			Vinculos        models.SAVe_Vinculos          `json:"vinculos"`
-			VinculosApoio   []models.SAVe_Vinculos_Apoio  `json:"vinculosApoio"`
-			Acompanhamentos []models.SAVe_Acompanhamentos `json:"acompanhamentos"`
-		}
-
 		if err := c.ShouldBindJSON(&input); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -1097,6 +1041,36 @@ func UpdateCaseSection(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"message": "Acompanhamentos updated successfully"})
+
+	case "sintese-analitica":
+		var input models.SAVe_SinteseAnalitica
+		if err := c.ShouldBindJSON(&input); err != nil {
+			fmt.Println("Error binding JSON for sintese-analitica:", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		input.ID_Caso = id
+		tx := database.DB.Begin()
+
+		var count int64
+		tx.Model(&models.SAVe_SinteseAnalitica{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create sintese analitica: " + err.Error()})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_SinteseAnalitica{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update sintese analitica: " + err.Error()})
+				return
+			}
+		}
+
+		tx.Commit()
+		c.JSON(http.StatusOK, gin.H{"message": "Sintese Analitica updated successfully"})
 
 	default:
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid section"})
