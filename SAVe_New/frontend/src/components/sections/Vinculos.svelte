@@ -167,16 +167,6 @@
         <h2 class="text-xl font-bold text-gray-800">
             Vínculos e Rede de Apoio
         </h2>
-        <!-- Manual Save Button -->
-        <div class="flex items-center space-x-4">
-            <button
-                class="bg-save-primary text-white px-4 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
-                on:click={manualSave}
-                disabled={saving || loading}
-            >
-                {saving ? "Salvando..." : "Salvar"}
-            </button>
-        </div>
     </div>
 
     {#if loading}
@@ -483,6 +473,16 @@
                     </label>
                 </div>
             {/if}
+        </div>
+        <!-- Manual Save Button -->
+        <div class="md:col-span-2 flex justify-end mt-4">
+            <button
+                class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                on:click={manualSave}
+                disabled={saving || loading}
+            >
+                {saving ? "Salvando..." : "Salvar Dados"}
+            </button>
         </div>
     {/if}
 </div>

@@ -171,22 +171,6 @@
 <div class="space-y-4 p-4">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-gray-800">Encerramento do Caso</h2>
-        <!-- Manual Save Button and Status -->
-        <div class="flex items-center space-x-4">
-            <span
-                class="text-sm font-medium"
-                class:text-green-600={saveStatus.includes("✅")}
-                class:text-red-600={saveStatus.includes("❌")}
-                >{saveStatus}</span
-            >
-            <button
-                class="bg-save-primary text-white px-4 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
-                on:click={manualSave}
-                disabled={saving || loading}
-            >
-                {saving ? "Salvando..." : "Salvar"}
-            </button>
-        </div>
     </div>
 
     {#if loading}
@@ -250,6 +234,17 @@
                     on:input={autosave}
                 ></textarea>
             </label>
+        </div>
+
+        <!-- Manual Save Button -->
+        <div class="md:col-span-2 flex justify-end mt-4">
+            <button
+                class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                on:click={manualSave}
+                disabled={saving || loading}
+            >
+                {saving ? "Salvando..." : "Salvar Dados"}
+            </button>
         </div>
 
         <div class="mt-6 flex justify-end">

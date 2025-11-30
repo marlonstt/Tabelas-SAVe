@@ -654,7 +654,7 @@ func (SAVe_EnsinoTrabRenda) TableName() string {
 	return "\"SAVe_EnsinoTrabRenda\""
 }
 
-	Cor_Risco         string `gorm:"column:\"Cor_Risco\"" json:"Cor_Risco"`
+
 }
 
 func (SAVe_SinteseAnalitica) TableName() string {

@@ -60,6 +60,26 @@
         await loadData();
     });
 
+    async function manualSave() {
+        if (saving) return;
+        saving = true;
+
+        try {
+            const payload = {
+                ...data,
+                situacaoJuridica2: situacaoJuridica2,
+                processos: processos,
+            };
+            await api.put(`/cases/${caseId}/situacao-juridica`, payload);
+            alert("Dados salvos com sucesso!");
+        } catch (error) {
+            console.error("Error saving data:", error);
+            alert("Erro ao salvar dados.");
+        } finally {
+            saving = false;
+        }
+    }
+
     async function loadData() {
         try {
             loading = true;
@@ -728,6 +748,16 @@
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
             </div>
+        </div>
+        <!-- Manual Save Button -->
+        <div class="md:col-span-2 flex justify-end mt-4">
+            <button
+                class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                on:click={manualSave}
+                disabled={saving || loading}
+            >
+                {saving ? "Salvando..." : "Salvar Dados"}
+            </button>
         </div>
     {/if}
 </div>

@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
     import api from "../../lib/api";
 
-    export let caseId;
+    export let caseId: string;
 
-    let data = {
+    let data: any = {
         HS_Pessoa_deficiencia: "",
         HS_Pessoa_deficiencia_tipo: "",
         HS_Condicao_saude: "",
@@ -101,7 +101,7 @@
 
     let saving = false;
     let saveMessage = "";
-    let saveTimeout;
+    let saveTimeout: any;
 
     onMount(async () => {
         await loadData();
@@ -152,7 +152,7 @@
         }, 2000);
     }
 
-    function toggleMentalHealth(value) {
+    function toggleMentalHealth(value: string) {
         let current = data.IV_Impacto_Saude_Mental_tipos
             ? data.IV_Impacto_Saude_Mental_tipos.split(";")
             : [];
@@ -170,7 +170,11 @@
         autosave();
     }
 
-    function handleRadioChange(field, value, clearFields = []) {
+    function handleRadioChange(
+        field: string,
+        value: string,
+        clearFields: string[] = [],
+    ) {
         data[field] = value;
         clearFields.forEach((f) => (data[f] = ""));
         autosave();
@@ -211,11 +215,9 @@
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
                             É pessoa com deficiência?
-                        </label>
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -273,11 +275,9 @@
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
                             Possui alguma condição de saúde?
-                        </label>
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -365,10 +365,9 @@
                 <!-- Condição de Saúde Não Permanente -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Possui alguma condição de saúde não permanente?</label
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                            Possui alguma condição de saúde não permanente?
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -459,10 +458,9 @@
                 <!-- Auxílio Saúde -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Necessita de auxílio saúde?</label
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                            Necessita de auxílio saúde?
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -547,10 +545,9 @@
                 <!-- Vítima Sexual -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Vítima de violência sexual?</label
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                            Vítima de violência sexual?
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -639,10 +636,9 @@
                 <!-- Medicamento Contínuo -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Uso de medicamento contínuo?</label
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                            Uso de medicamento contínuo?
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -694,10 +690,9 @@
                 <!-- Medicamento Psiquiátrico -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Uso de medicamento psiquiátrico?</label
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                            Uso de medicamento psiquiátrico?
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -758,10 +753,9 @@
                 <!-- Álcool -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Uso de álcool?</label
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                            Uso de álcool?
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -808,10 +802,9 @@
                 <!-- Cigarro -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Uso de cigarro?</label
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                            Uso de cigarro?
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -858,10 +851,9 @@
                 <!-- Substâncias Psicoativas -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Uso de substâncias psicoativas?</label
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                            Uso de substâncias psicoativas?
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -913,10 +905,9 @@
                 <!-- Apoio -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Necessita de apoio?</label
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                            Necessita de apoio?
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -972,10 +963,9 @@
                 <!-- Acompanhamento Pública -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Acompanhamento na rede pública?</label
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                            Acompanhamento na rede pública?
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -1037,10 +1027,9 @@
                 <!-- RAPS -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Acompanhamento no RAPS?</label
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                            Acompanhamento no RAPS?
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -1118,10 +1107,9 @@
                 <!-- Plano de Saúde -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Possui plano de saúde?</label
-                        >
+                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                            Possui plano de saúde?
+                        </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
                                 <input
@@ -1214,9 +1202,9 @@
                     Impacto na Saúde
                 </h3>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1"
-                        >Houve impacto na saúde?</label
-                    >
+                    <span class="block text-sm font-medium text-gray-700 mb-1">
+                        Houve impacto na saúde?
+                    </span>
                     <div class="flex gap-4">
                         <label class="inline-flex items-center">
                             <input
@@ -1280,191 +1268,6 @@
                                     >Lesões não fatais</span
                                 >
                             </label>
-                            {#if data.IV_Lesoes_Nao_Fatais}
-                                <div class="mt-2 ml-6 space-y-2">
-                                    <label
-                                        class="block text-sm font-medium text-gray-700"
-                                        >Deficiência derivada da vitimização?</label
-                                    >
-                                    <div class="flex gap-4">
-                                        <label class="inline-flex items-center">
-                                            <input
-                                                type="radio"
-                                                bind:group={
-                                                    data.IV_Defic_vitimizacao
-                                                }
-                                                value="Sim"
-                                                on:change={() =>
-                                                    handleRadioChange(
-                                                        "IV_Defic_vitimizacao",
-                                                        "Sim",
-                                                    )}
-                                                class="form-radio text-blue-600"
-                                            />
-                                            <span class="ml-2">Sim</span>
-                                        </label>
-                                        <label class="inline-flex items-center">
-                                            <input
-                                                type="radio"
-                                                bind:group={
-                                                    data.IV_Defic_vitimizacao
-                                                }
-                                                value="Não"
-                                                on:change={() =>
-                                                    handleRadioChange(
-                                                        "IV_Defic_vitimizacao",
-                                                        "Não",
-                                                        [
-                                                            "IV_Defic_vitimizacao_tipo",
-                                                        ],
-                                                    )}
-                                                class="form-radio text-blue-600"
-                                            />
-                                            <span class="ml-2">Não</span>
-                                        </label>
-                                    </div>
-                                    {#if data.IV_Defic_vitimizacao === "Sim"}
-                                        <select
-                                            bind:value={
-                                                data.IV_Defic_vitimizacao_tipo
-                                            }
-                                            on:change={autosave}
-                                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                        >
-                                            <option value=""
-                                                >Selecione...</option
-                                            >
-                                            <option value="Deficiência física"
-                                                >Deficiência física</option
-                                            >
-                                            <option value="Deficiência auditiva"
-                                                >Deficiência auditiva</option
-                                            >
-                                            <option value="Deficiência visual"
-                                                >Deficiência visual</option
-                                            >
-                                            <option
-                                                value="Deficiência intelectual"
-                                                >Deficiência intelectual</option
-                                            >
-                                            <option value="Deficiência mental"
-                                                >Deficiência mental</option
-                                            >
-                                            <option value="Deficiência múltipla"
-                                                >Deficiência múltipla</option
-                                            >
-                                        </select>
-                                    {/if}
-                                </div>
-                            {/if}
-                        </div>
-
-                        <!-- Problemas de Saúde -->
-                        <div>
-                            <label class="inline-flex items-center">
-                                <input
-                                    type="checkbox"
-                                    bind:checked={data.IV_Problemas_De_Saude}
-                                    on:change={autosave}
-                                    class="form-checkbox h-4 w-4 text-blue-600"
-                                />
-                                <span class="ml-2 text-sm text-gray-700"
-                                    >Problemas de Saúde</span
-                                >
-                            </label>
-                        </div>
-
-                        <!-- Comprometimento cognitivo-comportamental -->
-                        <div>
-                            <label class="inline-flex items-center">
-                                <input
-                                    type="checkbox"
-                                    bind:checked={data.IV_Comp_Cogn_Comport}
-                                    on:change={() => {
-                                        if (!data.IV_Comp_Cogn_Comport) {
-                                            data.IV_Comp_Cogn_Comport_tipo = "";
-                                        }
-                                        autosave();
-                                    }}
-                                    class="form-checkbox h-4 w-4 text-blue-600"
-                                />
-                                <span class="ml-2 text-sm text-gray-700"
-                                    >Comprometimento cognitivo-comportamental</span
-                                >
-                            </label>
-                            {#if data.IV_Comp_Cogn_Comport}
-                                <div class="mt-2 ml-6">
-                                    <select
-                                        bind:value={
-                                            data.IV_Comp_Cogn_Comport_tipo
-                                        }
-                                        on:change={autosave}
-                                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                    >
-                                        <option value="">Selecione...</option>
-                                        <option value="Desempenho escolar"
-                                            >Desempenho escolar</option
-                                        >
-                                        <option value="Déficit laboral"
-                                            >Déficit laboral</option
-                                        >
-                                    </select>
-                                </div>
-                            {/if}
-                        </div>
-
-                        <!-- Outro -->
-                        <div>
-                            <label class="inline-flex items-center">
-                                <input
-                                    type="checkbox"
-                                    bind:checked={data.IV_Outro}
-                                    on:change={() => {
-                                        if (!data.IV_Outro) {
-                                            data.IV_Outro_espec = "";
-                                        }
-                                        autosave();
-                                    }}
-                                    class="form-checkbox h-4 w-4 text-blue-600"
-                                />
-                                <span class="ml-2 text-sm text-gray-700"
-                                    >Outro</span
-                                >
-                            </label>
-                            {#if data.IV_Outro}
-                                <div class="mt-2 ml-6">
-                                    <input
-                                        type="text"
-                                        bind:value={data.IV_Outro_espec}
-                                        on:input={autosave}
-                                        placeholder="Especifique..."
-                                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                    />
-                                </div>
-                            {/if}
-                        </div>
-                    </div>
-                {/if}
-            </div>
-
-            <hr class="border-gray-200" />
-
-            <!-- Impacto na Saúde Mental -->
-            <div class="space-y-4">
-                <h3 class="text-lg font-semibold text-gray-700">
-                    Impacto na Saúde Mental
-                </h3>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2"
-                        >Tipos de impacto</label
-                    >
-                    <div class="grid grid-cols-1 gap-2">
-                        {#each mentalHealthOptions as option}
-                            <label class="inline-flex items-start">
-                                <input
-                                    type="checkbox"
-                                    checked={data.IV_Impacto_Saude_Mental_tipos &&
-                                        data.IV_Impacto_Saude_Mental_tipos.split(
                                             ";",
                                         ).includes(option.value)}
                                     on:change={() =>
@@ -1501,10 +1304,10 @@
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1"
-                        >É responsável por membro/s do grupo familiar com alguma
-                        deficiência, comorbidade ou outra vulnerabilidade?</label
-                    >
+                    <span class="block text-sm font-medium text-gray-700 mb-1">
+                        É responsável por membro/s do grupo familiar com alguma
+                        deficiência, comorbidade ou outra vulnerabilidade?
+                    </span>
                     <div class="flex gap-4">
                         <label class="inline-flex items-center">
                             <input
@@ -1552,6 +1355,17 @@
                     </div>
                 {/if}
             </div>
+        </div>
+
+        <!-- Manual Save Button -->
+        <div class="md:col-span-2 flex justify-end mt-4">
+            <button
+                class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                on:click={manualSave}
+                disabled={saving}
+            >
+                {saving ? "Salvando..." : "Salvar Dados"}
+            </button>
         </div>
     {/if}
 </div>

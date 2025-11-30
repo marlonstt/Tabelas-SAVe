@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
     import api from "../../lib/api";
 
-    export let caseId;
+    export let caseId: string;
 
-    let data = {
+    let data: any = {
         ID_Caso: caseId,
         Moradia_regular: false,
         Moradia_regular_esp: "",
@@ -43,6 +43,7 @@
     };
 
     let loading = true;
+    let saving = false;
     let saveStatus = "";
 
     // Helper variables for Territorio checkboxes
@@ -137,6 +138,43 @@
 
     function handleCheckboxChange() {
         autosave();
+    }
+
+    async function manualSave() {
+        if (loading || saving) return;
+        saving = true;
+        saveStatus = "Salvando...";
+        try {
+            // Update Territorio string
+            let territorios = [];
+            if (territorioUrbano) territorios.push("Urbano");
+            if (territorioRural) territorios.push("Rural");
+            if (territorioPeriferico) territorios.push("Periférico");
+            if (territorioTradicional) territorios.push("Tradicional");
+            data.Territorio = territorios.join("; ");
+
+            // Update Comunidade Tradicional string
+            let comunidades = [];
+            if (comunidadeIndigena) comunidades.push("Indigena");
+            if (comunidadeQuilombola) comunidades.push("Quilombola");
+            if (comunidadeRibeirinho) comunidades.push("Ribeirinho");
+            if (comunidadeCigano) comunidades.push("Cigano");
+            if (comunidadeOutro) comunidades.push("Outro");
+            data.Comunidade_tradicional = comunidades.join("; ");
+
+            // Ensure ID_Caso is an integer
+            data.ID_Caso = parseInt(caseId);
+
+            console.log("Saving Territorio data:", data);
+            await api.put(`/cases/${caseId}/habitacao-territorio`, data);
+            saveStatus = "Salvo! ✅";
+            setTimeout(() => (saveStatus = ""), 2000);
+        } catch (error) {
+            console.error("Error saving data:", error);
+            saveStatus = "Erro ao salvar ❌";
+        } finally {
+            saving = false;
+        }
     }
 </script>
 
@@ -602,9 +640,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Material Predominante -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1"
-                        >Qual o material predominante?</label
-                    >
+                    <span class="block text-sm font-medium text-gray-700 mb-1">
+                        Qual o material predominante?
+                    </span>
                     <select
                         bind:value={data.Estrutura_Mat_predominante}
                         on:change={autosave}
@@ -636,9 +674,9 @@
 
                 <!-- Instalações Elétricas/Hidráulicas -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1"
-                        >Possui instalações elétricas e hidráulicas?</label
-                    >
+                    <span class="block text-sm font-medium text-gray-700 mb-1">
+                        Possui instalações elétricas e hidráulicas?
+                    </span>
                     <select
                         bind:value={data.Estrutura_Insta_eletricas_hidraulica}
                         on:change={autosave}
@@ -669,9 +707,9 @@
 
                 <!-- Paredes e Revestimentos -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1"
-                        >Possui paredes e revestimentos?</label
-                    >
+                    <span class="block text-sm font-medium text-gray-700 mb-1">
+                        Possui paredes e revestimentos?
+                    </span>
                     <select
                         bind:value={data.Estrutura_paredes_revesti}
                         on:change={autosave}
@@ -685,9 +723,9 @@
 
                 <!-- Acesso à Internet -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1"
-                        >Possui acesso à internet?</label
-                    >
+                    <span class="block text-sm font-medium text-gray-700 mb-1">
+                        Possui acesso à internet?
+                    </span>
                     <select
                         bind:value={data.Estrutura_Acesso_internet}
                         on:change={autosave}
@@ -715,9 +753,9 @@
 
                 <!-- Danos por Eventos Naturais -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1"
-                        >O imóvel já sofreu danos por eventos naturais?</label
-                    >
+                    <span class="block text-sm font-medium text-gray-700 mb-1">
+                        O imóvel já sofreu danos por eventos naturais?
+                    </span>
                     <select
                         bind:value={data.Estrutura_danos_eventos_naturais}
                         on:change={autosave}
@@ -747,9 +785,9 @@
 
                 <!-- Riscos Geológicos -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1"
-                        >O entorno do imóvel apresenta riscos geológicos?</label
-                    >
+                    <span class="block text-sm font-medium text-gray-700 mb-1">
+                        O entorno do imóvel apresenta riscos geológicos?
+                    </span>
                     <select
                         bind:value={data.Estrutura_Risco_geologico}
                         on:change={autosave}
@@ -1042,6 +1080,16 @@
                     {/if}
                 </div>
             </div>
+        </div>
+        <!-- Manual Save Button -->
+        <div class="md:col-span-2 flex justify-end mt-4">
+            <button
+                class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                on:click={manualSave}
+                disabled={saving || loading}
+            >
+                {saving ? "Salvando..." : "Salvar Dados"}
+            </button>
         </div>
     {/if}
 </div>
