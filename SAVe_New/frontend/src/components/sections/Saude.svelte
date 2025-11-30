@@ -215,7 +215,9 @@
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             É pessoa com deficiência?
                         </span>
                         <div class="flex gap-4">
@@ -275,7 +277,9 @@
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             Possui alguma condição de saúde?
                         </span>
                         <div class="flex gap-4">
@@ -365,7 +369,9 @@
                 <!-- Condição de Saúde Não Permanente -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             Possui alguma condição de saúde não permanente?
                         </span>
                         <div class="flex gap-4">
@@ -458,7 +464,9 @@
                 <!-- Auxílio Saúde -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             Necessita de auxílio saúde?
                         </span>
                         <div class="flex gap-4">
@@ -545,7 +553,9 @@
                 <!-- Vítima Sexual -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             Vítima de violência sexual?
                         </span>
                         <div class="flex gap-4">
@@ -636,7 +646,9 @@
                 <!-- Medicamento Contínuo -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             Uso de medicamento contínuo?
                         </span>
                         <div class="flex gap-4">
@@ -690,7 +702,9 @@
                 <!-- Medicamento Psiquiátrico -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             Uso de medicamento psiquiátrico?
                         </span>
                         <div class="flex gap-4">
@@ -753,7 +767,9 @@
                 <!-- Álcool -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             Uso de álcool?
                         </span>
                         <div class="flex gap-4">
@@ -802,7 +818,9 @@
                 <!-- Cigarro -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             Uso de cigarro?
                         </span>
                         <div class="flex gap-4">
@@ -851,7 +869,9 @@
                 <!-- Substâncias Psicoativas -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             Uso de substâncias psicoativas?
                         </span>
                         <div class="flex gap-4">
@@ -905,7 +925,9 @@
                 <!-- Apoio -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             Necessita de apoio?
                         </span>
                         <div class="flex gap-4">
@@ -963,7 +985,9 @@
                 <!-- Acompanhamento Pública -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             Acompanhamento na rede pública?
                         </span>
                         <div class="flex gap-4">
@@ -1027,7 +1051,9 @@
                 <!-- RAPS -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             Acompanhamento no RAPS?
                         </span>
                         <div class="flex gap-4">
@@ -1107,7 +1133,9 @@
                 <!-- Plano de Saúde -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span class="block text-sm font-medium text-gray-700 mb-1">
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
                             Possui plano de saúde?
                         </span>
                         <div class="flex gap-4">
@@ -1268,104 +1296,114 @@
                                     >Lesões não fatais</span
                                 >
                             </label>
-                                            ";",
-                                        ).includes(option.value)}
-                                    on:change={() =>
-                                        toggleMentalHealth(option.value)}
-                                    class="form-checkbox h-4 w-4 text-blue-600 mt-1"
+                            {#each mentalHealthOptions as option}
+                                <label class="inline-flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        checked={data.IV_Impacto_Saude_Mental_tipos &&
+                                            data.IV_Impacto_Saude_Mental_tipos.split(
+                                                ";",
+                                            ).includes(option.value)}
+                                        on:change={() =>
+                                            toggleMentalHealth(option.value)}
+                                        class="form-checkbox h-4 w-4 text-blue-600 mt-1"
+                                    />
+                                    <span class="ml-2 text-sm text-gray-700"
+                                        >{option.label}</span
+                                    >
+                                </label>
+                            {/each}
+                        </div>
+                        {#if data.IV_Impacto_Saude_Mental_tipos && data.IV_Impacto_Saude_Mental_tipos.split(";").includes("ISTOutros")}
+                            <div class="mt-2 ml-6">
+                                <input
+                                    type="text"
+                                    bind:value={data.IV_ISTOutros_esp}
+                                    on:input={autosave}
+                                    placeholder="Especifique..."
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 />
-                                <span class="ml-2 text-sm text-gray-700"
-                                    >{option.label}</span
-                                >
-                            </label>
-                        {/each}
+                            </div>
+                        {/if}
                     </div>
-                    {#if data.IV_Impacto_Saude_Mental_tipos && data.IV_Impacto_Saude_Mental_tipos.split(";").includes("ISTOutros")}
-                        <div class="mt-2 ml-6">
+                {/if}
+            </div>
+
+            <hr class="border-gray-200" />
+
+            <!-- Relação familiar e de cuidado -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700">
+                    Relação familiar e de cuidado
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <span
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                            É responsável por membro/s do grupo familiar com
+                            alguma deficiência, comorbidade ou outra
+                            vulnerabilidade?
+                        </span>
+                        <div class="flex gap-4">
+                            <label class="inline-flex items-center">
+                                <input
+                                    type="radio"
+                                    bind:group={data.RFC_Familia_Vulnerab}
+                                    value="Sim"
+                                    on:change={() =>
+                                        handleRadioChange(
+                                            "RFC_Familia_Vulnerab",
+                                            "Sim",
+                                        )}
+                                    class="form-radio text-blue-600"
+                                />
+                                <span class="ml-2">Sim</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input
+                                    type="radio"
+                                    bind:group={data.RFC_Familia_Vulnerab}
+                                    value="Não"
+                                    on:change={() =>
+                                        handleRadioChange(
+                                            "RFC_Familia_Vulnerab",
+                                            "Não",
+                                            ["RFC_Vulnerab_especif"],
+                                        )}
+                                    class="form-radio text-blue-600"
+                                />
+                                <span class="ml-2">Não</span>
+                            </label>
+                        </div>
+                    </div>
+                    {#if data.RFC_Familia_Vulnerab === "Sim"}
+                        <div>
+                            <label
+                                class="block text-sm font-medium text-gray-700 mb-1"
+                                >Especifique</label
+                            >
                             <input
                                 type="text"
-                                bind:value={data.IV_ISTOutros_esp}
+                                bind:value={data.RFC_Vulnerab_especif}
                                 on:input={autosave}
-                                placeholder="Especifique..."
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                             />
                         </div>
                     {/if}
                 </div>
             </div>
-        </div>
 
-        <hr class="border-gray-200" />
-
-        <!-- Relação familiar e de cuidado -->
-        <div class="space-y-4">
-            <h3 class="text-lg font-semibold text-gray-700">
-                Relação familiar e de cuidado
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <span class="block text-sm font-medium text-gray-700 mb-1">
-                        É responsável por membro/s do grupo familiar com alguma
-                        deficiência, comorbidade ou outra vulnerabilidade?
-                    </span>
-                    <div class="flex gap-4">
-                        <label class="inline-flex items-center">
-                            <input
-                                type="radio"
-                                bind:group={data.RFC_Familia_Vulnerab}
-                                value="Sim"
-                                on:change={() =>
-                                    handleRadioChange(
-                                        "RFC_Familia_Vulnerab",
-                                        "Sim",
-                                    )}
-                                class="form-radio text-blue-600"
-                            />
-                            <span class="ml-2">Sim</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="radio"
-                                bind:group={data.RFC_Familia_Vulnerab}
-                                value="Não"
-                                on:change={() =>
-                                    handleRadioChange(
-                                        "RFC_Familia_Vulnerab",
-                                        "Não",
-                                        ["RFC_Vulnerab_especif"],
-                                    )}
-                                class="form-radio text-blue-600"
-                            />
-                            <span class="ml-2">Não</span>
-                        </label>
-                    </div>
-                </div>
-                {#if data.RFC_Familia_Vulnerab === "Sim"}
-                    <div>
-                        <label
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Especifique</label
-                        >
-                        <input
-                            type="text"
-                            bind:value={data.RFC_Vulnerab_especif}
-                            on:input={autosave}
-                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                        />
-                    </div>
-                {/if}
+            <!-- Manual Save Button -->
+            <div class="md:col-span-2 flex justify-end mt-4">
+                <button
+                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                    on:click={manualSave}
+                    disabled={saving}
+                >
+                    {saving ? "Salvando..." : "Salvar Dados"}
+                </button>
             </div>
-        </div>
-
-        <!-- Manual Save Button -->
-        <div class="md:col-span-2 flex justify-end mt-4">
-            <button
-                class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
-                on:click={manualSave}
-                disabled={saving}
-            >
-                {saving ? "Salvando..." : "Salvar Dados"}
-            </button>
         </div>
     {/if}
 </div>

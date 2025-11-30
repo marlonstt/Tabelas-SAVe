@@ -644,17 +644,14 @@ type SAVe_SinteseAnalitica struct {
 
 // New model for EnsinoTrabRenda
 type SAVe_EnsinoTrabRenda struct {
-	ID_Caso           int    `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
-	Ensino            string `gorm:"column:\"Ensino\"" json:"Ensino"`
-	Trabalho          string `gorm:"column:\"Trabalho\"" json:"Trabalho"`
-	Renda             string `gorm:"column:\"Renda\"" json:"Renda"`
+	ID_Caso  int    `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
+	Ensino   string `gorm:"column:\"Ensino\"" json:"Ensino"`
+	Trabalho string `gorm:"column:\"Trabalho\"" json:"Trabalho"`
+	Renda    string `gorm:"column:\"Renda\"" json:"Renda"`
 }
 
 func (SAVe_EnsinoTrabRenda) TableName() string {
 	return "\"SAVe_EnsinoTrabRenda\""
-}
-
-
 }
 
 func (SAVe_SinteseAnalitica) TableName() string {

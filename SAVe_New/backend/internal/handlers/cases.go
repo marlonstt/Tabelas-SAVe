@@ -737,6 +737,21 @@ func UpdateCaseSection(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update habitacao territorio: " + err.Error()})
 				return
 			}
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Habitacao Territorio updated successfully"})
+
+	case "vinculos":
+		var input struct {
+			Vinculos      models.SAVe_Vinculos         `json:"vinculos"`
+			VinculosApoio []models.SAVe_Vinculos_Apoio `json:"vinculosApoio"`
+		}
+
 		if err := c.ShouldBindJSON(&input); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -754,22 +769,26 @@ func UpdateCaseSection(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create vinculos"})
 				return
 			}
+		} else {
+			if err := tx.Model(&models.SAVe_Vinculos{}).Where("\"ID_Caso\" = ?", id).Updates(&input.Vinculos).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update vinculos"})
+				return
+			}
 		}
 
-		// Delete all existing acompanhamentos for this case
-		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Acompanhamentos{}).Error; err != nil {
+		// 2. Save SAVe_Vinculos_Apoio (Delete all and recreate)
+		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Vinculos_Apoio{}).Error; err != nil {
 			tx.Rollback()
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old acompanhamentos"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old vinculos apoio"})
 			return
 		}
-
-		// Create new ones
-		for _, acomp := range input.Acompanhamentos {
-			acomp.ID_Caso = id
-			acomp.ID = 0 // Ensure new ID
-			if err := tx.Create(&acomp).Error; err != nil {
+		for _, item := range input.VinculosApoio {
+			item.ID_Caso = uint(id)
+			item.ID = 0 // Ensure new ID
+			if err := tx.Create(&item).Error; err != nil {
 				tx.Rollback()
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create acompanhamento"})
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create vinculos apoio"})
 				return
 			}
 		}
@@ -779,7 +798,7 @@ func UpdateCaseSection(c *gin.Context) {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"message": "Acompanhamentos updated successfully"})
+		c.JSON(http.StatusOK, gin.H{"message": "Vinculos updated successfully"})
 
 	case "vitimizacao":
 
