@@ -17,6 +17,8 @@
   import SinteseAnalitica from "../components/sections/SinteseAnalitica.svelte";
   import Acompanhamento from "../components/sections/Acompanhamento.svelte";
   import Encerramento from "../components/sections/Encerramento.svelte";
+  import MatrizRisco from "../components/sections/MatrizRisco.svelte";
+  import Referencias from "../components/sections/Referencias.svelte";
 
   export let id: string; // Prop from router
 
@@ -31,29 +33,29 @@
     { id: "dadosEntrada", label: "Dados de Entrada", component: DadosEntrada },
     { id: "identificacao", label: "Identificação", component: Identificacao },
     {
-      id: "situacaoJuridica",
-      label: "Situação Jurídica",
-      component: SituacaoJuridica,
+      id: "ensinoTrabRenda",
+      label: "Ensino, Trabalho e Renda",
+      component: EnsinoTrabRenda,
     },
-    { id: "saude", label: "Saúde", component: Saude },
+    { id: "assistencia", label: "Assistência", component: Assistencia },
     {
       id: "territorio",
       label: "Habitação e Território",
       component: Territorio,
     },
-    { id: "assistencia", label: "Assistência", component: Assistencia },
-    {
-      id: "ensinoTrabRenda",
-      label: "Ensino, Trabalho e Renda",
-      component: EnsinoTrabRenda,
-    },
+    { id: "saude", label: "Saúde", component: Saude },
     { id: "vinculos", label: "Vínculos", component: Vinculos },
+    {
+      id: "situacaoJuridica",
+      label: "Situação Jurídica",
+      component: SituacaoJuridica,
+    },
+    { id: "agressor", label: "Agressor", component: Agressor },
     {
       id: "protecaoSeguranca",
       label: "Proteção e Segurança",
       component: ProtecaoSeguranca,
     },
-    { id: "agressor", label: "Agressor", component: Agressor },
     { id: "vitimizacao", label: "Vitimização", component: Vitimizacao },
     {
       id: "sinteseAnalitica",
@@ -66,6 +68,8 @@
       component: Acompanhamento,
     },
     { id: "encerramento", label: "Encerramento", component: Encerramento },
+    { id: "matrizRisco", label: "Matriz de Risco", component: MatrizRisco },
+    { id: "referencias", label: "Referências", component: Referencias },
   ];
 
   // Define allowed tabs for Brief version based on formSteps.ts
@@ -106,11 +110,28 @@
     }
   });
 
-  function toggleFormType() {
-    formType = formType === "breve" ? "completo" : "breve";
-    // If current tab is not in brief mode, switch to first available
-    if (formType === "breve" && !briefTabs.includes(activeTab)) {
+  async function setFormType(type: "breve" | "completo") {
+    const oldType = formType;
+    formType = type;
+
+    // If switching to brief and current tab is not allowed, switch to first allowed tab
+    if (type === "breve" && !briefTabs.includes(activeTab)) {
       activeTab = "dadosEntrada";
+    }
+
+    try {
+      // Persist to backend
+      // Map "breve" -> "Breve", "completo" -> "Completo" for backend consistency if needed
+      // But backend just saves string, so lowercase is fine if consistent.
+      // However, existing data seems to use Title Case ("Breve", "Completo").
+      // Let's send Title Case to be safe.
+      const typeTitleCase = type.charAt(0).toUpperCase() + type.slice(1);
+      await api.put(`/cases/${id}/geral`, { Tipo_Form: typeTitleCase });
+    } catch (err) {
+      console.error("Error updating form type:", err);
+      // Revert on error
+      formType = oldType;
+      alert("Erro ao salvar tipo de formulário");
     }
   }
 
@@ -185,7 +206,7 @@
           class="flex items-center bg-white/10 backdrop-blur-sm p-1 rounded-lg border border-white/20"
         >
           <button
-            on:click={() => (formType = "breve")}
+            on:click={() => setFormType("breve")}
             class="px-4 py-1.5 text-sm rounded-md transition-all duration-200 {formType ===
             'breve'
               ? 'bg-white text-save-primary font-bold shadow-sm'
@@ -194,7 +215,7 @@
             Versão Breve
           </button>
           <button
-            on:click={() => (formType = "completo")}
+            on:click={() => setFormType("completo")}
             class="px-4 py-1.5 text-sm rounded-md transition-all duration-200 {formType ===
             'completo'
               ? 'bg-white text-save-primary font-bold shadow-sm'
@@ -238,7 +259,11 @@
               <h3 class="text-xl font-bold text-gray-800">{section.label}</h3>
             </div>
             {#key id}
-              <svelte:component this={section.component} caseId={id} />
+              <svelte:component
+                this={section.component}
+                caseId={id}
+                {caseData}
+              />
             {/key}
           </div>
         {/if}

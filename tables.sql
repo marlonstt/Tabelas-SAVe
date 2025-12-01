@@ -302,7 +302,7 @@ CREATE TABLE "SAVe_Habitacao_territorio" (
     "Reconhecido_fund_palmares" TEXT,
     "Reconhecido_orgao_publico" TEXT,
     "Reconhecido_funai" TEXT,
-    "titulado_Incra" TEXT,
+    "titulado_incra" TEXT,
     "Estrutura_Mat_predominante" TEXT,
     "Estrutura_Mat_predominante_esp" TEXT,
     "Estrutura_Insta_eletricas_hidraulica" TEXT,

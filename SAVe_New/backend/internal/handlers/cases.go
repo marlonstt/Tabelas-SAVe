@@ -719,38 +719,6 @@ func UpdateCaseSection(c *gin.Context) {
 		tx.Commit()
 		c.JSON(http.StatusOK, gin.H{"message": "Saude updated successfully"})
 
-	case "habitacao-territorio":
-		var input models.SAVe_Habitacao_territorio
-		if err := c.ShouldBindJSON(&input); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		input.ID_Caso = id
-
-		tx := database.DB.Begin()
-		var count int64
-		tx.Model(&models.SAVe_Habitacao_territorio{}).Where("\"ID_Caso\" = ?", id).Count(&count)
-		if count == 0 {
-			if err := tx.Create(&input).Error; err != nil {
-				tx.Rollback()
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create habitacao territorio: " + err.Error()})
-				return
-			}
-		} else {
-			if err := tx.Model(&models.SAVe_Habitacao_territorio{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
-				tx.Rollback()
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update habitacao territorio: " + err.Error()})
-				return
-			}
-		}
-
-		if err := tx.Commit().Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
-			return
-		}
-
-		c.JSON(http.StatusOK, gin.H{"message": "Habitacao Territorio updated successfully"})
-
 	case "vinculos":
 		var input struct {
 			Vinculos      models.SAVe_Vinculos         `json:"vinculos"`
@@ -1101,12 +1069,141 @@ func UpdateCaseSection(c *gin.Context) {
 		tx.Commit()
 		c.JSON(http.StatusOK, gin.H{"message": "Sintese Analitica updated successfully"})
 
+	case "geral":
+		var input struct {
+			Tipo_Form string `json:"Tipo_Form"`
+		}
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		updates := map[string]interface{}{}
+		if input.Tipo_Form != "" {
+			updates["Tipo_Form"] = input.Tipo_Form
+		}
+
+		if len(updates) > 0 {
+			tx := database.DB.Begin()
+			if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Updates(updates).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral info: " + err.Error()})
+				return
+			}
+			tx.Commit()
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Geral info updated successfully"})
+
+	case "ensino-trab-renda":
+		var input models.SAVe_Ensino_trab_renda
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		input.ID_Caso = uint(id)
+		tx := database.DB.Begin()
+
+		var count int64
+		tx.Model(&models.SAVe_Ensino_trab_renda{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create ensino trab renda: " + err.Error()})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_Ensino_trab_renda{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update ensino trab renda: " + err.Error()})
+				return
+			}
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Ensino Trab Renda updated successfully"})
+
+	case "assistencia":
+		var input models.SAVe_Assistencia
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		input.ID_Caso = uint(id)
+		tx := database.DB.Begin()
+
+		var count int64
+		tx.Model(&models.SAVe_Assistencia{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create assistencia: " + err.Error()})
+				return
+			}
+		} else {
+			// Ensure we don't overwrite ID if it's 0 in input but exists in DB
+			var existing models.SAVe_Assistencia
+			tx.Where("\"ID_Caso\" = ?", id).First(&existing)
+			input.ID = existing.ID
+
+			if err := tx.Model(&models.SAVe_Assistencia{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update assistencia: " + err.Error()})
+				return
+			}
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Assistencia updated successfully"})
+
+	case "habitacao-territorio":
+		var input models.SAVe_Habitacao_territorio
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		input.ID_Caso = id
+		tx := database.DB.Begin()
+
+		var count int64
+		tx.Model(&models.SAVe_Habitacao_territorio{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create habitacao territorio: " + err.Error()})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_Habitacao_territorio{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update habitacao territorio: " + err.Error()})
+				return
+			}
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Habitacao Territorio updated successfully"})
+
 	default:
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid section"})
 	}
 }
 
-// ReopenCase marks a case as active again (Encerrado = "Não")
 func ReopenCase(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)

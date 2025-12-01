@@ -67,10 +67,10 @@
         try {
             const response = await api.get(`/cases/${caseId}`);
             if (
-                response.data.habitacao_territorio &&
-                response.data.habitacao_territorio.ID_Caso
+                response.data.habitacaoTerritorio &&
+                response.data.habitacaoTerritorio.ID_Caso
             ) {
-                data = { ...data, ...response.data.habitacao_territorio };
+                data = { ...data, ...response.data.habitacaoTerritorio };
 
                 // Parse Territorio string to checkboxes
                 if (data.Territorio) {

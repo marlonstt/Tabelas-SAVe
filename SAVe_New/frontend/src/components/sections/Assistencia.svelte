@@ -5,8 +5,8 @@
     export let caseId: string;
 
     const initialData = {
-        Possui_CadUnico: "",
-        NIS: "",
+        Cad_unico: "",
+        //NIS: "",
         Status_cad_unico: "",
         SPSB_Acesso_cras: "",
         SPSB_Servicos_acessados: "",
@@ -85,8 +85,8 @@
             );
             data = {
                 ...initialData,
-                Possui_CadUnico: "Sim",
-                NIS: "12345678901",
+                Cad_unico: "Sim",
+                //NIS: "12345678901",
                 Status_cad_unico: "Atualizado",
                 SPSB_Acesso_cras: "Sim",
                 BSA_recebe_beneficios: "Sim",
@@ -302,7 +302,7 @@
                         >
                         <select
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Possui_CadUnico}
+                            bind:value={data.Cad_unico}
                         >
                             <option value="">Selecione...</option>
                             <option value="Sim">Sim</option>
@@ -310,15 +310,15 @@
                         </select>
                     </label>
 
-                    {#if data.Possui_CadUnico === "Sim"}
-                        <label class="block">
+                    {#if data.Cad_unico === "Sim"}
+                        <!-- <label class="block">
                             <span class="text-gray-700">NIS</span>
                             <input
                                 type="text"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.NIS}
                             />
-                        </label>
+                        </label>-->
                         <label class="block">
                             <span class="text-gray-700">Status</span>
                             <select
@@ -383,7 +383,180 @@
                                             Integral à Família (PAIF)</span
                                         >
                                     </label>
-                                    <label class="block mt-2">
+
+                                    <label
+                                        class="inline-flex items-center block"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="rounded border-gray-300 text-save-primary shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                            checked={data.SPSB_Servicos_acessados?.includes(
+                                                "SCFV",
+                                            )}
+                                            on:change={(e) =>
+                                                toggleSPSBService(
+                                                    "SCFV",
+                                                    e.currentTarget.checked,
+                                                )}
+                                        />
+                                        <span class="ml-2"
+                                            >Serviço de Convivência e
+                                            Fortalecimento de Vínculos (SCFV)</span
+                                        >
+                                    </label>
+
+                                    <label
+                                        class="inline-flex items-center block"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="rounded border-gray-300 text-save-primary shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                            checked={data.SPSB_Servicos_acessados?.includes(
+                                                "SPSBDomicilio",
+                                            )}
+                                            on:change={(e) =>
+                                                toggleSPSBService(
+                                                    "SPSBDomicilio",
+                                                    e.currentTarget.checked,
+                                                )}
+                                        />
+                                        <span class="ml-2"
+                                            >Serviço de Proteção Social Básica
+                                            no Domicílio</span
+                                        >
+                                    </label>
+
+                                    <label
+                                        class="inline-flex items-center block"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="rounded border-gray-300 text-save-primary shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                            checked={data.SPSB_Servicos_acessados?.includes(
+                                                "BPC",
+                                            )}
+                                            on:change={(e) =>
+                                                toggleSPSBService(
+                                                    "BPC",
+                                                    e.currentTarget.checked,
+                                                )}
+                                        />
+                                        <span class="ml-2"
+                                            >Benefício de Prestação Continuada
+                                            (BPC)</span
+                                        >
+                                    </label>
+
+                                    <label
+                                        class="inline-flex items-center block"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="rounded border-gray-300 text-save-primary shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                            checked={data.SPSB_Servicos_acessados?.includes(
+                                                "ACUnicoBFamilia",
+                                            )}
+                                            on:change={(e) =>
+                                                toggleSPSBService(
+                                                    "ACUnicoBFamilia",
+                                                    e.currentTarget.checked,
+                                                )}
+                                        />
+                                        <span class="ml-2"
+                                            >Atendimento do Cadastro Único/Bolsa
+                                            Família</span
+                                        >
+                                    </label>
+
+                                    <label
+                                        class="inline-flex items-center block"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="rounded border-gray-300 text-save-primary shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                            checked={data.SPSB_Servicos_acessados?.includes(
+                                                "Outros",
+                                            )}
+                                            on:change={(e) =>
+                                                toggleSPSBService(
+                                                    "Outros",
+                                                    e.currentTarget.checked,
+                                                )}
+                                        />
+                                        <span class="ml-2">Outros</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            {#if data.SPSB_Servicos_acessados?.includes("Outros")}
+                                <label class="block">
+                                    <span class="text-gray-700"
+                                        >Especifique:</span
+                                    >
+                                    <input
+                                        type="text"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                        bind:value={
+                                            data.SPSB_Servicos_acessados_esp
+                                        }
+                                    />
+                                </label>
+                            {/if}
+
+                            <div class="md:col-span-2 mt-4">
+                                <span
+                                    class="block text-gray-700 font-semibold mb-2"
+                                    >Contato técnico de referência do serviço
+                                    referenciado:</span
+                                >
+                                <div
+                                    class="grid grid-cols-1 md:grid-cols-3 gap-4"
+                                >
+                                    <label class="block">
+                                        <span class="text-gray-700">Nome:</span>
+                                        <input
+                                            type="text"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                            bind:value={
+                                                data.SPSB_Contato_cras_nome
+                                            }
+                                        />
+                                    </label>
+                                    <label class="block">
+                                        <span class="text-gray-700"
+                                            >Telefone:</span
+                                        >
+                                        <input
+                                            type="text"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                            bind:value={
+                                                data.SPSB_Contato_cras_tel
+                                            }
+                                        />
+                                    </label>
+                                    <label class="block">
+                                        <span class="text-gray-700">Email:</span
+                                        >
+                                        <input
+                                            type="email"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                            bind:value={
+                                                data.SPSB_Contato_cras_email
+                                            }
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="md:col-span-2 mt-4">
+                                <span
+                                    class="block text-gray-700 font-semibold mb-2"
+                                    >Nome e endereço do Serviço:</span
+                                >
+                                <div
+                                    class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                                >
+                                    <label class="block">
                                         <span class="text-gray-700"
                                             >Nome do Serviço</span
                                         >
@@ -393,18 +566,20 @@
                                             bind:value={data.SPSB_Nome_servico}
                                         />
                                     </label>
+                                    <label class="block">
+                                        <span class="text-gray-700"
+                                            >Endereço do Serviço</span
+                                        >
+                                        <input
+                                            type="text"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                            bind:value={
+                                                data.SPSB_Endereco_servico
+                                            }
+                                        />
+                                    </label>
                                 </div>
                             </div>
-                            <label class="block">
-                                <span class="text-gray-700"
-                                    >Endereço do Serviço</span
-                                >
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={data.SPSB_Endereco_servico}
-                                />
-                            </label>
                         </div>
                     {/if}
                 </div>
