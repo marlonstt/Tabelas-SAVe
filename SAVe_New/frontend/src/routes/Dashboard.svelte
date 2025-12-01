@@ -163,7 +163,7 @@
             <tr>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
+                class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
                 on:click={() => toggleSort("ID_Caso")}
               >
                 <div class="flex items-center space-x-1">
@@ -177,7 +177,7 @@
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
+                class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
                 on:click={() => toggleSort("Num_Processo")}
               >
                 <div class="flex items-center space-x-1">
@@ -191,7 +191,7 @@
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
+                class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
                 on:click={() => toggleSort("Nome")}
               >
                 <div class="flex items-center space-x-1">
@@ -205,7 +205,7 @@
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
+                class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
                 on:click={() => toggleSort("Comarca")}
               >
                 <div class="flex items-center space-x-1">
@@ -219,19 +219,19 @@
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 RESP. PSICOSSOCIAL
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 RESP. JURÍDICO
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
+                class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
                 on:click={() => toggleSort("Tipo_Vitima")}
               >
                 <div class="flex items-center space-x-1">
@@ -245,7 +245,7 @@
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
+                class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
                 on:click={() => toggleSort("Tipo_Crime")}
               >
                 <div class="flex items-center space-x-1">
@@ -259,7 +259,7 @@
               </th>
               <th
                 scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
+                class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group select-none"
                 on:click={() => toggleSort("Data")}
               >
                 <div class="flex items-center space-x-1">
@@ -283,43 +283,43 @@
                 on:click={() => (window.location.href = `/case/${c.ID_Caso}`)}
               >
                 <td
-                  class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                  class="px-2 py-1 whitespace-nowrap text-xs font-medium text-gray-900"
                 >
                   #{c.ID_Caso}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">
                   {c.Num_Processo || "-"}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                <td class="px-2 py-1 whitespace-nowrap text-xs text-gray-700">
                   <div class="flex items-center">
                     <div
-                      class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold mr-3 text-xs"
+                      class="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold mr-2 text-xs"
                     >
                       {c.Nome ? c.Nome.charAt(0).toUpperCase() : "?"}
                     </div>
                     {c.Nome || "Não informado"}
                   </div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">
                   {c.Comarca || "-"}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">
                   -
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">
                   -
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">
                   {c.Tipo_Vitima || "-"}
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-500">
+                <td class="px-2 py-1 text-xs text-gray-500">
                   <div
-                    class="w-48 max-h-20 overflow-y-auto whitespace-normal break-words bg-gray-50 rounded p-1 border border-gray-100 text-xs"
+                    class="w-48 max-h-12 overflow-y-auto whitespace-normal break-words bg-gray-50 rounded p-1 border border-gray-100 text-xs"
                   >
                     {c.Tipo_Crime || "-"}
                   </div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">
                   {c.Data || "-"}
                 </td>
               </tr>

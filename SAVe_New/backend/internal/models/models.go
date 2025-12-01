@@ -247,8 +247,8 @@ type SAVe_Situacao_Juridica2 struct {
 	SJ2_Demanda_Protecao_Nao_Revitimizacao                            bool   `gorm:"column:\"SJ2_Demanda_Protecao_Nao_Revitimizacao\"" json:"SJ2_Demanda_Protecao_Nao_Revitimizacao"`
 	SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif                    string `gorm:"column:\"SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif\"" json:"SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif"`
 	SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif2                   string `gorm:"column:\"SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif2\"" json:"SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif2"`
-	SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif  string `gorm:"column:\"SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif\"" json:"SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif"`
-	SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif2 string `gorm:"column:\"SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif2\"" json:"SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif2"`
+	SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif  string `gorm:"column:\"SJ2_Prot_Nao_Revit_Med_Caut_Especif\"" json:"SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif"`
+	SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif2 string `gorm:"column:\"SJ2_Prot_Nao_Revit_Med_Caut_Especif2\"" json:"SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif2"`
 	SJ2_Demanda_Protecao_Psicologica                                  bool   `gorm:"column:\"SJ2_Demanda_Protecao_Psicologica\"" json:"SJ2_Demanda_Protecao_Psicologica"`
 	SJ2_Demanda_Protecao_Psicologica_Especif                          string `gorm:"column:\"SJ2_Demanda_Protecao_Psicologica_Especif\"" json:"SJ2_Demanda_Protecao_Psicologica_Especif"`
 	SJ2_Demanda_Protecao_Psicologica_Especif2                         string `gorm:"column:\"SJ2_Demanda_Protecao_Psicologica_Especif2\"" json:"SJ2_Demanda_Protecao_Psicologica_Especif2"`
