@@ -138,7 +138,7 @@
         </span>
     </div>
 
-    <h2 class="text-xl font-bold text-gray-800 mb-4">Acompanhamentos</h2>
+    <!--<h2 class="text-xl font-bold text-gray-800 mb-4">Acompanhamentos</h2> -->
 
     {#if loading}
         <p>Carregando...</p>

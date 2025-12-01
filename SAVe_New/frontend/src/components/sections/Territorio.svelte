@@ -179,7 +179,7 @@
 </script>
 
 <div class="p-4 space-y-6">
-    <div
+    <!-- <div
         class="flex justify-between items-center sticky top-0 bg-white z-10 p-2 shadow-sm"
     >
         <h2 class="text-xl font-bold text-gray-800">Habitação e Território</h2>
@@ -190,7 +190,7 @@
         >
             {saveStatus}
         </span>
-    </div>
+    </div>-->
 
     {#if loading}
         <div class="flex justify-center p-8">

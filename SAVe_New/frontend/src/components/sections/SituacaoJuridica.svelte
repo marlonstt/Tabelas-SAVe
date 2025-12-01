@@ -401,9 +401,9 @@
 
 <div class="p-6 bg-white rounded-lg shadow-md">
     <!-- Header -->
-    <div class="mb-6 border-b pb-4">
+    <!--<div class="mb-6 border-b pb-4">
         <h2 class="text-2xl font-bold text-gray-800">Situação Jurídica</h2>
-    </div>
+    </div>-->
 
     {#if loading}
         <div class="flex justify-center items-center h-64">

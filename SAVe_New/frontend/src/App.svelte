@@ -69,7 +69,7 @@
       <img
         src="/CasaLilian-vinheta.png"
         alt="Vinheta Casa Lilian"
-        class="absolute bottom-0 right-0 w-full h-auto object-cover opacity-50 pointer-events-none z-0"
+        class="absolute bottom-0 right-0 w-full h-auto object-cover opacity-60 pointer-events-none z-0"
       />
 
       <!-- Content Scrollable -->

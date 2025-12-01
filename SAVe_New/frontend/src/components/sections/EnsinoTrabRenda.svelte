@@ -128,12 +128,14 @@
         </span>
     </div>
 
+    <!--
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-gray-800">
             Ensino, Trabalho e Renda
-        </h2>
-        <!-- Manual Save Button -->
-    </div>
+        </h2> -->
+    <!-- Manual Save Button -->
+    <!-- </div>
+    -->
 
     {#if loading}
         <p>Carregando...</p>

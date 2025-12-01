@@ -156,7 +156,7 @@
   <div class="flex flex-col h-screen bg-save-surface font-sans">
     <!-- Header with Gradient -->
     <div
-      class="bg-gradient-to-r from-save-primary to-save-secondary shadow-md px-6 py-4 flex justify-between items-center text-white"
+      class="bg-gradient-to-r from-[#464775] to-save-secondary shadow-md px-6 py-4 flex justify-between items-center text-white"
     >
       <div>
         <h2 class="text-2xl font-bold tracking-tight flex items-center">

@@ -165,7 +165,7 @@
         </span>
     </div>
 
-    <h2 class="text-xl font-bold text-gray-800 mb-4">Vitimização</h2>
+    <!--<h2 class="text-xl font-bold text-gray-800 mb-4">Vitimização</h2>  -->
 
     {#if loading}
         <p>Carregando...</p>

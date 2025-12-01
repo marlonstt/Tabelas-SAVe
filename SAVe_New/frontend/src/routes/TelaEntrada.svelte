@@ -55,15 +55,25 @@
 <div
     class="min-h-screen flex flex-col items-center justify-center p-4 relative"
 >
+    <!-- Modern Title at the Top -->
+    <div class="absolute top-8 w-full text-center px-2 z-10 animate-fade-in">
+        <h3
+            class="text-2xl md:text-1xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-save-primary to-save-secondary tracking-tight drop-shadow-sm uppercase"
+        >
+            Sistema de Avaliação e Vitimização Eletrônico
+        </h3>
+        <div
+            class="w-20 h-1 bg-save-accent mx-auto mt-3 rounded-full opacity-90 shadow-sm"
+        ></div>
+    </div>
     <div
-        class="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full text-center z-10"
+        class="bg-white p-6 rounded-lg shadow-lg max-w-xl w-full text-center z-10"
     >
-        <h1 class="text-3xl font-bold text-save-primary mb-2">
-            Bem-vindo ao Sistema de Avaliação e Vitimização eletrônico, <br
-            />{userName}!
-        </h1>
+        <h2 class="text-1xl font-bold text-save-primary mb-2">
+            Bem-vindo, <br />{userName}!
+        </h2>
 
-        <div class="flex justify-center mb-8">
+        <div class="flex justify-center mb-6">
             <!-- User image or initial -->
             <div
                 class="w-24 h-24 bg-save-primary rounded-full flex items-center justify-center text-4xl text-white font-bold overflow-hidden"
@@ -83,14 +93,14 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-lg mx-auto">
             <a
                 href="/"
-                class="bg-save-primary text-white py-4 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center no-underline"
+                class="bg-save-primary text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center no-underline"
             >
                 Acessar Casos
             </a>
 
             <button
                 on:click={openCaseSelection}
-                class="bg-save-primary text-white py-4 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center"
+                class="bg-save-primary text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center"
             >
                 Criar Novo Caso
             </button>
@@ -98,7 +108,7 @@
             {#if user.role === "Admin" || user.role === "admin"}
                 <a
                     href="/admin/users"
-                    class="bg-gray-600 text-white py-4 px-6 rounded-lg font-bold text-lg hover:bg-gray-700 transition-colors shadow-md flex items-center justify-center no-underline"
+                    class="bg-save-primary text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center no-underline"
                 >
                     Gestão de Usuários
                 </a>
@@ -106,7 +116,7 @@
 
             <a
                 href="/dashboards"
-                class="bg-gray-600 text-white py-4 px-6 rounded-lg font-bold text-lg hover:bg-gray-700 transition-colors shadow-md flex items-center justify-center no-underline"
+                class="bg-save-primary text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center no-underline"
             >
                 Dashboards
             </a>

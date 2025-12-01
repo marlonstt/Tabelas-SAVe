@@ -192,10 +192,9 @@
             {saveStatus || "Salvo"}
         </span>
     </div>
-
-    <div class="flex justify-between items-center mb-4">
+    <!--<div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-gray-800">Proteção e Segurança</h2>
-    </div>
+    </div>-->
 
     {#if loading}
         <p>Carregando...</p>
