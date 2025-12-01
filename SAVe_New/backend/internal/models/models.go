@@ -49,29 +49,29 @@ func (SAVe_DadosDeEntrada) TableName() string {
 }
 
 type SAVe_Identificacao struct {
-	ID_Caso               int        `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
-	Nome_RC               string     `gorm:"column:\"Nome_RC\"" json:"Nome_RC"`
-	Data_nascimento       *time.Time `gorm:"column:\"Data_nascimento\"" json:"Data_nascimento"`
-	Idade                 string     `gorm:"column:\"Idade\"" json:"Idade"`
-	Nome_social_ancestral string     `gorm:"column:\"Nome_social_ancestral\"" json:"Nome_social_ancestral"`
-	Filiacao_1            string     `gorm:"column:\"Filiacao_1\"" json:"Filiacao_1"`
-	Filiacao_2            string     `gorm:"column:\"Filiacao_2\"" json:"Filiacao_2"`
-	Como_querser_chamada  string     `gorm:"column:\"Como_querser_chamada\"" json:"Como_querser_chamada"`
-	Naturalidade          string     `gorm:"column:\"Naturalidade\"" json:"Naturalidade"`
-	Nacionalidade         string     `gorm:"column:\"Nacionalidade\"" json:"Nacionalidade"`
-	DC_situacao           string     `gorm:"column:\"DC_situacao\"" json:"DC_situacao"`
-	DC_CPF                string     `gorm:"column:\"DC_CPF\"" json:"DC_CPF"`
-	DC_RG                 string     `gorm:"column:\"DC_RG\"" json:"DC_RG"`
-	DC_CTPS               string     `gorm:"column:\"DC_CTPS\"" json:"DC_CTPS"`
-	CC_Nome               string     `gorm:"column:\"CC_Nome\"" json:"CC_Nome"`
-	CC_telefoneDDD        string     `gorm:"column:\"CC_telefoneDDD\"" json:"CC_telefoneDDD"`
-	CC_vinculo            string     `gorm:"column:\"CC_vinculo\"" json:"CC_vinculo"`
-	PPS_Sexo              string     `gorm:"column:\"PPS_Sexo\"" json:"PPS_Sexo"`
-	PPS_idgenero          string     `gorm:"column:\"PPS_idgenero\"" json:"PPS_idgenero"`
-	PPS_orientacao_sexual string     `gorm:"column:\"PPS_orientacao_sexual\"" json:"PPS_orientacao_sexual"`
-	PPS_Raca_cor_etnia    string     `gorm:"column:\"PPS_Raca_cor_etnia\"" json:"PPS_Raca_cor_etnia"`
-	PPS_religiao          string     `gorm:"column:\"PPS_religiao\"" json:"PPS_religiao"`
-	PPS_estado_civil      string     `gorm:"column:\"PPS_estado_civil\"" json:"PPS_estado_civil"`
+	ID_Caso               int    `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
+	Nome_RC               string `gorm:"column:\"Nome_RC\"" json:"Nome_RC"`
+	Data_nascimento       string `gorm:"column:\"Data_nascimento\"" json:"Data_nascimento"`
+	Idade                 string `gorm:"column:\"Idade\"" json:"Idade"`
+	Nome_social_ancestral string `gorm:"column:\"Nome_social_ancestral\"" json:"Nome_social_ancestral"`
+	Filiacao_1            string `gorm:"column:\"Filiacao_1\"" json:"Filiacao_1"`
+	Filiacao_2            string `gorm:"column:\"Filiacao_2\"" json:"Filiacao_2"`
+	Como_querser_chamada  string `gorm:"column:\"Como_querser_chamada\"" json:"Como_querser_chamada"`
+	Naturalidade          string `gorm:"column:\"Naturalidade\"" json:"Naturalidade"`
+	Nacionalidade         string `gorm:"column:\"Nacionalidade\"" json:"Nacionalidade"`
+	DC_situacao           string `gorm:"column:\"DC_situacao\"" json:"DC_situacao"`
+	DC_CPF                string `gorm:"column:\"DC_CPF\"" json:"DC_CPF"`
+	DC_RG                 string `gorm:"column:\"DC_RG\"" json:"DC_RG"`
+	DC_CTPS               string `gorm:"column:\"DC_CTPS\"" json:"DC_CTPS"`
+	CC_Nome               string `gorm:"column:\"CC_Nome\"" json:"CC_Nome"`
+	CC_telefoneDDD        string `gorm:"column:\"CC_telefoneDDD\"" json:"CC_telefoneDDD"`
+	CC_vinculo            string `gorm:"column:\"CC_vinculo\"" json:"CC_vinculo"`
+	PPS_Sexo              string `gorm:"column:\"PPS_Sexo\"" json:"PPS_Sexo"`
+	PPS_idgenero          string `gorm:"column:\"PPS_idgenero\"" json:"PPS_idgenero"`
+	PPS_orientacao_sexual string `gorm:"column:\"PPS_orientacao_sexual\"" json:"PPS_orientacao_sexual"`
+	PPS_Raca_cor_etnia    string `gorm:"column:\"PPS_Raca_cor_etnia\"" json:"PPS_Raca_cor_etnia"`
+	PPS_religiao          string `gorm:"column:\"PPS_religiao\"" json:"PPS_religiao"`
+	PPS_estado_civil      string `gorm:"column:\"PPS_estado_civil\"" json:"PPS_estado_civil"`
 }
 
 func (SAVe_Identificacao) TableName() string {

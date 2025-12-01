@@ -378,8 +378,7 @@ func UpdateCaseSection(c *gin.Context) {
 			models.SAVe_DadosDeEntrada
 			Crimes            []string `json:"crimes"`
 			CasosRelacionados []struct {
-				ID     string `json:"id"`
-				Motivo string `json:"motivo"`
+				IDVitima string `json:"id_vitima"`
 			} `json:"casosRelacionados"`
 			TipoVitima string `json:"Tipo_Vitima"` // Frontend uses Tipo_Vitima
 		}
@@ -469,8 +468,12 @@ func UpdateCaseSection(c *gin.Context) {
 			updates["Tipo_Vitima"] = input.TipoVitima
 		}
 		// Update Tipo_Crime in SAVe_Geral
-		// Concatenate crimes + classification
-		tipoCrime := input.SAVe_DadosDeEntrada.Crime_relacionado
+		// PowerApps logic uses the specific crimes (Crime_relacionado_especifico) + classification
+		tipoCrime := input.SAVe_DadosDeEntrada.Crime_relacionado_especifico
+		if tipoCrime == "" {
+			tipoCrime = input.SAVe_DadosDeEntrada.Crime_relacionado
+		}
+
 		if input.SAVe_DadosDeEntrada.Classificacao_crime != "" {
 			tipoCrime += " (" + input.SAVe_DadosDeEntrada.Classificacao_crime + ")"
 		}

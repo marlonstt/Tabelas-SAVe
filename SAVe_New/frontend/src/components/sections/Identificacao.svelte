@@ -652,14 +652,25 @@
 
     // Calculate Age
     $: if (data.Data_nascimento) {
-        const birthDate = new Date(data.Data_nascimento);
-        const today = new Date();
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
+        const parts = data.Data_nascimento.split("-");
+        if (parts.length === 3) {
+            const birthDate = new Date(
+                parseInt(parts[0]),
+                parseInt(parts[1]) - 1,
+                parseInt(parts[2]),
+            );
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            if (age > 110) {
+                data.Idade = "";
+            } else {
+                data.Idade = age.toString();
+            }
         }
-        data.Idade = age.toString();
     }
 
     function addEndereco() {
@@ -812,115 +823,471 @@
                     </label>
                     <label class="block">
                         <span class="text-gray-700">Naturalidade</span>
-                        <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Naturalidade}
-                        >
-                            <option value="">Selecione...</option>
-                            {#each naturalidades as item}
-                                <option value={item}>{item}</option>
-                            {/each}
-                        </select>
+                        <div class="relative">
+                            <select
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 pr-8"
+                                bind:value={data.Naturalidade}
+                            >
+                                <option value="">Selecione...</option>
+                                {#each naturalidades as item}
+                                    <option value={item}>{item}</option>
+                                {/each}
+                            </select>
+                            {#if data.Naturalidade}
+                                <button
+                                    class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    on:click={() => (data.Naturalidade = "")}
+                                    title="Limpar"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
+                            {/if}
+                        </div>
                     </label>
                     <label class="block">
                         <span class="text-gray-700">Nacionalidade</span>
-                        <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Nacionalidade}
-                        >
-                            <option value="">Selecione...</option>
-                            {#each nacionalidades as item}
-                                <option value={item}>{item}</option>
-                            {/each}
-                        </select>
+                        <div class="relative">
+                            <select
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 pr-8"
+                                bind:value={data.Nacionalidade}
+                            >
+                                <option value="">Selecione...</option>
+                                {#each nacionalidades as item}
+                                    <option value={item}>{item}</option>
+                                {/each}
+                            </select>
+                            {#if data.Nacionalidade}
+                                <button
+                                    class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    on:click={() => (data.Nacionalidade = "")}
+                                    title="Limpar"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
+                            {/if}
+                        </div>
                     </label>
                 </div>
             </div>
 
-            <!-- Contatos -->
+            <!-- Documentação Civil -->
             <div class="border-b pb-4">
                 <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Contatos
+                    Documentação civil
                 </h3>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                    <!-- Situação -->
+                    <div class="lg:col-span-4">
+                        <span class="block text-gray-700 mb-2">Situação:</span>
+                        <div class="flex flex-col gap-2">
+                            <label class="inline-flex items-center">
+                                <input
+                                    type="radio"
+                                    class="form-radio text-save-primary"
+                                    name="dc_situacao"
+                                    value="Possui"
+                                    bind:group={data.DC_situacao}
+                                />
+                                <span class="ml-2">Possui</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input
+                                    type="radio"
+                                    class="form-radio text-save-primary"
+                                    name="dc_situacao"
+                                    value="Nunca teve"
+                                    bind:group={data.DC_situacao}
+                                />
+                                <span class="ml-2">Nunca teve</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input
+                                    type="radio"
+                                    class="form-radio text-save-primary"
+                                    name="dc_situacao"
+                                    value="Perda/Roubo/Danificado/Extravio"
+                                    bind:group={data.DC_situacao}
+                                />
+                                <span class="ml-2"
+                                    >Perda/Roubo/Danificado/Extravio</span
+                                >
+                            </label>
+                        </div>
+                    </div>
 
-                <div class="mb-6">
-                    <h4 class="font-medium text-gray-600 mb-2">
-                        Telefones de contato
-                    </h4>
-                    {#each data.telefones as tel, i}
-                        <div class="flex gap-2 mb-2 items-center">
+                    <!-- CPF -->
+                    <div class="lg:col-span-2">
+                        <label class="block">
+                            <span class="text-gray-700">CPF:</span>
                             <input
                                 type="text"
-                                placeholder="(00) 0000-0000"
-                                class="flex-1 rounded-md border-gray-300 shadow-sm"
-                                bind:value={tel.TelefoneDDD}
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={data.DC_CPF}
                             />
+                        </label>
+                    </div>
+
+                    <!-- RG -->
+                    <div class="lg:col-span-3">
+                        <label class="block">
+                            <span class="text-gray-700">RG:</span>
                             <input
                                 type="text"
-                                readonly
-                                class="w-32 rounded-md border-gray-300 bg-gray-100 shadow-sm text-xs"
-                                value={tel.Atualizado
-                                    ? new Date(
-                                          tel.Atualizado,
-                                      ).toLocaleDateString()
-                                    : ""}
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={data.DC_RG}
                             />
+                        </label>
+                    </div>
+
+                    <!-- CTPS -->
+                    <div class="lg:col-span-3">
+                        <label class="block">
+                            <span class="text-gray-700">CTPS:</span>
+                            <input
+                                type="text"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={data.DC_CTPS}
+                            />
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Endereço(s) -->
+            <div class="border-b pb-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-700">
+                        Endereço(s)
+                    </h3>
+                    <button
+                        class="bg-save-primary text-white px-4 py-2 rounded text-sm hover:bg-save-secondary transition-colors"
+                        on:click={addEndereco}
+                    >
+                        Incluir endereço
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    {#each data.enderecos as endereco, i}
+                        <div class="border rounded-lg p-4 bg-gray-50 relative">
                             <button
-                                class="text-red-500 hover:text-red-700 px-2"
-                                on:click={() => removeTelefone(i)}
+                                class="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                                on:click={() => removeEndereco(i)}
+                                title="Remover endereço"
                             >
                                 <span class="material-icons">delete</span>
                             </button>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                                <!-- Situação Moradia -->
+                                <div class="lg:col-span-4">
+                                    <span
+                                        class="block text-gray-700 mb-2 text-sm font-semibold"
+                                        >Situação:</span
+                                    >
+                                    <div class="flex flex-col gap-2">
+                                        {#each ["Casa própria", "Aluguel", "Em situação de rua", "Outro"] as option}
+                                            <label
+                                                class="inline-flex items-center"
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    class="form-radio text-save-primary h-4 w-4"
+                                                    name={`moradia_situacao_${i}`}
+                                                    value={option}
+                                                    bind:group={
+                                                        endereco.Moradia_Situacao
+                                                    }
+                                                    on:change={autosave}
+                                                />
+                                                <span class="ml-2 text-sm"
+                                                    >{option}</span
+                                                >
+                                            </label>
+                                        {/each}
+                                    </div>
+                                </div>
+
+                                <div class="lg:col-span-8 space-y-4">
+                                    <div class="grid grid-cols-12 gap-4">
+                                        <!-- Endereço -->
+                                        <div class="col-span-8">
+                                            <label class="block">
+                                                <span
+                                                    class="text-gray-700 text-sm font-semibold"
+                                                    >Endereço:</span
+                                                >
+                                                <input
+                                                    type="text"
+                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                                    bind:value={
+                                                        endereco.Endereco
+                                                    }
+                                                    on:blur={autosave}
+                                                />
+                                            </label>
+                                        </div>
+                                        <!-- Número -->
+                                        <div class="col-span-4">
+                                            <label class="block">
+                                                <span
+                                                    class="text-gray-700 text-sm font-semibold"
+                                                    >Nº:</span
+                                                >
+                                                <input
+                                                    type="text"
+                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                                    bind:value={endereco.Numero}
+                                                    on:blur={autosave}
+                                                />
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-12 gap-4">
+                                        <!-- Complemento -->
+                                        <div class="col-span-6">
+                                            <label class="block">
+                                                <span
+                                                    class="text-gray-700 text-sm font-semibold"
+                                                    >Complemento:</span
+                                                >
+                                                <input
+                                                    type="text"
+                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                                    bind:value={
+                                                        endereco.Complemento
+                                                    }
+                                                    on:blur={autosave}
+                                                />
+                                            </label>
+                                        </div>
+                                        <!-- Bairro -->
+                                        <div class="col-span-6">
+                                            <label class="block">
+                                                <span
+                                                    class="text-gray-700 text-sm font-semibold"
+                                                    >Bairro:</span
+                                                >
+                                                <input
+                                                    type="text"
+                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                                    bind:value={endereco.Bairro}
+                                                    on:blur={autosave}
+                                                />
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-12 gap-4">
+                                        <!-- Cidade -->
+                                        <div class="col-span-5">
+                                            <label class="block">
+                                                <span
+                                                    class="text-gray-700 text-sm font-semibold"
+                                                    >Cidade:</span
+                                                >
+                                                <input
+                                                    type="text"
+                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                                    bind:value={endereco.Cidade}
+                                                    on:blur={autosave}
+                                                />
+                                            </label>
+                                        </div>
+                                        <!-- UF -->
+                                        <div class="col-span-3">
+                                            <label class="block">
+                                                <span
+                                                    class="text-gray-700 text-sm font-semibold"
+                                                    >UF:</span
+                                                >
+                                                <input
+                                                    type="text"
+                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                                    bind:value={endereco.UF}
+                                                    on:blur={autosave}
+                                                />
+                                            </label>
+                                        </div>
+                                        <!-- CEP -->
+                                        <div class="col-span-4">
+                                            <label class="block">
+                                                <span
+                                                    class="text-gray-700 text-sm font-semibold"
+                                                    >CEP:</span
+                                                >
+                                                <input
+                                                    type="text"
+                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                                    bind:value={endereco.CEP}
+                                                    on:blur={autosave}
+                                                />
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {#if endereco.Atualizado}
+                                <div
+                                    class="text-xs text-gray-500 mt-2 text-right"
+                                >
+                                    Informado em {new Date(
+                                        endereco.Atualizado,
+                                    ).toLocaleDateString()}
+                                </div>
+                            {/if}
                         </div>
                     {/each}
-                    <button
-                        class="text-sm text-save-primary hover:underline mt-1"
-                        on:click={addTelefone}>+ Incluir telefone</button
-                    >
                 </div>
+            </div>
 
-                <div class="mb-6">
-                    <h4 class="font-medium text-gray-600 mb-2">E-mails</h4>
-                    {#each data.emails as email, i}
-                        <div class="flex gap-2 mb-2 items-center">
-                            <input
-                                type="email"
-                                placeholder="exemplo@email.com"
-                                class="flex-1 rounded-md border-gray-300 shadow-sm"
-                                bind:value={email.Email}
-                            />
-                            <input
-                                type="text"
-                                readonly
-                                class="w-32 rounded-md border-gray-300 bg-gray-100 shadow-sm text-xs"
-                                value={email.Atualizado
-                                    ? new Date(
-                                          email.Atualizado,
-                                      ).toLocaleDateString()
-                                    : ""}
-                            />
+            <!-- Telefones e E-mails -->
+            <div class="border-b pb-4">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Telefones -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-700">
+                                Telefones de contato
+                            </h3>
                             <button
-                                class="text-red-500 hover:text-red-700 px-2"
-                                on:click={() => removeEmail(i)}
+                                class="bg-save-primary text-white px-4 py-2 rounded text-sm hover:bg-save-secondary transition-colors"
+                                on:click={addTelefone}
                             >
-                                <span class="material-icons">delete</span>
+                                Incluir telefone
                             </button>
                         </div>
-                    {/each}
-                    <button
-                        class="text-sm text-save-primary hover:underline mt-1"
-                        on:click={addEmail}>+ Incluir e-mail</button
-                    >
-                </div>
 
+                        <div class="space-y-4">
+                            {#if data.telefones.length > 0}
+                                <div
+                                    class="flex text-sm font-semibold text-gray-700 px-2"
+                                >
+                                    <div class="w-1/2 text-center">
+                                        Atualizado em
+                                    </div>
+                                    <div class="w-1/2 text-center">
+                                        Telefone com DDD
+                                    </div>
+                                    <div class="w-8"></div>
+                                </div>
+                            {/if}
+                            {#each data.telefones as telefone, i}
+                                <div class="flex items-center gap-2">
+                                    <div class="w-1/2">
+                                        <input
+                                            type="text"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm bg-gray-100"
+                                            value={telefone.Atualizado
+                                                ? new Date(
+                                                      telefone.Atualizado,
+                                                  ).toLocaleDateString()
+                                                : ""}
+                                            disabled
+                                        />
+                                    </div>
+                                    <div class="w-1/2">
+                                        <input
+                                            type="text"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                            placeholder="(00) 0000-0000"
+                                            bind:value={telefone.TelefoneDDD}
+                                            on:blur={autosave}
+                                        />
+                                    </div>
+                                    <button
+                                        class="text-red-500 hover:text-red-700"
+                                        on:click={() => removeTelefone(i)}
+                                        title="Remover telefone"
+                                    >
+                                        <span class="material-icons">close</span
+                                        >
+                                    </button>
+                                </div>
+                            {/each}
+                        </div>
+                    </div>
+
+                    <!-- E-mails -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-700">
+                                E-mails
+                            </h3>
+                            <button
+                                class="bg-save-primary text-white px-4 py-2 rounded text-sm hover:bg-save-secondary transition-colors"
+                                on:click={addEmail}
+                            >
+                                Incluir e-mail
+                            </button>
+                        </div>
+
+                        <div class="space-y-4">
+                            {#if data.emails.length > 0}
+                                <div
+                                    class="flex text-sm font-semibold text-gray-700 px-2"
+                                >
+                                    <div class="w-1/3 text-center">
+                                        Atualizado em
+                                    </div>
+                                    <div class="w-2/3 text-center">E-mail</div>
+                                    <div class="w-8"></div>
+                                </div>
+                            {/if}
+                            {#each data.emails as email, i}
+                                <div class="flex items-center gap-2">
+                                    <div class="w-1/3">
+                                        <input
+                                            type="text"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm bg-gray-100"
+                                            value={email.Atualizado
+                                                ? new Date(
+                                                      email.Atualizado,
+                                                  ).toLocaleDateString()
+                                                : ""}
+                                            disabled
+                                        />
+                                    </div>
+                                    <div class="w-2/3">
+                                        <input
+                                            type="text"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                            placeholder="exemplo@gmail.com"
+                                            bind:value={email.Email}
+                                            on:blur={autosave}
+                                        />
+                                    </div>
+                                    <button
+                                        class="text-red-500 hover:text-red-700"
+                                        on:click={() => removeEmail(i)}
+                                        title="Remover e-mail"
+                                    >
+                                        <span class="material-icons">close</span
+                                        >
+                                    </button>
+                                </div>
+                            {/each}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pessoa de Confiança -->
+            <div class="border-b pb-4">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">
+                    Pessoa de Confiança
+                </h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <label class="block">
-                        <span class="text-gray-700"
-                            >Pessoa de Confiança (Nome)</span
-                        >
+                        <span class="text-gray-700">Nome</span>
                         <input
                             type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.CC_Nome}
                         />
                     </label>
@@ -928,7 +1295,7 @@
                         <span class="text-gray-700">Telefone com DDD</span>
                         <input
                             type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.CC_telefoneDDD}
                         />
                     </label>
@@ -936,7 +1303,7 @@
                         <span class="text-gray-700">Vínculo</span>
                         <input
                             type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.CC_vinculo}
                         />
                     </label>
