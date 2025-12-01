@@ -629,7 +629,8 @@ func UpdateCaseSection(c *gin.Context) {
 				return
 			}
 		} else {
-			if err := tx.Model(&models.SAVe_Situacao_Juridica{}).Where("\"ID_Caso\" = ?", id).Updates(&input.SAVe_Situacao_Juridica).Error; err != nil {
+			// Use Save to ensure zero values (false, empty strings) are updated
+			if err := tx.Save(&input.SAVe_Situacao_Juridica).Error; err != nil {
 				tx.Rollback()
 				log.Println("Error updating SAVe_Situacao_Juridica:", err)
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update situacao juridica: " + err.Error()})
@@ -649,7 +650,8 @@ func UpdateCaseSection(c *gin.Context) {
 				return
 			}
 		} else {
-			if err := tx.Model(&models.SAVe_Situacao_Juridica2{}).Where("\"ID_Caso\" = ?", id).Updates(&input.SituacaoJuridica2).Error; err != nil {
+			// Use Save to ensure zero values (false, empty strings) are updated
+			if err := tx.Save(&input.SituacaoJuridica2).Error; err != nil {
 				tx.Rollback()
 				log.Println("Error updating SAVe_Situacao_Juridica2:", err)
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update situacao juridica 2: " + err.Error()})

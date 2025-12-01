@@ -582,6 +582,9 @@
             data = {
                 ...data,
                 ...identificacaoData,
+                Data_nascimento: identificacaoData.Data_nascimento
+                    ? identificacaoData.Data_nascimento.split("T")[0]
+                    : "",
                 telefones: telefonesData,
                 emails: emailsData,
                 enderecos: enderecosData,

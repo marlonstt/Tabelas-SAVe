@@ -202,6 +202,14 @@ type SAVe_Situacao_Juridica struct {
 	SJ_Data_Audiencia              string `gorm:"column:\"SJ_Data_Audiencia\"" json:"SJ_Data_Audiencia"`
 	SJ_Data_Sentenca               string `gorm:"column:\"SJ_Data_Sentenca\"" json:"SJ_Data_Sentenca"`
 	SJ_Data_Transito_Julgado       string `gorm:"column:\"SJ_Data_Transito_Julgado\"" json:"SJ_Data_Transito_Julgado"`
+	SJ_Hora_Crime                  string `gorm:"column:\"SJ_Hora_Crime\"" json:"SJ_Hora_Crime"`
+	SJ_Dia_Semana                  string `gorm:"column:\"SJ_Dia_Semana\"" json:"SJ_Dia_Semana"`
+	SJ_Local_Crime                 string `gorm:"column:\"SJ_Local_Crime\"" json:"SJ_Local_Crime"`
+	SJ_Local_Crime_Especif         string `gorm:"column:\"SJ_Local_Crime_Especif\"" json:"SJ_Local_Crime_Especif"`
+	SJ_Obs_Crime                   string `gorm:"column:\"SJ_Obs_Crime\"" json:"SJ_Obs_Crime"`
+	SJ_Fase_Persecucao_Penal       string `gorm:"column:\"SJ_Fase_Persecucao_Penal\"" json:"SJ_Fase_Persecucao_Penal"`
+	SJ_Fase_Judicial_Especif       string `gorm:"column:\"SJ_Fase_Judicial_Especif\"" json:"SJ_Fase_Judicial_Especif"`
+	SJ_Status_Juridico_Autor       string `gorm:"column:\"SJ_Status_Juridico_Autor\"" json:"SJ_Status_Juridico_Autor"`
 }
 
 func (SAVe_Situacao_Juridica) TableName() string {
@@ -209,7 +217,51 @@ func (SAVe_Situacao_Juridica) TableName() string {
 }
 
 type SAVe_Situacao_Juridica2 struct {
-	ID_Caso int `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
+	ID_Caso                                                           int    `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
+	SJ2_Resultado_Julgamento                                          string `gorm:"column:\"SJ2_Resultado_Julgamento\"" json:"SJ2_Resultado_Julgamento"`
+	SJ2_Tempo_Pena                                                    string `gorm:"column:\"SJ2_Tempo_Pena\"" json:"SJ2_Tempo_Pena"`
+	SJ2_Inicio_Cumprimento                                            string `gorm:"column:\"SJ2_Inicio_Cumprimento\"" json:"SJ2_Inicio_Cumprimento"`
+	SJ2_Regime                                                        string `gorm:"column:\"SJ2_Regime\"" json:"SJ2_Regime"`
+	SJ2_Apuracao_Investigacao                                         string `gorm:"column:\"SJ2_Apuracao_Investigacao\"" json:"SJ2_Apuracao_Investigacao"`
+	SJ2_Apuracao_Invest_Especif                                       string `gorm:"column:\"SJ2_Apuracao_Invest_Especif\"" json:"SJ2_Apuracao_Invest_Especif"`
+	SJ2_Pedido_Reparacao_Denuncia                                     string `gorm:"column:\"SJ2_Pedido_Reparacao_Denuncia\"" json:"SJ2_Pedido_Reparacao_Denuncia"`
+	SJ2_Tipo_Danos                                                    string `gorm:"column:\"SJ2_Tipo_Danos\"" json:"SJ2_Tipo_Danos"`
+	SJ2_Tipo_Danos_Especif                                            string `gorm:"column:\"SJ2_Tipo_Danos_Especif\"" json:"SJ2_Tipo_Danos_Especif"`
+	SJ2_Condenacao_Reparacao                                          string `gorm:"column:\"SJ2_Condenacao_Reparacao\"" json:"SJ2_Condenacao_Reparacao"`
+	SJ2_Condenacao_Repar_Especif                                      string `gorm:"column:\"SJ2_Condenacao_Repar_Especif\"" json:"SJ2_Condenacao_Repar_Especif"`
+	SJ2_Demanda_Info_Participacao                                     bool   `gorm:"column:\"SJ2_Demanda_Info_Participacao\"" json:"SJ2_Demanda_Info_Participacao"`
+	SJ2_Demanda_Info_Participacao_Especif                             string `gorm:"column:\"SJ2_Demanda_Info_Participacao_Especif\"" json:"SJ2_Demanda_Info_Participacao_Especif"`
+	SJ2_Demanda_Info_Participacao_Especif2                            string `gorm:"column:\"SJ2_Demanda_Info_Participacao_Especif2\"" json:"SJ2_Demanda_Info_Participacao_Especif2"`
+	SJ2_Demanda_Memoria_Verdade                                       bool   `gorm:"column:\"SJ2_Demanda_Memoria_Verdade\"" json:"SJ2_Demanda_Memoria_Verdade"`
+	SJ2_Demanda_Memoria_Verdade_Especif                               string `gorm:"column:\"SJ2_Demanda_Memoria_Verdade_Especif\"" json:"SJ2_Demanda_Memoria_Verdade_Especif"`
+	SJ2_Demanda_Memoria_Verdade_Especif2                              string `gorm:"column:\"SJ2_Demanda_Memoria_Verdade_Especif2\"" json:"SJ2_Demanda_Memoria_Verdade_Especif2"`
+	SJ2_Demanda_Justica_Diligencia                                    bool   `gorm:"column:\"SJ2_Demanda_Justica_Diligencia\"" json:"SJ2_Demanda_Justica_Diligencia"`
+	SJ2_Demanda_Justica_Diligencia_Especif                            string `gorm:"column:\"SJ2_Demanda_Justica_Diligencia_Especif\"" json:"SJ2_Demanda_Justica_Diligencia_Especif"`
+	SJ2_Demanda_Justica_Diligencia_Especif2                           string `gorm:"column:\"SJ2_Demanda_Justica_Diligencia_Especif2\"" json:"SJ2_Demanda_Justica_Diligencia_Especif2"`
+	SJ2_Demanda_Apoio_Assistencia                                     bool   `gorm:"column:\"SJ2_Demanda_Apoio_Assistencia\"" json:"SJ2_Demanda_Apoio_Assistencia"`
+	SJ2_Demanda_Apoio_Assistencia_Especif                             string `gorm:"column:\"SJ2_Demanda_Apoio_Assistencia_Especif\"" json:"SJ2_Demanda_Apoio_Assistencia_Especif"`
+	SJ2_Demanda_Apoio_Assistencia_Especif2                            string `gorm:"column:\"SJ2_Demanda_Apoio_Assistencia_Especif2\"" json:"SJ2_Demanda_Apoio_Assistencia_Especif2"`
+	SJ2_Demanda_Seguranca                                             bool   `gorm:"column:\"SJ2_Demanda_Seguranca\"" json:"SJ2_Demanda_Seguranca"`
+	SJ2_Demanda_Seguranca_Especif                                     string `gorm:"column:\"SJ2_Demanda_Seguranca_Especif\"" json:"SJ2_Demanda_Seguranca_Especif"`
+	SJ2_Demanda_Seguranca_Especif2                                    string `gorm:"column:\"SJ2_Demanda_Seguranca_Especif2\"" json:"SJ2_Demanda_Seguranca_Especif2"`
+	SJ2_Demanda_Protecao_Nao_Revitimizacao                            bool   `gorm:"column:\"SJ2_Demanda_Protecao_Nao_Revitimizacao\"" json:"SJ2_Demanda_Protecao_Nao_Revitimizacao"`
+	SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif                    string `gorm:"column:\"SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif\"" json:"SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif"`
+	SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif2                   string `gorm:"column:\"SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif2\"" json:"SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif2"`
+	SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif  string `gorm:"column:\"SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif\"" json:"SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif"`
+	SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif2 string `gorm:"column:\"SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif2\"" json:"SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif2"`
+	SJ2_Demanda_Protecao_Psicologica                                  bool   `gorm:"column:\"SJ2_Demanda_Protecao_Psicologica\"" json:"SJ2_Demanda_Protecao_Psicologica"`
+	SJ2_Demanda_Protecao_Psicologica_Especif                          string `gorm:"column:\"SJ2_Demanda_Protecao_Psicologica_Especif\"" json:"SJ2_Demanda_Protecao_Psicologica_Especif"`
+	SJ2_Demanda_Protecao_Psicologica_Especif2                         string `gorm:"column:\"SJ2_Demanda_Protecao_Psicologica_Especif2\"" json:"SJ2_Demanda_Protecao_Psicologica_Especif2"`
+	SJ2_Demanda_Protecao_Documental                                   bool   `gorm:"column:\"SJ2_Demanda_Protecao_Documental\"" json:"SJ2_Demanda_Protecao_Documental"`
+	SJ2_Demanda_Protecao_Documental_Especif                           string `gorm:"column:\"SJ2_Demanda_Protecao_Documental_Especif\"" json:"SJ2_Demanda_Protecao_Documental_Especif"`
+	SJ2_Demanda_Protecao_Documental_Especif2                          string `gorm:"column:\"SJ2_Demanda_Protecao_Documental_Especif2\"" json:"SJ2_Demanda_Protecao_Documental_Especif2"`
+	SJ2_Demanda_Compensacao_Reparacao                                 bool   `gorm:"column:\"SJ2_Demanda_Compensacao_Reparacao\"" json:"SJ2_Demanda_Compensacao_Reparacao"`
+	SJ2_Demanda_Compensacao_Reparacao_Especif                         string `gorm:"column:\"SJ2_Demanda_Compensacao_Reparacao_Especif\"" json:"SJ2_Demanda_Compensacao_Reparacao_Especif"`
+	SJ2_Demanda_Compensacao_Reparacao_Especif2                        string `gorm:"column:\"SJ2_Demanda_Compensacao_Reparacao_Especif2\"" json:"SJ2_Demanda_Compensacao_Reparacao_Especif2"`
+	SJ2_Demanda_Compensacao_Reparacao_Especif_OutraForma              string `gorm:"column:\"SJ2_Demanda_Compensacao_Reparacao_Especif_OutraForma\"" json:"SJ2_Demanda_Compensacao_Reparacao_Especif_OutraForma"`
+	SJ2_Demanda_Tratamento_Digno                                      bool   `gorm:"column:\"SJ2_Demanda_Tratamento_Digno\"" json:"SJ2_Demanda_Tratamento_Digno"`
+	SJ2_Demanda_Tratamento_Digno_Especif                              string `gorm:"column:\"SJ2_Demanda_Tratamento_Digno_Especif\"" json:"SJ2_Demanda_Tratamento_Digno_Especif"`
+	SJ2_Demanda_Tratamento_Digno_OutraForma                           string `gorm:"column:\"SJ2_Demanda_Tratamento_Digno_OutraForma\"" json:"SJ2_Demanda_Tratamento_Digno_OutraForma"`
 }
 
 func (SAVe_Situacao_Juridica2) TableName() string {
