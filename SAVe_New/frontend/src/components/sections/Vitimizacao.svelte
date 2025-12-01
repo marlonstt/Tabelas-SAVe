@@ -30,34 +30,50 @@
             // Map FLAT backend data to NESTED frontend structure
             data = {
                 Secundaria: {
-                    Depoimento_Repetitivo: backendData.Depoimento_Repetitivo,
-                    Espec_Depoimento: backendData.Espec_Depoimento,
-                    Falta_Atendimento: backendData.Falta_Atendimento,
-                    Espec_Falta_Atendimento:
-                        backendData.Espec_Falta_Atendimento,
-                    Demora_Justica: backendData.Demora_Justica,
-                    Espec_Demora: backendData.Espec_Demora,
-                    Discriminacao_Institucional:
-                        backendData.Discriminacao_Institucional,
-                    Espec_Discriminacao: backendData.Espec_Discriminacao,
-                    Violencia_Institucional:
-                        backendData.Violencia_Institucional,
-                    Espec_Violencia_Inst: backendData.Espec_Violencia_Inst,
-                    Ameaca_Institucional: backendData.Ameaca_Institucional,
-                    Espec_Ameaca_Inst: backendData.Espec_Ameaca_Inst,
+                    VST_Dep_repet_reviti: backendData.VST_Dep_repet_reviti,
+                    VST_Espec_Dep_repet_reviti:
+                        backendData.VST_Espec_Dep_repet_reviti,
+                    VST_Falta_atend_esp: backendData.VST_Falta_atend_esp,
+                    VST_Espec_Falta_atend_esp:
+                        backendData.VST_Espec_Falta_atend_esp,
+                    VST_Falta_info: backendData.VST_Falta_info,
+                    VST_Espec_Falta_info: backendData.VST_Espec_Falta_info,
+                    VST_Demora_sist_just: backendData.VST_Demora_sist_just,
+                    VST_Espec_Demora_sist_just:
+                        backendData.VST_Espec_Demora_sist_just,
+                    VST_Expos_vitima: backendData.VST_Expos_vitima,
+                    VST_Espec_Expos_vitima: backendData.VST_Espec_Expos_vitima,
+                    VST_Neg_part_proc: backendData.VST_Neg_part_proc,
+                    VST_Espec_Neg_part_proc:
+                        backendData.VST_Espec_Neg_part_proc,
+                    VST_Neg_apres_prova: backendData.VST_Neg_apres_prova,
+                    VST_Espec_Neg_apres_prova:
+                        backendData.VST_Espec_Neg_apres_prova,
+                    VST_Neg_acesso_dir: backendData.VST_Neg_acesso_dir,
+                    VST_Espec_Neg_acesso_dir:
+                        backendData.VST_Espec_Neg_acesso_dir,
+                    VST_Desresp_sigilo: backendData.VST_Desresp_sigilo,
+                    VST_Espec_Desresp_sigilo:
+                        backendData.VST_Espec_Desresp_sigilo,
+                    VST_Desresp_nome_soc: backendData.VST_Desresp_nome_soc,
+                    VST_Espec_Desresp_nome_soc:
+                        backendData.VST_Espec_Desresp_nome_soc,
+                    VST_Outras_vit: backendData.VST_Outras_vit,
+                    VST_Espec_Outras_vit: backendData.VST_Espec_Outras_vit,
                 },
                 Terciaria: {
-                    Culpabilizacao: backendData.Culpabilizacao,
-                    Espec_Culpabilizacao: backendData.Espec_Culpabilizacao,
-                    Estigmatizacao: backendData.Estigmatizacao,
-                    Espec_Estigmatizacao: backendData.Espec_Estigmatizacao,
-                    Exploracao_Midiatica: backendData.Exploracao_Midiatica,
-                    Espec_Midia: backendData.Espec_Midia,
-                    Isolamento_Social: backendData.Isolamento_Social,
-                    Espec_Isolamento: backendData.Espec_Isolamento,
-                    Perda_Credibilidade: backendData.Perda_Credibilidade,
-                    Espec_Perda_Credibilidade:
-                        backendData.Espec_Perda_Credibilidade,
+                    VT_Culpa_vit: backendData.VT_Culpa_vit,
+                    VT_Espec_Culpa_vit: backendData.VT_Espec_Culpa_vit,
+                    VT_Estig_social: backendData.VT_Estig_social,
+                    VT_Espec_Estig_social: backendData.VT_Espec_Estig_social,
+                    VT_Falta_Poli_publicas: backendData.VT_Falta_Poli_publicas,
+                    VT_Espec_Falta_Poli_publicas:
+                        backendData.VT_Espec_Falta_Poli_publicas,
+                    VT_Explo_midiatica: backendData.VT_Explo_midiatica,
+                    VT_Espec_Explo_midiatica:
+                        backendData.VT_Espec_Explo_midiatica,
+                    VT_Outras_vit: backendData.VT_Outras_vit,
+                    VT_Espec_Outras_vit: backendData.VT_Espec_Outras_vit,
                 },
             };
         } catch (err) {
@@ -158,256 +174,112 @@
             <!-- Vitimização Secundária -->
             <div class="border-b pb-4">
                 <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Vitimização Secundária (Sistema de Justiça/Estado)
+                    Vitimização Secundária
                 </h3>
 
-                <div class="space-y-4">
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={
-                                    data.Secundaria.Depoimento_Repetitivo
-                                }
-                            />
-                            <span class="ml-2"
-                                >Depoimento Repetitivo / Revitimização</span
-                            >
-                        </label>
-                        {#if data.Secundaria.Depoimento_Repetitivo}
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                placeholder="Especifique..."
-                                bind:value={data.Secundaria.Espec_Depoimento}
-                            />
-                        {/if}
-                    </div>
+                <div class="space-y-6">
+                    <!-- Helper to render item -->
+                    {#each [{ key: "VST_Dep_repet_reviti", label: "Depoimentos repetitivos e revitimização", specKey: "VST_Espec_Dep_repet_reviti" }, { key: "VST_Falta_atend_esp", label: "Falta de atendimento especializado", specKey: "VST_Espec_Falta_atend_esp" }, { key: "VST_Falta_info", label: "Falta de informação", specKey: "VST_Espec_Falta_info" }, { key: "VST_Demora_sist_just", label: "Demora no sistema de justiça", specKey: "VST_Espec_Demora_sist_just" }, { key: "VST_Expos_vitima", label: "Exposição desnecessária da vítima", specKey: "VST_Espec_Expos_vitima" }, { key: "VST_Neg_part_proc", label: "Negativa de participação em atos processuais", specKey: "VST_Espec_Neg_part_proc" }, { key: "VST_Neg_apres_prova", label: "Negativa de apresentar elementos de prova", specKey: "VST_Espec_Neg_apres_prova" }, { key: "VST_Neg_acesso_dir", label: "Negativa de acesso à direitos", specKey: "VST_Espec_Neg_acesso_dir" }, { key: "VST_Desresp_sigilo", label: "Desrespeito ao sigilo", specKey: "VST_Espec_Desresp_sigilo" }, { key: "VST_Desresp_nome_soc", label: "Desrespeito ao nome social", specKey: "VST_Espec_Desresp_nome_soc" }, { key: "VST_Outras_vit", label: "Outras vitimizações", specKey: "VST_Espec_Outras_vit" }] as item}
+                        <div
+                            class="flex flex-col md:flex-row gap-4 items-start"
+                        >
+                            <div class="w-full md:w-[400px] flex-shrink-0 pt-6">
+                                <label class="inline-flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        class="form-checkbox text-save-primary h-5 w-5"
+                                        checked={data.Secundaria[item.key] ===
+                                            item.label}
+                                        on:change={(e) => {
+                                            data.Secundaria[item.key] = e
+                                                .currentTarget.checked
+                                                ? item.label
+                                                : "";
+                                            if (!e.currentTarget.checked)
+                                                data.Secundaria[item.specKey] =
+                                                    "";
+                                        }}
+                                    />
+                                    <span
+                                        class="ml-2 font-semibold text-gray-700"
+                                        >{item.label}</span
+                                    >
+                                </label>
+                            </div>
 
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={data.Secundaria.Falta_Atendimento}
-                            />
-                            <span class="ml-2"
-                                >Falta de Atendimento Especializado</span
-                            >
-                        </label>
-                        {#if data.Secundaria.Falta_Atendimento}
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                placeholder="Especifique..."
-                                bind:value={
-                                    data.Secundaria.Espec_Falta_Atendimento
-                                }
-                            />
-                        {/if}
-                    </div>
-
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={data.Secundaria.Demora_Justica}
-                            />
-                            <span class="ml-2"
-                                >Demora do Sistema de Justiça</span
-                            >
-                        </label>
-                        {#if data.Secundaria.Demora_Justica}
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                placeholder="Especifique..."
-                                bind:value={data.Secundaria.Espec_Demora}
-                            />
-                        {/if}
-                    </div>
-
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={
-                                    data.Secundaria.Discriminacao_Institucional
-                                }
-                            />
-                            <span class="ml-2">Discriminação Institucional</span
-                            >
-                        </label>
-                        {#if data.Secundaria.Discriminacao_Institucional}
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                placeholder="Especifique..."
-                                bind:value={data.Secundaria.Espec_Discriminacao}
-                            />
-                        {/if}
-                    </div>
-
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={
-                                    data.Secundaria.Violencia_Institucional
-                                }
-                            />
-                            <span class="ml-2">Violência Institucional</span>
-                        </label>
-                        {#if data.Secundaria.Violencia_Institucional}
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                placeholder="Especifique..."
-                                bind:value={
-                                    data.Secundaria.Espec_Violencia_Inst
-                                }
-                            />
-                        {/if}
-                    </div>
-
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={
-                                    data.Secundaria.Ameaca_Institucional
-                                }
-                            />
-                            <span class="ml-2">Ameaça Institucional</span>
-                        </label>
-                        {#if data.Secundaria.Ameaca_Institucional}
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                placeholder="Especifique..."
-                                bind:value={data.Secundaria.Espec_Ameaca_Inst}
-                            />
-                        {/if}
-                    </div>
+                            {#if data.Secundaria[item.key] === item.label}
+                                <div class="flex-grow w-full">
+                                    <label
+                                        class="block text-sm font-semibold text-gray-700 mb-1"
+                                        >Se sim, especifique</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                        bind:value={
+                                            data.Secundaria[item.specKey]
+                                        }
+                                    />
+                                </div>
+                            {/if}
+                        </div>
+                    {/each}
                 </div>
             </div>
-
             <!-- Vitimização Terciária -->
-            <div>
+            <div class="border-b pb-4">
                 <h3 class="text-lg font-semibold text-gray-700 mb-4">
-                    Vitimização Terciária (Sociedade/Comunidade)
+                    Vitimização Terciária
                 </h3>
 
-                <div class="space-y-4">
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={data.Terciaria.Culpabilizacao}
-                            />
-                            <span class="ml-2">Culpabilização da Vítima</span>
-                        </label>
-                        {#if data.Terciaria.Culpabilizacao}
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                placeholder="Especifique..."
-                                bind:value={data.Terciaria.Espec_Culpabilizacao}
-                            />
-                        {/if}
-                    </div>
+                <div class="space-y-6">
+                    {#each [{ key: "VT_Culpa_vit", label: "Culpabilização da vítima", specKey: "VT_Espec_Culpa_vit" }, { key: "VT_Estig_social", label: "Estigmatização social", specKey: "VT_Espec_Estig_social" }, { key: "VT_Falta_Poli_publicas", label: "Falta de políticas públicas eficientes", specKey: "VT_Espec_Falta_Poli_publicas" }, { key: "VT_Explo_midiatica", label: "Exploração midiática", specKey: "VT_Espec_Explo_midiatica" }, { key: "VT_Outras_vit", label: "Outras vitimizações", specKey: "VT_Espec_Outras_vit" }] as item}
+                        <div
+                            class="flex flex-col md:flex-row gap-4 items-start"
+                        >
+                            <div class="w-full md:w-[400px] flex-shrink-0 pt-6">
+                                <label class="inline-flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        class="form-checkbox text-save-primary h-5 w-5"
+                                        checked={data.Terciaria[item.key] ===
+                                            item.label}
+                                        on:change={(e) => {
+                                            data.Terciaria[item.key] = e
+                                                .currentTarget.checked
+                                                ? item.label
+                                                : "";
+                                            if (!e.currentTarget.checked)
+                                                data.Terciaria[item.specKey] =
+                                                    "";
+                                        }}
+                                    />
+                                    <span
+                                        class="ml-2 font-semibold text-gray-700"
+                                        >{item.label}</span
+                                    >
+                                </label>
+                            </div>
 
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={data.Terciaria.Estigmatizacao}
-                            />
-                            <span class="ml-2">Estigmatização Social</span>
-                        </label>
-                        {#if data.Terciaria.Estigmatizacao}
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                placeholder="Especifique..."
-                                bind:value={data.Terciaria.Espec_Estigmatizacao}
-                            />
-                        {/if}
-                    </div>
-
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={
-                                    data.Terciaria.Exploracao_Midiatica
-                                }
-                            />
-                            <span class="ml-2">Exploração Midiática</span>
-                        </label>
-                        {#if data.Terciaria.Exploracao_Midiatica}
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                placeholder="Especifique..."
-                                bind:value={data.Terciaria.Espec_Midia}
-                            />
-                        {/if}
-                    </div>
-
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={data.Terciaria.Isolamento_Social}
-                            />
-                            <span class="ml-2">Isolamento Social</span>
-                        </label>
-                        {#if data.Terciaria.Isolamento_Social}
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                placeholder="Especifique..."
-                                bind:value={data.Terciaria.Espec_Isolamento}
-                            />
-                        {/if}
-                    </div>
-
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={
-                                    data.Terciaria.Perda_Credibilidade
-                                }
-                            />
-                            <span class="ml-2">Perda de Credibilidade</span>
-                        </label>
-                        {#if data.Terciaria.Perda_Credibilidade}
-                            <input
-                                type="text"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                placeholder="Especifique..."
-                                bind:value={
-                                    data.Terciaria.Espec_Perda_Credibilidade
-                                }
-                            />
-                        {/if}
-                    </div>
+                            {#if data.Terciaria[item.key] === item.label}
+                                <div class="flex-grow w-full">
+                                    <label
+                                        class="block text-sm font-semibold text-gray-700 mb-1"
+                                        >Se sim, especifique</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                        bind:value={
+                                            data.Terciaria[item.specKey]
+                                        }
+                                    />
+                                </div>
+                            {/if}
+                        </div>
+                    {/each}
                 </div>
             </div>
-
-            <!-- Manual Save Button -->
             <div class="flex justify-end mt-4">
                 <button
                     class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"

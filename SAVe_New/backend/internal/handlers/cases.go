@@ -818,14 +818,7 @@ func UpdateCaseSection(c *gin.Context) {
 		modelInput.ID_Caso = id
 
 		// Helper to safely get bool/string
-		getBool := func(m map[string]interface{}, key string) bool {
-			if v, ok := m[key]; ok {
-				if b, ok := v.(bool); ok {
-					return b
-				}
-			}
-			return false
-		}
+
 		getString := func(m map[string]interface{}, key string) string {
 			if v, ok := m[key]; ok {
 				if s, ok := v.(string); ok {
@@ -836,30 +829,42 @@ func UpdateCaseSection(c *gin.Context) {
 		}
 
 		// Secundaria
-		modelInput.Depoimento_Repetitivo = getBool(frontendInput.Secundaria, "Depoimento_Repetitivo")
-		modelInput.Espec_Depoimento = getString(frontendInput.Secundaria, "Espec_Depoimento")
-		modelInput.Falta_Atendimento = getBool(frontendInput.Secundaria, "Falta_Atendimento")
-		modelInput.Espec_Falta_Atendimento = getString(frontendInput.Secundaria, "Espec_Falta_Atendimento")
-		modelInput.Demora_Justica = getBool(frontendInput.Secundaria, "Demora_Justica")
-		modelInput.Espec_Demora = getString(frontendInput.Secundaria, "Espec_Demora")
-		modelInput.Discriminacao_Institucional = getBool(frontendInput.Secundaria, "Discriminacao_Institucional")
-		modelInput.Espec_Discriminacao = getString(frontendInput.Secundaria, "Espec_Discriminacao")
-		modelInput.Violencia_Institucional = getBool(frontendInput.Secundaria, "Violencia_Institucional")
-		modelInput.Espec_Violencia_Inst = getString(frontendInput.Secundaria, "Espec_Violencia_Inst")
-		modelInput.Ameaca_Institucional = getBool(frontendInput.Secundaria, "Ameaca_Institucional")
-		modelInput.Espec_Ameaca_Inst = getString(frontendInput.Secundaria, "Espec_Ameaca_Inst")
+		// Secundaria
+		modelInput.VST_Dep_repet_reviti = getString(frontendInput.Secundaria, "VST_Dep_repet_reviti")
+		modelInput.VST_Espec_Dep_repet_reviti = getString(frontendInput.Secundaria, "VST_Espec_Dep_repet_reviti")
+		modelInput.VST_Falta_atend_esp = getString(frontendInput.Secundaria, "VST_Falta_atend_esp")
+		modelInput.VST_Espec_Falta_atend_esp = getString(frontendInput.Secundaria, "VST_Espec_Falta_atend_esp")
+		modelInput.VST_Falta_info = getString(frontendInput.Secundaria, "VST_Falta_info")
+		modelInput.VST_Espec_Falta_info = getString(frontendInput.Secundaria, "VST_Espec_Falta_info")
+		modelInput.VST_Demora_sist_just = getString(frontendInput.Secundaria, "VST_Demora_sist_just")
+		modelInput.VST_Espec_Demora_sist_just = getString(frontendInput.Secundaria, "VST_Espec_Demora_sist_just")
+		modelInput.VST_Expos_vitima = getString(frontendInput.Secundaria, "VST_Expos_vitima")
+		modelInput.VST_Espec_Expos_vitima = getString(frontendInput.Secundaria, "VST_Espec_Expos_vitima")
+		modelInput.VST_Neg_part_proc = getString(frontendInput.Secundaria, "VST_Neg_part_proc")
+		modelInput.VST_Espec_Neg_part_proc = getString(frontendInput.Secundaria, "VST_Espec_Neg_part_proc")
+		modelInput.VST_Neg_apres_prova = getString(frontendInput.Secundaria, "VST_Neg_apres_prova")
+		modelInput.VST_Espec_Neg_apres_prova = getString(frontendInput.Secundaria, "VST_Espec_Neg_apres_prova")
+		modelInput.VST_Neg_acesso_dir = getString(frontendInput.Secundaria, "VST_Neg_acesso_dir")
+		modelInput.VST_Espec_Neg_acesso_dir = getString(frontendInput.Secundaria, "VST_Espec_Neg_acesso_dir")
+		modelInput.VST_Desresp_sigilo = getString(frontendInput.Secundaria, "VST_Desresp_sigilo")
+		modelInput.VST_Espec_Desresp_sigilo = getString(frontendInput.Secundaria, "VST_Espec_Desresp_sigilo")
+		modelInput.VST_Desresp_nome_soc = getString(frontendInput.Secundaria, "VST_Desresp_nome_soc")
+		modelInput.VST_Espec_Desresp_nome_soc = getString(frontendInput.Secundaria, "VST_Espec_Desresp_nome_soc")
+		modelInput.VST_Outras_vit = getString(frontendInput.Secundaria, "VST_Outras_vit")
+		modelInput.VST_Espec_Outras_vit = getString(frontendInput.Secundaria, "VST_Espec_Outras_vit")
 
 		// Terciaria
-		modelInput.Culpabilizacao = getBool(frontendInput.Terciaria, "Culpabilizacao")
-		modelInput.Espec_Culpabilizacao = getString(frontendInput.Terciaria, "Espec_Culpabilizacao")
-		modelInput.Estigmatizacao = getBool(frontendInput.Terciaria, "Estigmatizacao")
-		modelInput.Espec_Estigmatizacao = getString(frontendInput.Terciaria, "Espec_Estigmatizacao")
-		modelInput.Exploracao_Midiatica = getBool(frontendInput.Terciaria, "Exploracao_Midiatica")
-		modelInput.Espec_Midia = getString(frontendInput.Terciaria, "Espec_Midia")
-		modelInput.Isolamento_Social = getBool(frontendInput.Terciaria, "Isolamento_Social")
-		modelInput.Espec_Isolamento = getString(frontendInput.Terciaria, "Espec_Isolamento")
-		modelInput.Perda_Credibilidade = getBool(frontendInput.Terciaria, "Perda_Credibilidade")
-		modelInput.Espec_Perda_Credibilidade = getString(frontendInput.Terciaria, "Espec_Perda_Credibilidade")
+		// Terciaria
+		modelInput.VT_Culpa_vit = getString(frontendInput.Terciaria, "VT_Culpa_vit")
+		modelInput.VT_Espec_Culpa_vit = getString(frontendInput.Terciaria, "VT_Espec_Culpa_vit")
+		modelInput.VT_Estig_social = getString(frontendInput.Terciaria, "VT_Estig_social")
+		modelInput.VT_Espec_Estig_social = getString(frontendInput.Terciaria, "VT_Espec_Estig_social")
+		modelInput.VT_Falta_Poli_publicas = getString(frontendInput.Terciaria, "VT_Falta_Poli_publicas")
+		modelInput.VT_Espec_Falta_Poli_publicas = getString(frontendInput.Terciaria, "VT_Espec_Falta_Poli_publicas")
+		modelInput.VT_Explo_midiatica = getString(frontendInput.Terciaria, "VT_Explo_midiatica")
+		modelInput.VT_Espec_Explo_midiatica = getString(frontendInput.Terciaria, "VT_Espec_Explo_midiatica")
+		modelInput.VT_Outras_vit = getString(frontendInput.Terciaria, "VT_Outras_vit")
+		modelInput.VT_Espec_Outras_vit = getString(frontendInput.Terciaria, "VT_Espec_Outras_vit")
 
 		tx := database.DB.Begin()
 
