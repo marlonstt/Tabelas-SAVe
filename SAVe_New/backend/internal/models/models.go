@@ -326,6 +326,8 @@ type SAVe_Saude struct {
 	IV_Outro_espec                   string `gorm:"column:\"IV_Outro_espec\"" json:"IV_Outro_espec"`
 	IV_Impacto_Saude_Mental_tipos    string `gorm:"column:\"IV_Impacto_Saude_Mental_tipos\"" json:"IV_Impacto_Saude_Mental_tipos"`
 	IV_ISTOutros_esp                 string `gorm:"column:\"IV_ISTOutros_esp\"" json:"IV_ISTOutros_esp"`
+	RFC_Familia_Vulnerab             string `gorm:"column:\"RFC_Familia_Vulnerab\"" json:"RFC_Familia_Vulnerab"`
+	RFC_Vulnerab_especif             string `gorm:"column:\"RFC_Vulnerab_especif\"" json:"RFC_Vulnerab_especif"`
 }
 
 func (SAVe_Saude) TableName() string {
