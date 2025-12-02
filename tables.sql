@@ -274,6 +274,8 @@ CREATE TABLE "SAVe_Saude" (
     "RS_Contato_nome" TEXT,
     "RS_Contato_telefone" TEXT,
     "RS_Contato_email" TEXT,
+    "RFC_Familia_Vulnerab" TEXT,
+    "RFC_Vulnerab_especif" TEXT,
     "IV_Houve_Impacto_Saude" TEXT,
     "IV_Lesoes_Nao_Fatais" BOOLEAN,
     "IV_Defic_vitimizacao" TEXT,

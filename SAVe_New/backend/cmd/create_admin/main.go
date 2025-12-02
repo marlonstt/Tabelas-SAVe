@@ -22,7 +22,7 @@ type SAVe_Usuarios struct {
 }
 
 func (SAVe_Usuarios) TableName() string {
-	return "save_usuarios"
+	return "\"SAVe_Usuarios\""
 }
 
 func main() {
@@ -34,44 +34,44 @@ func main() {
 	}
 
 	// Drop existing table
-	db.Exec("DROP TABLE IF EXISTS save_usuarios")
-	fmt.Println("✓ Dropped existing save_usuarios table")
+	db.Exec("DROP TABLE IF EXISTS \"SAVe_Usuarios\"")
+	fmt.Println("✓ Dropped existing SAVe_Usuarios table")
 
-	// Create table with correct structure (lowercase column names)
+	// Create table with correct structure
 	db.Exec(`
-		CREATE TABLE save_usuarios (
-			id SERIAL PRIMARY KEY,
-			cargo TEXT,
-			usuario TEXT,
-			area TEXT,
-			email TEXT UNIQUE,
-			password TEXT,
-			role TEXT DEFAULT 'User',
-			must_change_password BOOLEAN DEFAULT true,
-			profile_image TEXT,
-			created_at TIMESTAMP DEFAULT NOW(),
-			updated_at TIMESTAMP DEFAULT NOW()
+		CREATE TABLE "SAVe_Usuarios" (
+			"id" SERIAL PRIMARY KEY,
+			"cargo" TEXT,
+			"usuario" TEXT,
+			"area" TEXT,
+			"email" TEXT UNIQUE,
+			"password" TEXT,
+			"role" TEXT DEFAULT 'User',
+			"must_change_password" BOOLEAN DEFAULT true,
+			"profile_image" TEXT,
+			"created_at" TIMESTAMP DEFAULT NOW(),
+			"updated_at" TIMESTAMP DEFAULT NOW()
 		)
 	`)
-	fmt.Println("✓ Created save_usuarios table with lowercase column names")
+	fmt.Println("✓ Created SAVe_Usuarios table")
 
 	// Create new admin user with properly hashed password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte("86076448"), bcrypt.DefaultCost)
 	if err != nil {
 		log.Fatal("Failed to hash password:", err)
 	}
 
 	result := db.Exec(`
-		INSERT INTO save_usuarios (email, password, role, usuario, cargo, area, must_change_password)
+		INSERT INTO "SAVe_Usuarios" ("email", "password", "role", "usuario", "cargo", "area", "must_change_password")
 		VALUES ($1, $2, $3, $4, $5, $6, $7)
-	`, "admin@save.com", string(hashedPassword), "Admin", "Admin User", "Promotora(o)", "Administração", false)
+	`, "admin@mpmg.mp.br", string(hashedPassword), "Admin", "Admin", "Administrador", "TI", true)
 
 	if result.Error != nil {
 		log.Fatal("Failed to create user:", result.Error)
 	}
 
-	fmt.Printf("\n✓ User admin@save.com created successfully!\n")
-	fmt.Printf("  Email: admin@save.com\n")
-	fmt.Printf("  Password: admin123\n")
+	fmt.Printf("\n✓ User admin@mpmg.mp.br created successfully!\n")
+	fmt.Printf("  Email: admin@mpmg.mp.br\n")
+	fmt.Printf("  Password: 86076448\n")
 	fmt.Printf("  Role: Admin\n")
 }
