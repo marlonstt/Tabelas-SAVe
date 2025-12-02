@@ -18,7 +18,7 @@
         Reconhecido_fund_palmares: "",
         Reconhecido_orgao_publico: "",
         Reconhecido_funai: "",
-        titulado_Incra: "",
+        titulado_incra: "",
         Estrutura_Mat_predominante: "",
         Estrutura_Mat_predominante_esp: "",
         Estrutura_Insta_eletricas_hidraulica: "",
@@ -70,7 +70,31 @@
                 response.data.habitacaoTerritorio &&
                 response.data.habitacaoTerritorio.ID_Caso
             ) {
-                data = { ...data, ...response.data.habitacaoTerritorio };
+                console.log(
+                    "Raw data from backend:",
+                    response.data.habitacaoTerritorio,
+                );
+
+                // Use Object.assign to maintain reactivity
+                Object.assign(data, response.data.habitacaoTerritorio);
+
+                // Fix case sensitivity issue for titulado_incra
+                if (data.titulado_Incra !== undefined) {
+                    data.titulado_incra = data.titulado_Incra;
+                    delete data.titulado_Incra;
+                }
+
+                // Normalize titulado_incra to string values "Sim"/"Não"
+                if (typeof data.titulado_incra === "boolean") {
+                    data.titulado_incra = data.titulado_incra ? "Sim" : "Não";
+                }
+
+                console.log(
+                    "After normalization - titulado_incra:",
+                    data.titulado_incra,
+                    "Type:",
+                    typeof data.titulado_incra,
+                );
 
                 // Parse Territorio string to checkboxes
                 if (data.Territorio) {
@@ -80,6 +104,12 @@
                         data.Territorio.includes("Periférico");
                     territorioTradicional =
                         data.Territorio.includes("Tradicional");
+                    console.log(
+                        "Territorio:",
+                        data.Territorio,
+                        "-> territorioTradicional:",
+                        territorioTradicional,
+                    );
                 }
 
                 // Parse Comunidade Tradicional string to checkboxes
@@ -94,7 +124,18 @@
                         data.Comunidade_tradicional.includes("Cigano");
                     comunidadeOutro =
                         data.Comunidade_tradicional.includes("Outro");
+                    console.log(
+                        "Comunidade_tradicional:",
+                        data.Comunidade_tradicional,
+                        "-> comunidadeOutro:",
+                        comunidadeOutro,
+                    );
                 }
+
+                console.log("Final data object:", data);
+
+                // Force Svelte reactivity
+                data = data;
             }
         } catch (error) {
             console.error("Error loading data:", error);
@@ -605,7 +646,7 @@
                                         <label class="inline-flex items-center">
                                             <input
                                                 type="radio"
-                                                bind:group={data.titulado_Incra}
+                                                bind:group={data.titulado_incra}
                                                 value="Sim"
                                                 on:change={autosave}
                                                 class="form-radio text-blue-600"
@@ -615,7 +656,7 @@
                                         <label class="inline-flex items-center">
                                             <input
                                                 type="radio"
-                                                bind:group={data.titulado_Incra}
+                                                bind:group={data.titulado_incra}
                                                 value="Não"
                                                 on:change={autosave}
                                                 class="form-radio text-blue-600"

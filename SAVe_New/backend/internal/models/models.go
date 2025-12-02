@@ -132,10 +132,8 @@ type SAVe_Usuarios struct {
 }
 
 func (SAVe_Usuarios) TableName() string {
-	return "save_usuarios"
+	return "\"SAVe_Usuarios\""
 }
-
-// Add other structs as needed...
 
 type SAVe_Encerramento struct {
 	ID_Caso                 int    `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
@@ -348,7 +346,7 @@ type SAVe_Habitacao_territorio struct {
 	Reconhecido_fund_palmares                string `gorm:"column:\"Reconhecido_fund_palmares\"" json:"Reconhecido_fund_palmares"`
 	Reconhecido_orgao_publico                string `gorm:"column:\"Reconhecido_orgao_publico\"" json:"Reconhecido_orgao_publico"`
 	Reconhecido_funai                        string `gorm:"column:\"Reconhecido_funai\"" json:"Reconhecido_funai"`
-	Titulado_Incra                           string `gorm:"column:\"titulado_incra\"" json:"titulado_Incra"`
+	Titulado_Incra                           string `gorm:"column:\"Titulado_Incra\"" json:"titulado_incra"`
 	Estrutura_Mat_predominante               string `gorm:"column:\"Estrutura_Mat_predominante\"" json:"Estrutura_Mat_predominante"`
 	Estrutura_Mat_predominante_esp           string `gorm:"column:\"Estrutura_Mat_predominante_esp\"" json:"Estrutura_Mat_predominante_esp"`
 	Estrutura_Insta_eletricas_hidraulica     string `gorm:"column:\"Estrutura_Insta_eletricas_hidraulica\"" json:"Estrutura_Insta_eletricas_hidraulica"`
@@ -476,7 +474,7 @@ type SAVe_Ensino_trab_renda struct {
 }
 
 func (SAVe_Ensino_trab_renda) TableName() string {
-	return "save_ensino_trab_renda"
+	return "\"SAVe_Ensino_Trab_Renda\""
 }
 
 type SAVe_Vinculos struct {

@@ -83,6 +83,7 @@ func GetCaseById(c *gin.Context) {
 	if err := database.DB.Where("\"ID_Caso\" = ?", id).First(&habitacaoTerritorio).Error; err != nil {
 		// Handle error or ignore if record not found
 	}
+	log.Printf("[DEBUG] Loaded habitacaoTerritorio for ID %d: Titulado_Incra='%s'", id, habitacaoTerritorio.Titulado_Incra)
 
 	var assistencia models.SAVe_Assistencia
 	if err := database.DB.Where("\"ID_Caso\" = ?", id).First(&assistencia).Error; err != nil {
@@ -1185,7 +1186,9 @@ func UpdateCaseSection(c *gin.Context) {
 				return
 			}
 		} else {
-			if err := tx.Model(&models.SAVe_Habitacao_territorio{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+			// Use Save instead of Updates to ensure all fields are updated, including empty strings
+			log.Printf("[DEBUG] Saving habitacaoTerritorio ID=%d, Titulado_Incra='%s'", id, input.Titulado_Incra)
+			if err := tx.Save(&input).Error; err != nil {
 				tx.Rollback()
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update habitacao territorio: " + err.Error()})
 				return

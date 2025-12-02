@@ -35,8 +35,8 @@ func Connect() {
 	// AutoMigrate
 	// Migrate EnsinoTrabRenda explicitly to ensure it's up to date
 	// Manually add columns if they don't exist (workaround for AutoMigrate issues)
-	DB.Exec("ALTER TABLE save_ensino_trab_renda ADD COLUMN IF NOT EXISTS created_at timestamp")
-	DB.Exec("ALTER TABLE save_ensino_trab_renda ADD COLUMN IF NOT EXISTS updated_at timestamp")
+	DB.Exec("ALTER TABLE \"SAVe_Ensino_Trab_Renda\" ADD COLUMN IF NOT EXISTS created_at timestamp")
+	DB.Exec("ALTER TABLE \"SAVe_Ensino_Trab_Renda\" ADD COLUMN IF NOT EXISTS updated_at timestamp")
 
 	// Assistencia manual columns
 	DB.Exec("ALTER TABLE \"SAVe_Assistencia\" ADD COLUMN IF NOT EXISTS created_at timestamp")
@@ -64,8 +64,7 @@ func Connect() {
 	DB.Exec("ALTER TABLE \"SAVe_Habitacao_territorio\" ADD COLUMN IF NOT EXISTS \"Reconhecido_fund_palmares\" text")
 	DB.Exec("ALTER TABLE \"SAVe_Habitacao_territorio\" ADD COLUMN IF NOT EXISTS \"Reconhecido_orgao_publico\" text")
 	DB.Exec("ALTER TABLE \"SAVe_Habitacao_territorio\" ADD COLUMN IF NOT EXISTS \"Reconhecido_funai\" text")
-	DB.Exec("ALTER TABLE \"SAVe_Habitacao_territorio\" ADD COLUMN IF NOT EXISTS \"titulado_Incra\" text")
-	DB.Exec("ALTER TABLE \"SAVe_Habitacao_territorio\" ADD COLUMN IF NOT EXISTS \"titulado_incra\" text")
+	DB.Exec("ALTER TABLE \"SAVe_Habitacao_territorio\" ADD COLUMN IF NOT EXISTS \"Titulado_Incra\" text")
 	DB.Exec("ALTER TABLE \"SAVe_Habitacao_territorio\" ADD COLUMN IF NOT EXISTS \"Estrutura_Mat_predominante\" text")
 	DB.Exec("ALTER TABLE \"SAVe_Habitacao_territorio\" ADD COLUMN IF NOT EXISTS \"Estrutura_Mat_predominante_esp\" text")
 	DB.Exec("ALTER TABLE \"SAVe_Habitacao_territorio\" ADD COLUMN IF NOT EXISTS \"Estrutura_Insta_eletricas_hidraulica\" text")

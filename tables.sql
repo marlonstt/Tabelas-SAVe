@@ -93,8 +93,8 @@ CREATE TABLE "SAVe_Identificacao_endereco" (
     "Moradia_Situacao" TEXT
 );
 
--- Table: save_usuarios
-CREATE TABLE "save_usuarios" (
+-- Table: SAVe_Usuarios
+CREATE TABLE "SAVe_Usuarios" (
     "id" SERIAL PRIMARY KEY,
     "cargo" TEXT,
     "usuario" TEXT,
@@ -302,7 +302,7 @@ CREATE TABLE "SAVe_Habitacao_territorio" (
     "Reconhecido_fund_palmares" TEXT,
     "Reconhecido_orgao_publico" TEXT,
     "Reconhecido_funai" TEXT,
-    "titulado_incra" TEXT,
+    "Titulado_Incra" TEXT,
     "Estrutura_Mat_predominante" TEXT,
     "Estrutura_Mat_predominante_esp" TEXT,
     "Estrutura_Insta_eletricas_hidraulica" TEXT,
@@ -392,8 +392,8 @@ CREATE TABLE "SAVe_Assistencia" (
     "updated_at" TIMESTAMP
 );
 
--- Table: save_ensino_trab_renda
-CREATE TABLE "save_ensino_trab_renda" (
+-- Table: SAVe_Ensino_Trab_Renda
+CREATE TABLE "SAVe_Ensino_Trab_Renda" (
     "ID_Caso" INTEGER PRIMARY KEY,
     "Grau_escolaridade" TEXT,
     "Estuda_atualmente" TEXT,
@@ -622,12 +622,4 @@ CREATE TABLE "SAVe_SinteseAnalitica" (
     "Plano_Prevencao" TEXT,
     "Data_Vencimento" TEXT,
     "Cor_Risco" TEXT
-);
-
--- Table: SAVe_EnsinoTrabRenda
-CREATE TABLE "SAVe_EnsinoTrabRenda" (
-    "ID_Caso" INTEGER PRIMARY KEY,
-    "Ensino" TEXT,
-    "Trabalho" TEXT,
-    "Renda" TEXT
 );
