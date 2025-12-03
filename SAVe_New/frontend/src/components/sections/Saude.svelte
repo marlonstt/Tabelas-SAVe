@@ -82,7 +82,6 @@
             value: "DAgravoSaudeMental",
             label: "Diagnóstico de agravo de saúde mental",
         },
-        { value: "ISTOutros", label: "Outro" },
         {
             value: "AfastRedeApoioAmigos",
             label: "Afastamento da rede de apoio e amigos",
@@ -108,6 +107,7 @@
             value: "RiscoHetereogressividade",
             label: "Risco de Hetereogressividade",
         },
+        { value: "ISTOutros", label: "Outro" },
     ];
 
     let saving = false;
@@ -1289,7 +1289,7 @@
                 {#if data.IV_Houve_Impacto_Saude === "Sim"}
                     <div class="space-y-4 ml-4 border-l-2 border-gray-200 pl-4">
                         <!-- Lesões não fatais -->
-                        <div>
+                        <div class="flex flex-col space-y-2">
                             <label class="inline-flex items-center">
                                 <input
                                     type="checkbox"
@@ -1317,7 +1317,7 @@
                                             ).includes(option.value)}
                                         on:change={() =>
                                             toggleMentalHealth(option.value)}
-                                        class="form-checkbox h-4 w-4 text-blue-600 mt-1"
+                                        class="form-checkbox h-4 w-4 text-blue-600"
                                     />
                                     <span class="ml-2 text-sm text-gray-700"
                                         >{option.label}</span
