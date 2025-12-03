@@ -671,3 +671,15 @@ CREATE TABLE "SAVe_SinteseAnalitica" (
     "Data_Vencimento" TEXT,
     "Cor_Risco" TEXT
 );
+
+-- Table: SAVe_Sintese_Analitica
+CREATE TABLE "SAVe_Sintese_Analitica" (
+    "ID" SERIAL PRIMARY KEY,
+    "ID_Caso" INTEGER,
+    "UnidadeAnalitica" TEXT,
+    "AvaliacaoDeRiscos" TEXT,
+    "PlanoDePrevencao" TEXT,
+    "DataVencimento" TEXT,
+    "Cor" TEXT
+);
+

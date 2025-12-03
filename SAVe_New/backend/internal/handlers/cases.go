@@ -148,8 +148,8 @@ func GetCaseById(c *gin.Context) {
 		// Handle error or ignore if record not found (it might not exist yet)
 	}
 
-	var sinteseAnalitica models.SAVe_SinteseAnalitica
-	if err := database.DB.Where("\"ID_Caso\" = ?", id).First(&sinteseAnalitica).Error; err != nil {
+	var sinteseAnalitica []models.SAVe_Sintese_Analitica
+	if err := database.DB.Where("\"ID_Caso\" = ?", id).Find(&sinteseAnalitica).Error; err != nil {
 		// Handle error or ignore
 	}
 
@@ -1086,28 +1086,29 @@ func UpdateCaseSection(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "Acompanhamentos updated successfully"})
 
 	case "sintese-analitica":
-		var input models.SAVe_SinteseAnalitica
+		var input []models.SAVe_Sintese_Analitica
 		if err := c.ShouldBindJSON(&input); err != nil {
 			fmt.Println("Error binding JSON for sintese-analitica:", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		input.ID_Caso = id
 		tx := database.DB.Begin()
 
-		var count int64
-		tx.Model(&models.SAVe_SinteseAnalitica{}).Where("\"ID_Caso\" = ?", id).Count(&count)
-		if count == 0 {
-			if err := tx.Create(&input).Error; err != nil {
+		// Delete all existing records for this case
+		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Sintese_Analitica{}).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old sintese analitica: " + err.Error()})
+			return
+		}
+
+		// Create new records
+		for _, item := range input {
+			item.ID_Caso = id
+			item.ID = 0 // Ensure new ID
+			if err := tx.Create(&item).Error; err != nil {
 				tx.Rollback()
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create sintese analitica: " + err.Error()})
-				return
-			}
-		} else {
-			if err := tx.Model(&models.SAVe_SinteseAnalitica{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
-				tx.Rollback()
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update sintese analitica: " + err.Error()})
 				return
 			}
 		}

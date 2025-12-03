@@ -749,27 +749,16 @@ func (SAVe_Perfil_Agressor_Endereco) TableName() string {
 	return "\"SAVe_Perfil_Agressor_Endereco\""
 }
 
-type SAVe_SinteseAnalitica struct {
-	ID_Caso           int    `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
-	Unidade_Analitica string `gorm:"column:\"Unidade_Analitica\"" json:"Unidade_Analitica"`
-	Avaliacao_Riscos  string `gorm:"column:\"Avaliacao_Riscos\"" json:"Avaliacao_Riscos"`
-	Plano_Prevencao   string `gorm:"column:\"Plano_Prevencao\"" json:"Plano_Prevencao"`
-	Data_Vencimento   string `gorm:"column:\"Data_Vencimento\"" json:"Data_Vencimento"`
-	Cor_Risco         string `gorm:"column:\"Cor_Risco\"" json:"Cor_Risco"`
+type SAVe_Sintese_Analitica struct {
+	ID                int    `gorm:"primaryKey;autoIncrement;column:\"ID\"" json:"ID"`
+	ID_Caso           int    `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
+	UnidadeAnalitica  string `gorm:"column:\"UnidadeAnalitica\"" json:"UnidadeAnalitica"`
+	AvaliacaoDeRiscos string `gorm:"column:\"AvaliacaoDeRiscos\"" json:"AvaliacaoDeRiscos"`
+	PlanoDePrevencao  string `gorm:"column:\"PlanoDePrevencao\"" json:"PlanoDePrevencao"`
+	DataVencimento    string `gorm:"column:\"DataVencimento\"" json:"DataVencimento"`
+	Cor               string `gorm:"column:\"Cor\"" json:"Cor"`
 }
 
-// New model for EnsinoTrabRenda
-type SAVe_EnsinoTrabRenda struct {
-	ID_Caso  int    `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
-	Ensino   string `gorm:"column:\"Ensino\"" json:"Ensino"`
-	Trabalho string `gorm:"column:\"Trabalho\"" json:"Trabalho"`
-	Renda    string `gorm:"column:\"Renda\"" json:"Renda"`
-}
-
-func (SAVe_EnsinoTrabRenda) TableName() string {
-	return "\"SAVe_EnsinoTrabRenda\""
-}
-
-func (SAVe_SinteseAnalitica) TableName() string {
-	return "\"SAVe_SinteseAnalitica\""
+func (SAVe_Sintese_Analitica) TableName() string {
+	return "\"SAVe_Sintese_Analitica\""
 }
