@@ -618,7 +618,7 @@ func (SAVe_protecao_seguranca_adolescente) TableName() string {
 }
 
 type SAVe_Acompanhamentos struct {
-	ID               uint   `gorm:"primaryKey" json:"ID"`
+	ID               uint   `gorm:"primaryKey;column:\"ID\"" json:"ID"`
 	ID_Caso          int    `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
 	Data             string `gorm:"column:\"Data\"" json:"Data"`
 	Tipo_Atendimento string `gorm:"column:\"Tipo_Atendimento\"" json:"Tipo_Atendimento"`
@@ -761,4 +761,15 @@ type SAVe_Sintese_Analitica struct {
 
 func (SAVe_Sintese_Analitica) TableName() string {
 	return "\"SAVe_Sintese_Analitica\""
+}
+
+type SAVe_Responsaveis struct {
+	ID    int    `gorm:"primaryKey;autoIncrement;column:\"ID\"" json:"ID"`
+	Nome  string `gorm:"column:\"Nome\"" json:"Nome"`
+	Cargo string `gorm:"column:\"Cargo\"" json:"Cargo"`
+	Area  string `gorm:"column:\"Area\"" json:"Area"`
+}
+
+func (SAVe_Responsaveis) TableName() string {
+	return "\"SAVe_Responsaveis\""
 }

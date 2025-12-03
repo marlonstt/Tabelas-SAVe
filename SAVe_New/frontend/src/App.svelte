@@ -7,6 +7,7 @@
   import TelaGestaoUsuarios from "./routes/TelaGestaoUsuarios.svelte";
   import TelaDashboards from "./routes/TelaDashboards.svelte";
   import Sidebar from "./components/Sidebar.svelte";
+  import Responsaveis from "./components/Responsaveis.svelte";
 
   let currentPath = window.location.pathname;
   // Initialize synchronously to avoid flash of login screen
@@ -78,6 +79,8 @@
           <TelaEntrada />
         {:else if currentPath === "/admin/users"}
           <TelaGestaoUsuarios />
+        {:else if currentPath === "/admin/responsaveis"}
+          <Responsaveis />
         {:else if currentPath === "/"}
           <Dashboard />
         {:else if currentPath === "/dashboards"}

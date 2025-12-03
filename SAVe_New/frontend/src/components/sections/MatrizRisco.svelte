@@ -373,8 +373,7 @@
                                 : ''}"
                         >
                             <div
-                                class="flex items-center gap-3 p-2 rounded-lg border border-transparent hover:border-gray-200 transition-all cursor-pointer h-full"
-                                on:click={() => setScore(row.id, 1)}
+                                class="flex items-center gap-3 p-2 rounded-lg border border-transparent transition-all h-full pointer-events-none"
                             >
                                 <div
                                     class="w-5 h-5 flex-shrink-0 border-2 rounded-sm flex items-center justify-center transition-colors
@@ -404,8 +403,7 @@
                                 : ''}"
                         >
                             <div
-                                class="flex items-center gap-3 p-2 rounded-lg border border-transparent hover:border-gray-200 transition-all cursor-pointer h-full"
-                                on:click={() => setScore(row.id, 2)}
+                                class="flex items-center gap-3 p-2 rounded-lg border border-transparent transition-all h-full pointer-events-none"
                             >
                                 <div
                                     class="w-5 h-5 flex-shrink-0 border-2 rounded-sm flex items-center justify-center transition-colors
@@ -435,8 +433,7 @@
                                 : ''}"
                         >
                             <div
-                                class="flex items-center gap-3 p-2 rounded-lg border border-transparent hover:border-gray-200 transition-all cursor-pointer h-full"
-                                on:click={() => setScore(row.id, 3)}
+                                class="flex items-center gap-3 p-2 rounded-lg border border-transparent transition-all h-full pointer-events-none"
                             >
                                 <div
                                     class="w-5 h-5 flex-shrink-0 border-2 rounded-sm flex items-center justify-center transition-colors

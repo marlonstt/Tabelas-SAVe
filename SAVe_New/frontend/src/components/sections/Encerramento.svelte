@@ -168,7 +168,29 @@
     }
 </script>
 
-<div class="space-y-4 p-4">
+<div class="bg-white rounded shadow p-10 relative">
+    <!-- Autosave Indicator -->
+    <div
+        class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
+        class:opacity-0={!saving}
+        class:opacity-100={saving}
+    >
+        <span class="text-save-primary flex items-center">
+            <span class="material-icons text-sm mr-1 animate-spin">sync</span>
+            Salvando...
+        </span>
+    </div>
+    <div
+        class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
+        class:opacity-0={saving || loading}
+        class:opacity-100={!saving && !loading}
+    >
+        <span class="text-green-600 flex items-center">
+            <span class="material-icons text-sm mr-1">check</span>
+            Salvo
+        </span>
+    </div>
+
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-gray-800">Encerramento do Caso</h2>
     </div>
@@ -238,13 +260,20 @@
 
         <!-- Manual Save Button -->
         <div class="md:col-span-2 flex justify-end mt-4">
-            <button
-                class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
-                on:click={manualSave}
-                disabled={saving || loading}
-            >
-                {saving ? "Salvando..." : "Salvar Dados"}
-            </button>
+            <div class="flex flex-col items-center">
+                <button
+                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                    on:click={manualSave}
+                    disabled={saving || loading}
+                >
+                    {saving ? "Salvando..." : "Salvar Dados"}
+                </button>
+                {#if saveStatus.includes("Salvo")}
+                    <span class="text-green-600 font-medium mt-2 text-sm"
+                        >Salvo com sucesso!</span
+                    >
+                {/if}
+            </div>
         </div>
 
         <div class="mt-6 flex justify-end">

@@ -11,6 +11,7 @@
     };
     let loading = true;
     let saving = false;
+    let saveStatus = "";
     let saveTimeout: any;
     let lastSavedData: string = "";
 
@@ -179,6 +180,7 @@
 
         clearTimeout(saveTimeout);
         saving = true;
+        saveStatus = "Salvando...";
 
         // Update Crime_relacionado_especifico before saving
         data.Crime_relacionado_especifico = data.specificCrimes.join("; ");
@@ -186,17 +188,18 @@
         try {
             await api.put(`/cases/${caseId}/dados-entrada`, data);
             lastSavedData = JSON.stringify(data);
-            alert("Dados salvos com sucesso!");
+            saveStatus = "Salvo com sucesso! ✅";
+            setTimeout(() => (saveStatus = ""), 3000);
         } catch (err) {
             console.error("Error saving", err);
-            alert("Erro ao salvar dados. Tente novamente.");
+            saveStatus = "Erro ao salvar ❌";
         } finally {
             saving = false;
         }
     }
 </script>
 
-<div class="bg-white rounded shadow p-6 relative">
+<div class="bg-white rounded shadow p-10 relative">
     <!-- Autosave Indicator -->
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
@@ -699,7 +702,7 @@
                                     >Classificação da Vítima:</label
                                 >
                                 <select
-                                    class="block w-[372px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                    class="block w-[250px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                     bind:value={data.Tipo_Vitima}
                                 >
                                     <option value="">Selecione...</option>
@@ -729,11 +732,7 @@
                                 >
                                 <div class="flex gap-2">
                                     <select
-                                        class="block rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                        style="width: {data.Vitimizacao ===
-                                        'Terciária'
-                                            ? '180px'
-                                            : '470px'}"
+                                        class="block w-[250px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                         bind:value={data.Vitimizacao}
                                     >
                                         <option value="">Selecione...</option>
@@ -781,13 +780,20 @@
 
             <!-- Manual Save Button -->
             <div class="flex justify-end mt-4">
-                <button
-                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
-                    on:click={manualSave}
-                    disabled={saving || loading}
-                >
-                    {saving ? "Salvando..." : "Salvar Dados"}
-                </button>
+                <div class="flex flex-col items-center">
+                    <button
+                        class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                        on:click={manualSave}
+                        disabled={saving || loading}
+                    >
+                        {saving ? "Salvando..." : "Salvar Dados"}
+                    </button>
+                    {#if saveStatus && saveStatus.includes("Salvo")}
+                        <span class="text-green-600 font-medium mt-2 text-sm"
+                            >Salvo com sucesso!</span
+                        >
+                    {/if}
+                </div>
             </div>
         </div>
     {/if}

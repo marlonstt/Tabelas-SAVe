@@ -134,7 +134,7 @@
     $: if (data) autosave();
 </script>
 
-<div class="bg-white rounded shadow p-6 relative">
+<div class="bg-white rounded shadow p-10 relative">
     <!-- Autosave Indicator -->
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
@@ -281,13 +281,20 @@
                 </div>
             </div>
             <div class="flex justify-end mt-4">
-                <button
-                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
-                    on:click={manualSave}
-                    disabled={saving || loading}
-                >
-                    {saving ? "Salvando..." : "Salvar Dados"}
-                </button>
+                <div class="flex flex-col items-center">
+                    <button
+                        class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                        on:click={manualSave}
+                        disabled={saving || loading}
+                    >
+                        {saving ? "Salvando..." : "Salvar Dados"}
+                    </button>
+                    {#if saveStatus.includes("Salvo")}
+                        <span class="text-green-600 font-medium mt-2 text-sm"
+                            >Salvo com sucesso!</span
+                        >
+                    {/if}
+                </div>
             </div>
         </div>
     {/if}

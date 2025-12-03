@@ -61,6 +61,12 @@ func main() {
 				admin.POST("/users", handlers.Register)
 				admin.PUT("/users/:id", handlers.UpdateUser)
 				admin.DELETE("/users/:id", handlers.DeleteUser)
+
+				// Responsaveis routes
+				admin.GET("/responsaveis", handlers.GetResponsaveis)
+				admin.POST("/responsaveis", handlers.CreateResponsavel)
+				admin.PUT("/responsaveis/:id", handlers.UpdateResponsavel)
+				admin.DELETE("/responsaveis/:id", handlers.DeleteResponsavel)
 			}
 
 			cases := auth.Group("/cases")

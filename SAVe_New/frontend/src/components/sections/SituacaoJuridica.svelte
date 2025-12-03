@@ -108,6 +108,7 @@
 
     let loading = true;
     let saving = false;
+    let saveStatus = "";
     let saveTimeout: any;
 
     const dateFields = [
@@ -210,6 +211,7 @@
     async function manualSave() {
         if (saving) return;
         saving = true;
+        saveStatus = "Salvando...";
 
         try {
             const payload = {
@@ -218,10 +220,11 @@
                 processos: processos,
             };
             await api.put(`/cases/${caseId}/situacao-juridica`, payload);
-            alert("Dados salvos com sucesso!");
+            saveStatus = "Salvo com sucesso! ✅";
+            setTimeout(() => (saveStatus = ""), 3000);
         } catch (error) {
             console.error("Error saving data:", error);
-            alert("Erro ao salvar dados.");
+            saveStatus = "Erro ao salvar ❌";
         } finally {
             saving = false;
         }
@@ -399,11 +402,28 @@
     })();
 </script>
 
-<div class="p-6 bg-white rounded-lg shadow-md">
-    <!-- Header -->
-    <!--<div class="mb-6 border-b pb-4">
-        <h2 class="text-2xl font-bold text-gray-800">Situação Jurídica</h2>
-    </div>-->
+<div class="bg-white rounded shadow p-10 relative">
+    <!-- Autosave Indicator -->
+    <div
+        class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
+        class:opacity-0={!saving}
+        class:opacity-100={saving}
+    >
+        <span class="text-save-primary flex items-center">
+            <span class="material-icons text-sm mr-1 animate-spin">sync</span>
+            Salvando...
+        </span>
+    </div>
+    <div
+        class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
+        class:opacity-0={saving || loading}
+        class:opacity-100={!saving && !loading}
+    >
+        <span class="text-green-600 flex items-center">
+            <span class="material-icons text-sm mr-1">check</span>
+            Salvo
+        </span>
+    </div>
 
     {#if loading}
         <div class="flex justify-center items-center h-64">
@@ -2575,21 +2595,28 @@
 
             <!-- Manual Save Button -->
             <div class="mt-6 flex justify-end">
-                <button
-                    on:click={manualSave}
-                    disabled={saving}
-                    class="bg-save-primary text-white px-6 py-2 rounded-md hover:bg-save-secondary transition-colors disabled:opacity-50 flex items-center gap-2"
-                >
-                    {#if saving}
-                        <span class="material-icons animate-spin text-sm"
-                            >refresh</span
+                <div class="flex flex-col items-center">
+                    <button
+                        on:click={manualSave}
+                        disabled={saving}
+                        class="bg-save-primary text-white px-6 py-2 rounded-md hover:bg-save-secondary transition-colors disabled:opacity-50 flex items-center gap-2"
+                    >
+                        {#if saving}
+                            <span class="material-icons animate-spin text-sm"
+                                >refresh</span
+                            >
+                            Salvando...
+                        {:else}
+                            <span class="material-icons text-sm">save</span>
+                            Salvar Alterações
+                        {/if}
+                    </button>
+                    {#if saveStatus && saveStatus.includes("Salvo")}
+                        <span class="text-green-600 font-medium mt-2 text-sm"
+                            >Salvo com sucesso!</span
                         >
-                        Salvando...
-                    {:else}
-                        <span class="material-icons text-sm">save</span>
-                        Salvar Alterações
                     {/if}
-                </button>
+                </div>
             </div>
         </div>
     {/if}

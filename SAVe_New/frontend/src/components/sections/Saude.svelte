@@ -1407,13 +1407,20 @@
 
             <!-- Manual Save Button -->
             <div class="md:col-span-2 flex justify-end mt-4">
-                <button
-                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
-                    on:click={manualSave}
-                    disabled={saving}
-                >
-                    {saving ? "Salvando..." : "Salvar Dados"}
-                </button>
+                <div class="flex flex-col items-center">
+                    <button
+                        class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                        on:click={manualSave}
+                        disabled={saving}
+                    >
+                        {saving ? "Salvando..." : "Salvar Dados"}
+                    </button>
+                    {#if saveMessage.includes("Salvo")}
+                        <span class="text-green-600 font-medium mt-2 text-sm"
+                            >Salvo com sucesso!</span
+                        >
+                    {/if}
+                </div>
             </div>
         </div>
     {/if}

@@ -35,6 +35,7 @@
     let saving = false;
     let saveTimeout: any;
     let lastSavedData: string = "";
+    let saveStatus = "";
 
     const nacionalidades = [
         "Afegã (Afeganistão)",
@@ -627,25 +628,18 @@
     }
 
     async function manualSave() {
-        console.log(
-            "Manual save clicked. Loading:",
-            loading,
-            "Saving:",
-            saving,
-        );
-        if (loading || saving) return;
-
-        clearTimeout(saveTimeout);
+        if (saving) return;
         saving = true;
+        saveStatus = "Salvando...";
 
-        console.log("Saving data:", JSON.parse(JSON.stringify(data)));
         try {
             await api.put(`/cases/${caseId}/identificacao`, data);
+            saveStatus = "Salvo com sucesso! ✅";
             lastSavedData = JSON.stringify(data);
-            alert("Dados salvos com sucesso!");
+            setTimeout(() => (saveStatus = ""), 3000);
         } catch (err) {
-            console.error("Error saving", err);
-            alert("Erro ao salvar dados. Tente novamente.");
+            console.error("Error saving data:", err);
+            saveStatus = "Erro ao salvar ❌";
         } finally {
             saving = false;
         }
@@ -746,9 +740,17 @@
         class:opacity-0={saving || loading}
         class:opacity-100={!saving && !loading}
     >
-        <span class="text-green-600 flex items-center">
-            <span class="material-icons text-sm mr-1">check</span>
-            Salvo
+        <span
+            class="flex items-center {saveStatus.includes('Erro')
+                ? 'text-red-600'
+                : 'text-green-600'}"
+        >
+            {#if saveStatus.includes("Erro")}
+                <span class="material-icons text-sm mr-1">error</span>
+            {:else if saveStatus.includes("Salvo")}
+                <span class="material-icons text-sm mr-1">check</span>
+            {/if}
+            {saveStatus || "Salvo"}
         </span>
     </div>
 
@@ -1413,13 +1415,20 @@
             </div>
             <!-- Manual Save Button -->
             <div class="md:col-span-2 flex justify-end mt-4">
-                <button
-                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
-                    on:click={manualSave}
-                    disabled={saving || loading}
-                >
-                    {saving ? "Salvando..." : "Salvar Dados"}
-                </button>
+                <div class="flex flex-col items-center">
+                    <button
+                        class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                        on:click={manualSave}
+                        disabled={saving || loading}
+                    >
+                        {saving ? "Salvando..." : "Salvar Dados"}
+                    </button>
+                    {#if saveStatus.includes("Salvo")}
+                        <span class="text-green-600 font-medium mt-2 text-sm"
+                            >Salvo com sucesso!</span
+                        >
+                    {/if}
+                </div>
             </div>
         </div>
     {/if}

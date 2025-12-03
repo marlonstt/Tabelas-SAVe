@@ -378,6 +378,24 @@
         }
     }
 
+    async function manualSave() {
+        if (saving) return;
+        saving = true;
+        saveStatus = "Salvando...";
+
+        try {
+            await api.put(`/cases/${caseId}/sintese-analitica`, data);
+            saveStatus = "Salvo com sucesso! ✅";
+            lastSavedData = JSON.stringify(data);
+            setTimeout(() => (saveStatus = ""), 3000);
+        } catch (err) {
+            console.error("Error saving data:", err);
+            saveStatus = "Erro ao salvar ❌";
+        } finally {
+            saving = false;
+        }
+    }
+
     function autosave() {
         if (loading || saving) return;
 
@@ -418,7 +436,7 @@
     }
 </script>
 
-<div class="bg-white rounded shadow p-6 relative">
+<div class="bg-white rounded shadow p-4 relative">
     <!-- Autosave Indicator -->
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
@@ -449,12 +467,12 @@
         </span>
     </div>
 
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-xl font-bold text-gray-800">Síntese Analítica</h2>
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-bold text-gray-800">Síntese Analítica</h2>
     </div>
 
     {#if loading}
-        <p>Carregando...</p>
+        <p class="text-sm">Carregando...</p>
     {:else}
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
@@ -462,25 +480,25 @@
                     <tr>
                         <th
                             scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4"
+                            class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wider w-1/4"
                         >
                             Unidade Analítica
                         </th>
                         <th
                             scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3"
+                            class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wider w-1/3"
                         >
                             Avaliação de riscos e vulnerabilidades - ARV
                         </th>
                         <th
                             scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4"
+                            class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wider w-1/4"
                         >
                             Plano de prevenção da vitimização - PPV
                         </th>
                         <th
                             scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4"
+                            class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wider w-1/4"
                         >
                             Data de Vencimento
                         </th>
@@ -490,49 +508,44 @@
                     {#each data as item}
                         <tr>
                             <td
-                                class="px-6 py-4 whitespace-normal align-middle w-1/4"
+                                class="px-3 py-2 whitespace-normal align-middle w-1/4"
                             >
                                 <div
-                                    class="w-full min-h-[57px] flex items-center justify-center text-center p-2 rounded-[10px] border border-[#6A7A7F] text-lg font-normal text-black bg-white"
+                                    class="w-full min-h-[40px] flex items-center justify-center text-center p-1 rounded-[6px] border border-[#6A7A7F] text-sm font-medium text-black bg-white"
                                 >
                                     {item.UnidadeAnalitica}
                                 </div>
                             </td>
                             <td
-                                class="px-6 py-4 whitespace-normal align-middle w-1/3"
+                                class="px-3 py-2 whitespace-normal align-middle w-1/3"
                             >
                                 <!-- Automatic Risk Display (Read-only) -->
                                 <div class="relative">
                                     <div
-                                        class="w-full min-h-[57px] flex items-center justify-center text-center p-2 rounded-[10px] border text-sm font-semibold transition-colors duration-300 {getRiskColorClass(
+                                        class="w-full min-h-[40px] flex items-center justify-center text-center p-1 rounded-[6px] border text-xs font-semibold transition-colors duration-300 {getRiskColorClass(
                                             item.Cor,
                                         )}"
                                     >
                                         {item.AvaliacaoDeRiscos || "-"}
                                     </div>
-                                    <p
-                                        class="text-xs text-gray-500 mt-1 text-center italic"
-                                    >
-                                        Calculado automaticamente
-                                    </p>
                                 </div>
                             </td>
                             <td
-                                class="px-6 py-4 whitespace-normal align-middle"
+                                class="px-3 py-2 whitespace-normal align-middle"
                             >
                                 <textarea
-                                    class="shadow-sm focus:ring-save-primary focus:border-save-primary block w-full sm:text-sm border-gray-300 rounded-md"
-                                    rows="3"
+                                    class="shadow-sm focus:ring-save-primary focus:border-save-primary block w-full text-xs border-gray-300 rounded-md"
+                                    rows="2"
                                     bind:value={item.PlanoDePrevencao}
                                     on:input={autosave}
                                 ></textarea>
                             </td>
                             <td
-                                class="px-6 py-4 whitespace-normal align-middle"
+                                class="px-3 py-2 whitespace-normal align-middle"
                             >
                                 <input
                                     type="date"
-                                    class="shadow-sm focus:ring-save-primary focus:border-save-primary block w-full sm:text-sm border-gray-300 rounded-md"
+                                    class="shadow-sm focus:ring-save-primary focus:border-save-primary block w-full text-xs border-gray-300 rounded-md"
                                     bind:value={item.DataVencimento}
                                     on:input={autosave}
                                 />
@@ -541,6 +554,24 @@
                     {/each}
                 </tbody>
             </table>
+        </div>
+
+        <!-- Manual Save Button -->
+        <div class="flex justify-end mt-4">
+            <div class="flex flex-col items-center">
+                <button
+                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                    on:click={manualSave}
+                    disabled={saving || loading}
+                >
+                    {saving ? "Salvando..." : "Salvar Dados"}
+                </button>
+                {#if saveStatus.includes("Salvo")}
+                    <span class="text-green-600 font-medium mt-2 text-sm"
+                        >Salvo com sucesso!</span
+                    >
+                {/if}
+            </div>
         </div>
     {/if}
 </div>

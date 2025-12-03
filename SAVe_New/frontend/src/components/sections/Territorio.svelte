@@ -219,24 +219,33 @@
     }
 </script>
 
-<div class="p-4 space-y-6">
-    <!-- <div
-        class="flex justify-between items-center sticky top-0 bg-white z-10 p-2 shadow-sm"
+<div class="bg-white rounded shadow p-10 relative">
+    <!-- Autosave Indicator -->
+    <div
+        class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
+        class:opacity-0={!saving}
+        class:opacity-100={saving}
     >
-        <h2 class="text-xl font-bold text-gray-800">Habitação e Território</h2>
-        <span
-            class="text-sm font-medium {saveStatus.includes('Erro')
-                ? 'text-red-600'
-                : 'text-green-600'}"
-        >
-            {saveStatus}
+        <span class="text-save-primary flex items-center">
+            <span class="material-icons text-sm mr-1 animate-spin">sync</span>
+            Salvando...
         </span>
-    </div>-->
+    </div>
+    <div
+        class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
+        class:opacity-0={saving || loading}
+        class:opacity-100={!saving && !loading}
+    >
+        <span class="text-green-600 flex items-center">
+            <span class="material-icons text-sm mr-1">check</span>
+            Salvo
+        </span>
+    </div>
 
     {#if loading}
         <div class="flex justify-center p-8">
             <div
-                class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
+                class="animate-spin rounded-full h-8 w-8 border-b-2 border-save-primary"
             ></div>
         </div>
     {:else}
@@ -860,7 +869,7 @@
                     Território - Fatores de risco
                 </h3>
 
-                <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Risco ambiental e de infraestrutura -->
                     <div class="flex flex-col space-y-2">
                         <label class="inline-flex items-center">
@@ -896,7 +905,7 @@
                                         data.Fatores_risco_ambiental_infra_esp
                                     }
                                     on:change={autosave}
-                                    class="w-full max-w-md rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring-save-primary sm:text-sm"
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring-save-primary sm:text-sm"
                                 >
                                     <option value="">Selecione...</option>
                                     <option value="Alagamento"
@@ -949,7 +958,7 @@
                                         data.Conflitos_Urbanos_Criminalidade_esp
                                     }
                                     on:change={autosave}
-                                    class="w-full max-w-md rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring-save-primary sm:text-sm"
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring-save-primary sm:text-sm"
                                 >
                                     <option value="">Selecione...</option>
                                     <option value="Pontos de tráfico"
@@ -1000,7 +1009,7 @@
                                         data.Conflitos_fundiarios_Agrarios_esp
                                     }
                                     on:change={autosave}
-                                    class="w-full max-w-md rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring-save-primary sm:text-sm"
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring-save-primary sm:text-sm"
                                 >
                                     <option value="">Selecione...</option>
                                     <option value="Facções">Facções</option>
@@ -1055,7 +1064,7 @@
                                     type="text"
                                     bind:value={data.Fatores_risco_outros_esp}
                                     on:blur={autosave}
-                                    class="w-full max-w-md rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring-save-primary sm:text-sm"
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring-save-primary sm:text-sm"
                                 />
                             </div>
                         {/if}
@@ -1123,14 +1132,22 @@
             </div>
         </div>
         <!-- Manual Save Button -->
+        <!-- Manual Save Button -->
         <div class="md:col-span-2 flex justify-end mt-4">
-            <button
-                class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
-                on:click={manualSave}
-                disabled={saving || loading}
-            >
-                {saving ? "Salvando..." : "Salvar Dados"}
-            </button>
+            <div class="flex flex-col items-center">
+                <button
+                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                    on:click={manualSave}
+                    disabled={saving || loading}
+                >
+                    {saving ? "Salvando..." : "Salvar Dados"}
+                </button>
+                {#if saveStatus.includes("Salvo")}
+                    <span class="text-green-600 font-medium mt-2 text-sm"
+                        >Salvo com sucesso!</span
+                    >
+                {/if}
+            </div>
         </div>
     {/if}
 </div>

@@ -70,6 +70,7 @@
     let data: any = { ...initialData };
     let loading = true;
     let saving = false;
+    let saveStatus = "";
     let saveTimeout: any;
     let lastSavedData: string = "";
 
@@ -134,15 +135,17 @@
 
         clearTimeout(saveTimeout);
         saving = true;
+        saveStatus = "Salvando...";
 
         console.log("Saving data:", JSON.parse(JSON.stringify(data)));
         try {
             await api.put(`/cases/${caseId}/assistencia`, data);
             lastSavedData = JSON.stringify(data);
-            alert("Dados salvos com sucesso!");
+            saveStatus = "Salvo com sucesso! ✅";
+            setTimeout(() => (saveStatus = ""), 3000);
         } catch (err) {
             console.error("Error saving", err);
-            alert("Erro ao salvar dados. Tente novamente.");
+            saveStatus = "Erro ao salvar ❌";
         } finally {
             saving = false;
         }
@@ -264,7 +267,7 @@
     $: if (data) autosave();
 </script>
 
-<div class="bg-white rounded shadow p-6 relative">
+<div class="bg-white rounded shadow p-10 relative">
     <!-- Autosave Indicator -->
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
@@ -1815,13 +1818,20 @@
             </div>
             <!-- Manual Save Button -->
             <div class="md:col-span-2 flex justify-end mt-4">
-                <button
-                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
-                    on:click={manualSave}
-                    disabled={saving || loading}
-                >
-                    {saving ? "Salvando..." : "Salvar Dados"}
-                </button>
+                <div class="flex flex-col items-center">
+                    <button
+                        class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                        on:click={manualSave}
+                        disabled={saving || loading}
+                    >
+                        {saving ? "Salvando..." : "Salvar Dados"}
+                    </button>
+                    {#if saveStatus && saveStatus.includes("Salvo")}
+                        <span class="text-green-600 font-medium mt-2 text-sm"
+                            >Salvo com sucesso!</span
+                        >
+                    {/if}
+                </div>
             </div>
         </div>
     {/if}

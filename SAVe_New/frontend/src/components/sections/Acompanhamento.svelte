@@ -13,10 +13,21 @@
     let lastSavedData: string = "";
     let saveStatus = "";
 
+    let responsaveisList: any[] = [];
+
     onMount(async () => {
+        loadResponsaveis();
         try {
             const response = await api.get(`/cases/${caseId}`);
-            data = { acompanhamentos: response.data.acompanhamentos || [] };
+            const loadedAcompanhamentos = response.data.acompanhamentos || [];
+
+            // Format date to YYYY-MM-DD for input type="date"
+            data = {
+                acompanhamentos: loadedAcompanhamentos.map((a: any) => ({
+                    ...a,
+                    Data: a.Data ? a.Data.split("T")[0] : "",
+                })),
+            };
         } catch (err) {
             console.warn(
                 "Backend unavailable, using Mock Data for Acompanhamento",
@@ -38,6 +49,15 @@
             lastSavedData = JSON.stringify(data);
         }
     });
+
+    async function loadResponsaveis() {
+        try {
+            const response = await api.get("/admin/responsaveis");
+            responsaveisList = response.data;
+        } catch (error) {
+            console.error("Error loading responsaveis:", error);
+        }
+    }
 
     async function manualSave() {
         if (saving) return;
@@ -107,8 +127,9 @@
     }
 </script>
 
-<!-- Autosave Indicator -->
-<div class="relative p-4 space-y-4">
+<!-- Main Container with Card Style -->
+<div class="bg-white rounded shadow p-10 relative">
+    <!-- Autosave Indicator -->
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
         class:opacity-0={!saving}
@@ -138,7 +159,9 @@
         </span>
     </div>
 
-    <!--<h2 class="text-xl font-bold text-gray-800 mb-4">Acompanhamentos</h2> -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-gray-800">Acompanhamentos</h2>
+    </div>
 
     {#if loading}
         <p>Carregando...</p>
@@ -161,6 +184,7 @@
                                 type="date"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={acomp.Data}
+                                on:input={autosave}
                             />
                         </label>
 
@@ -171,6 +195,7 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={acomp.Tipo_Atendimento}
+                                on:change={autosave}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Presencial">Presencial</option>
@@ -189,6 +214,7 @@
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                     rows="3"
                                     bind:value={acomp.Sintese}
+                                    on:input={autosave}
                                 ></textarea>
                             </label>
                         </div>
@@ -198,22 +224,54 @@
                                 <span class="text-gray-700"
                                     >Encaminhamentos</span
                                 >
-                                <textarea
+                                <select
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    rows="2"
                                     bind:value={acomp.Encaminhamento}
-                                ></textarea>
+                                    on:change={autosave}
+                                >
+                                    <option value="">Selecione...</option>
+                                    <option value="Rede de proteção à mulher"
+                                        >Rede de proteção à mulher</option
+                                    >
+                                    <option
+                                        value="Rede de proteção à criança e adolescente"
+                                        >Rede de proteção à criança e
+                                        adolescente</option
+                                    >
+                                    <option value="Rede de proteção social"
+                                        >Rede de proteção social</option
+                                    >
+                                    <option value="Rede de saúde"
+                                        >Rede de saúde</option
+                                    >
+                                    <option value="PROVITA">PROVITA</option>
+                                    <option value="PPCAAM">PPCAAM</option>
+                                    <option value="PPDDH">PPDDH</option>
+                                    <option value="Defensoria pública"
+                                        >Defensoria pública</option
+                                    >
+                                    <option value="Outros">Outros</option>
+                                </select>
                             </label>
                         </div>
 
                         <div class="md:col-span-2">
                             <label class="block">
                                 <span class="text-gray-700">Responsáveis</span>
-                                <input
-                                    type="text"
+                                <select
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                     bind:value={acomp.Responsaveis}
-                                />
+                                    on:change={autosave}
+                                >
+                                    <option value=""
+                                        >Selecione um responsável...</option
+                                    >
+                                    {#each responsaveisList as resp}
+                                        <option value={resp.Nome}
+                                            >{resp.Nome} - {resp.Cargo}</option
+                                        >
+                                    {/each}
+                                </select>
                             </label>
                         </div>
                     </div>
@@ -229,13 +287,20 @@
 
             <!-- Manual Save Button -->
             <div class="flex justify-end mt-4">
-                <button
-                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
-                    on:click={manualSave}
-                    disabled={saving || loading}
-                >
-                    {saving ? "Salvando..." : "Salvar Dados"}
-                </button>
+                <div class="flex flex-col items-center">
+                    <button
+                        class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                        on:click={manualSave}
+                        disabled={saving || loading}
+                    >
+                        {saving ? "Salvando..." : "Salvar Dados"}
+                    </button>
+                    {#if saveStatus.includes("Salvo")}
+                        <span class="text-green-600 font-medium mt-2 text-sm"
+                            >Salvo com sucesso!</span
+                        >
+                    {/if}
+                </div>
             </div>
         </div>
     {/if}

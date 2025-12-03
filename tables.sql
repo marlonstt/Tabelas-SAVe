@@ -683,3 +683,11 @@ CREATE TABLE "SAVe_Sintese_Analitica" (
     "Cor" TEXT
 );
 
+
+-- Table: SAVe_Responsaveis
+CREATE TABLE "SAVe_Responsaveis" (
+    "ID" SERIAL PRIMARY KEY,
+    "Nome" TEXT,
+    "Cargo" TEXT,
+    "Area" TEXT
+);
