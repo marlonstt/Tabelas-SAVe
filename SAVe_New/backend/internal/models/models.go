@@ -674,28 +674,28 @@ func (SAVe_Vitimizacao) TableName() string {
 }
 
 // SAVe_Agressor model (Legacy - kept for reference if needed, but superseded by SAVe_Perfil_Agressor)
-type SAVe_Agressor struct {
-	ID           int    `gorm:"primaryKey;autoIncrement;column:\"ID\"" json:"ID"`
-	ID_Caso      int    `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
-	Tipo         string `gorm:"column:\"Tipo\"" json:"Tipo"`
-	Nome         string `gorm:"column:\"Nome\"" json:"Nome"`
-	Apelido      string `gorm:"column:\"Apelido\"" json:"Apelido"`
-	Idade        int    `gorm:"column:\"Idade\"" json:"Idade"`
-	Sexo         string `gorm:"column:\"Sexo\"" json:"Sexo"`
-	Raca         string `gorm:"column:\"Raca\"" json:"Raca"`
-	Relacao      string `gorm:"column:\"Relacao\"" json:"Relacao"`
-	Ocupacao     string `gorm:"column:\"Ocupacao\"" json:"Ocupacao"`
-	Renda        string `gorm:"column:\"Renda\"" json:"Renda"`
-	Escolaridade string `gorm:"column:\"Escolaridade\"" json:"Escolaridade"`
-	Endereco     string `gorm:"column:\"Endereco\"" json:"Endereco"`
-	Antecedentes string `gorm:"column:\"Antecedentes\"" json:"Antecedentes"`
-	Uso_Drogas   string `gorm:"column:\"Uso_Drogas\"" json:"Uso_Drogas"`
-	Porte_Arma   string `gorm:"column:\"Porte_Arma\"" json:"Porte_Arma"`
-}
+// type SAVe_Agressor struct {
+// 	ID           int    `gorm:"primaryKey;autoIncrement;column:\"ID\"" json:"ID"`
+// 	ID_Caso      int    `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
+// 	Tipo         string `gorm:"column:\"Tipo\"" json:"Tipo"`
+// 	Nome         string `gorm:"column:\"Nome\"" json:"Nome"`
+// 	Apelido      string `gorm:"column:\"Apelido\"" json:"Apelido"`
+// 	Idade        int    `gorm:"column:\"Idade\"" json:"Idade"`
+// 	Sexo         string `gorm:"column:\"Sexo\"" json:"Sexo"`
+// 	Raca         string `gorm:"column:\"Raca\"" json:"Raca"`
+// 	Relacao      string `gorm:"column:\"Relacao\"" json:"Relacao"`
+// 	Ocupacao     string `gorm:"column:\"Ocupacao\"" json:"Ocupacao"`
+// 	Renda        string `gorm:"column:\"Renda\"" json:"Renda"`
+// 	Escolaridade string `gorm:"column:\"Escolaridade\"" json:"Escolaridade"`
+// 	Endereco     string `gorm:"column:\"Endereco\"" json:"Endereco"`
+// 	Antecedentes string `gorm:"column:\"Antecedentes\"" json:"Antecedentes"`
+// 	Uso_Drogas   string `gorm:"column:\"Uso_Drogas\"" json:"Uso_Drogas"`
+// 	Porte_Arma   string `gorm:"column:\"Porte_Arma\"" json:"Porte_Arma"`
+// }
 
-func (SAVe_Agressor) TableName() string {
-	return "\"SAVe_Agressor\""
-}
+// func (SAVe_Agressor) TableName() string {
+// 	return "\"SAVe_Agressor\""
+// }
 
 type SAVe_Perfil_Agressor struct {
 	ID                         int       `gorm:"primaryKey;autoIncrement;column:\"ID\"" json:"ID"`
