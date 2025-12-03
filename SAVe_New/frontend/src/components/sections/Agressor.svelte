@@ -767,7 +767,7 @@
                             </button>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <label class="block">
                                 <span class="text-gray-700 text-sm font-medium"
                                     >O agressor é pessoa natural ou jurídica?</span
@@ -920,7 +920,7 @@
                                     {/each}
                                 </select>
                             </label>
-                            <label class="block md:col-span-3">
+                            <label class="block">
                                 <span class="text-gray-700 text-sm"
                                     >Naturalidade</span
                                 >
@@ -935,7 +935,7 @@
                                     {/each}
                                 </select>
                             </label>
-                            <label class="block md:col-span-3">
+                            <label class="block">
                                 <span class="text-gray-700 text-sm"
                                     >Filiação - Mãe</span
                                 >
@@ -946,7 +946,7 @@
                                     on:input={autosave}
                                 />
                             </label>
-                            <label class="block md:col-span-3">
+                            <label class="block">
                                 <span class="text-gray-700 text-sm"
                                     >Filiação - Pai</span
                                 >

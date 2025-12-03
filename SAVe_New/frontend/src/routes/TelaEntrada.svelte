@@ -90,17 +90,17 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-lg mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-2 max-w-lg mx-auto">
             <a
                 href="/"
-                class="bg-save-primary text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center no-underline"
+                class="bg-save-primary text-white py-2 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center no-underline"
             >
                 Acessar Casos
             </a>
 
             <button
                 on:click={openCaseSelection}
-                class="bg-save-primary text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center"
+                class="bg-save-primary text-white py-2 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center"
             >
                 Criar Novo Caso
             </button>
@@ -108,7 +108,7 @@
             {#if user.role === "Admin" || user.role === "admin"}
                 <a
                     href="/admin/users"
-                    class="bg-save-primary text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center no-underline"
+                    class="bg-save-primary text-white py-2 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center no-underline"
                 >
                     Gestão de Usuários
                 </a>
@@ -116,7 +116,7 @@
 
             <a
                 href="/dashboards"
-                class="bg-save-primary text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center no-underline"
+                class="bg-save-primary text-white py-2 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center no-underline"
             >
                 Dashboards
             </a>

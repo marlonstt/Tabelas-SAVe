@@ -867,7 +867,8 @@ func UpdateCaseSection(c *gin.Context) {
 				return
 			}
 		} else {
-			if err := tx.Model(&models.SAVe_Vitimizacao{}).Where("\"ID_Caso\" = ?", id).Updates(&modelInput).Error; err != nil {
+			// Use Save to ensure zero values (empty strings) are updated
+			if err := tx.Save(&modelInput).Error; err != nil {
 				tx.Rollback()
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update vitimizacao"})
 				return
