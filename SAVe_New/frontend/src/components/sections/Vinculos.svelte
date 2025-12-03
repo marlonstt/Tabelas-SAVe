@@ -23,8 +23,7 @@
             if (!data.Qtd_Filhos_Ent) data.Qtd_Filhos_Ent = 0;
             if (!data.Num_Filhos_Dep) data.Num_Filhos_Dep = 0;
             if (!data.Num_Enteados_Dep) data.Num_Enteados_Dep = 0;
-            // Renda_Total_Conv is string in model but number input in UI.
-            // If it comes as string "1000", it's fine. If empty, maybe "0".
+            if (!data.Renda_Total_Conv) data.Renda_Total_Conv = 0;
         } catch (err) {
             console.warn("Backend unavailable, using Mock Data for Vinculos");
             data = {};
@@ -73,7 +72,7 @@
 
         clearTimeout(saveTimeout);
         saveTimeout = setTimeout(async () => {
-            if (saving) return; // Double check
+            if (saving) return;
             saving = true;
             saveStatus = "Salvando...";
             try {
@@ -115,8 +114,10 @@
     }
 
     function removeApoio(index: number) {
-        apoioList = apoioList.filter((_, i) => i !== index);
-        autosave();
+        if (apoioList.length > 1) {
+            apoioList = apoioList.filter((_, i) => i !== index);
+            autosave();
+        }
     }
 
     function calculateAge(dateString: string) {
@@ -128,7 +129,7 @@
         if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
             age--;
         }
-        return isNaN(age) ? "" : age + " anos";
+        return isNaN(age) ? "" : age;
     }
 </script>
 
@@ -163,7 +164,7 @@
         </span>
     </div>
 
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold text-gray-800">
             Vínculos e Rede de Apoio
         </h2>
@@ -172,317 +173,500 @@
     {#if loading}
         <p>Carregando...</p>
     {:else}
-        <div class="space-y-4">
-            <!-- Header Row (Desktop) -->
-            <div
-                class="hidden md:grid grid-cols-12 gap-2 font-bold text-xs text-gray-600 border-b pb-2"
-            >
-                <div class="col-span-2">Grau Parentesco</div>
-                <div class="col-span-2">Nome</div>
-                <div class="col-span-1">Data Nasc</div>
-                <div class="col-span-1 text-center">Idade</div>
-                <div class="col-span-1">Escolaridade</div>
-                <div class="col-span-1">Ocupação</div>
-                <div class="col-span-1">Renda</div>
-                <div class="col-span-1 text-center">Mora c/ Vítima</div>
-                <div class="col-span-1 text-center">Presenciou Viol.</div>
-                <div class="col-span-1 text-center">Ações</div>
+        <div class="space-y-6">
+            <!-- Container2_28: Dados Numéricos -->
+            <div class="border-2 border-gray-200 rounded-lg p-4 shadow-sm">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <label class="block">
+                        <span class="text-gray-700 font-semibold text-sm"
+                            >Quantidade de pessoas no grupo familiar:</span
+                        >
+                        <input
+                            type="number"
+                            min="0"
+                            max="99"
+                            class="md:col-span-2 md:w-[270px] block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                            bind:value={data.Qtd_Pessoas_Fam}
+                            on:input={autosave}
+                        />
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700 font-semibold text-sm"
+                            >Quantidade de filhas/os ou enteadas/os:</span
+                        >
+                        <input
+                            type="number"
+                            min="0"
+                            max="99"
+                            class="md:col-span-2 md:w-[270px] block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                            bind:value={data.Qtd_Filhos_Ent}
+                            on:input={autosave}
+                        />
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700 font-semibold text-sm"
+                            >Nº de filhas/os dependentes:</span
+                        >
+                        <input
+                            type="number"
+                            min="0"
+                            max="99"
+                            class="md:col-span-2 md:w-[270px] block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                            bind:value={data.Num_Filhos_Dep}
+                            on:input={autosave}
+                        />
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700 font-semibold text-sm"
+                            >Nº de enteadas/os dependentes:</span
+                        >
+                        <input
+                            type="number"
+                            min="0"
+                            max="99"
+                            class="md:col-span-2 md:w-[270px] block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                            bind:value={data.Num_Enteados_Dep}
+                            on:input={autosave}
+                        />
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700 font-semibold text-sm"
+                            >Renda total (grupo de convivência):</span
+                        >
+                        <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            class="md:col-span-2 md:w-[270px] block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                            bind:value={data.Renda_Total_Conv}
+                            on:input={autosave}
+                        />
+                    </label>
+                </div>
             </div>
 
-            {#each apoioList as item, i}
-                <div
-                    class="border rounded p-2 md:border-none md:p-0 bg-gray-50 md:bg-transparent mb-2 md:mb-0"
-                >
+            <!-- Container2_30: Galeria de Pessoas (Apoio Familiar) -->
+            <div class="border-2 border-gray-200 rounded-lg p-4 shadow-sm">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                    Grupo Familiar e Rede de Apoio
+                </h3>
+
+                {#each apoioList as item, i}
                     <div
-                        class="grid grid-cols-1 md:grid-cols-12 gap-2 items-center"
+                        class="border-2 border-gray-300 rounded-lg p-4 mb-4 bg-gray-50"
                     >
-                        <div class="col-span-2">
-                            <label class="md:hidden text-xs font-bold"
-                                >Grau Parentesco:</label
-                            >
-                            <input
-                                type="text"
-                                class="w-full text-xs rounded border-gray-300"
-                                bind:value={item.AVF_Grau_Parentesco}
-                                placeholder="Parentesco"
-                            />
-                        </div>
-                        <div class="col-span-2">
-                            <label class="md:hidden text-xs font-bold"
-                                >Nome:</label
-                            >
-                            <input
-                                type="text"
-                                class="w-full text-xs rounded border-gray-300"
-                                bind:value={item.AVF_Nome}
-                                placeholder="Nome"
-                            />
-                        </div>
-                        <div class="col-span-1">
-                            <label class="md:hidden text-xs font-bold"
-                                >Data Nasc:</label
-                            >
-                            <input
-                                type="date"
-                                class="w-full text-xs rounded border-gray-300"
-                                bind:value={item.AVF_Data_Nasc}
-                            />
-                        </div>
-                        <div class="col-span-1 text-center text-xs">
-                            <label class="md:hidden font-bold">Idade:</label>
-                            {calculateAge(item.AVF_Data_Nasc)}
-                        </div>
-                        <div class="col-span-1">
-                            <label class="md:hidden text-xs font-bold"
-                                >Escolaridade:</label
-                            >
-                            <input
-                                type="text"
-                                class="w-full text-xs rounded border-gray-300"
-                                bind:value={item.AVF_Escolaridade}
-                                placeholder="Escolaridade"
-                            />
-                        </div>
-                        <div class="col-span-1">
-                            <label class="md:hidden text-xs font-bold"
-                                >Ocupação:</label
-                            >
-                            <input
-                                type="text"
-                                class="w-full text-xs rounded border-gray-300"
-                                bind:value={item.AVF_Ocupacao}
-                                placeholder="Ocupação"
-                            />
-                        </div>
-                        <div class="col-span-1">
-                            <label class="md:hidden text-xs font-bold"
-                                >Renda:</label
-                            >
-                            <input
-                                type="text"
-                                class="w-full text-xs rounded border-gray-300"
-                                bind:value={item.AVF_Renda}
-                                placeholder="Renda"
-                            />
+                        <!-- Linha 1: Dados Básicos -->
+                        <div class="mb-3">
+                            <div class="grid grid-cols-1 md:grid-cols-8 gap-3">
+                                <!-- Número -->
+                                <div class="md:col-span-2 md:w-[50px]">
+                                    <label
+                                        class="block text-xs font-bold text-gray-700 mb-1"
+                                        >Nº</label
+                                    >
+                                    <div
+                                        class="text-center text-sm font-semibold bg-white rounded p-2 border border-gray-300"
+                                    >
+                                        {i + 1}
+                                    </div>
+                                </div>
+
+                                <!-- Nome -->
+                                <div class="md:col-span-2">
+                                    <label
+                                        class="block text-xs font-bold text-gray-700 mb-1"
+                                        >Nome</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="w-full text-sm rounded border-gray-300"
+                                        bind:value={item.AVF_Nome}
+                                        on:input={autosave}
+                                        placeholder="Nome completo"
+                                    />
+                                </div>
+
+                                <!-- Grau Parentesco -->
+                                <div class="md:col-span-2 md:w-[150px]">
+                                    <label
+                                        class="block text-xs font-bold text-gray-700 mb-1"
+                                        >Grau de parentesco</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="w-full text-sm rounded border-gray-300"
+                                        bind:value={item.AVF_Grau_Parentesco}
+                                        on:input={autosave}
+                                        placeholder="Parentesco"
+                                    />
+                                </div>
+
+                                <!-- Data Nascimento -->
+                                <div class="md:col-span-2 md:w-[150px]">
+                                    <label
+                                        class="block text-xs font-bold text-gray-700 mb-1"
+                                        >Data de nascimento</label
+                                    >
+                                    <input
+                                        type="date"
+                                        class="w-full text-sm text-sm rounded border-gray-300"
+                                        bind:value={item.AVF_Data_Nasc}
+                                        on:change={autosave}
+                                    />
+                                </div>
+
+                                <!-- Idade -->
+                                <div class="md:col-span-2 md:w-[150px]">
+                                    <label
+                                        class="block text-xs font-bold text-gray-700 mb-1"
+                                        >Idade</label
+                                    >
+                                    <div
+                                        class="text-center text-sm bg-white rounded p-2 border border-gray-300"
+                                    >
+                                        {calculateAge(item.AVF_Data_Nasc) ||
+                                            "-"}
+                                    </div>
+                                </div>
+
+                                <!-- Escolaridade -->
+                                <div class="md:col-span-2 md:w-[150px]">
+                                    <label
+                                        class="block text-xs font-bold text-gray-700 mb-1"
+                                        >Escolaridade</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="w-full text-sm rounded border-gray-300"
+                                        bind:value={item.AVF_Escolaridade}
+                                        on:input={autosave}
+                                        placeholder="Escolaridade"
+                                    />
+                                </div>
+
+                                <!-- Ocupação -->
+                                <div class="md:col-span-2 md:w-[150px]">
+                                    <label
+                                        class="block text-xs font-bold text-gray-700 mb-1"
+                                        >Ocupação</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="w-full text-sm rounded border-gray-300"
+                                        bind:value={item.AVF_Ocupacao}
+                                        on:input={autosave}
+                                        placeholder="Ocupação"
+                                    />
+                                </div>
+
+                                <div class="md:col-span-2 md:w-[150px]">
+                                    <label
+                                        class="block text-xs font-bold text-gray-700 mb-1"
+                                        >Renda</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="w-full text-sm rounded border-gray-300"
+                                        bind:value={item.AVF_Renda}
+                                        on:input={autosave}
+                                        placeholder="R$ 0,00"
+                                    />
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Toggles -->
-                        <div class="col-span-1 flex flex-col items-center">
-                            <label class="md:hidden text-xs font-bold"
-                                >Mora c/ Vítima?</label
+                        <!-- Linha 2: Checkboxes e Campos Adicionais -->
+                        <div class="border-t pt-3">
+                            <div
+                                class="grid grid-cols-1 md:grid-cols-5 gap-3 items-start"
                             >
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={item.AVF_Mora_Com_Vitima}
-                            />
-                        </div>
-                        <div class="col-span-1 flex flex-col items-center">
-                            <label class="md:hidden text-xs font-bold"
-                                >Presenciou?</label
-                            >
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={item.AVF_Presenciou_Violencia}
-                            />
-                        </div>
-                        <div class="col-span-1 flex flex-col items-center">
-                            <label class="md:hidden text-xs font-bold"
-                                >Conhece Fato?</label
-                            >
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={item.AVF_Conhecimento_Fato}
-                            />
-                        </div>
-                        <div class="col-span-1 flex flex-col items-center">
-                            <label class="md:hidden text-xs font-bold"
-                                >Rede Apoio?</label
-                            >
-                            <input
-                                type="checkbox"
-                                class="form-checkbox text-save-primary"
-                                bind:checked={item.AVF_Rede_Apoio}
-                            />
+                                <!-- Mora com Vítima -->
+                                <div class="flex flex-col">
+                                    <label
+                                        class="text-xs font-bold text-gray-700 mb-2"
+                                        >Mora com a vítima?</label
+                                    >
+                                    <div
+                                        class="flex items-center justify-left h-10"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="form-checkbox text-save-primary w-5 h-5"
+                                            bind:checked={
+                                                item.AVF_Mora_Com_Vitima
+                                            }
+                                            on:change={autosave}
+                                        />
+                                    </div>
+                                </div>
+
+                                <!-- Presenciou Violência -->
+                                <div class="flex flex-col">
+                                    <label
+                                        class="text-xs font-bold text-gray-700 mb-2"
+                                        >Presenciou a violência?</label
+                                    >
+                                    <div
+                                        class="flex items-center justify-left h-10"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="form-checkbox text-save-primary w-5 h-5"
+                                            bind:checked={
+                                                item.AVF_Presenciou_Violencia
+                                            }
+                                            on:change={autosave}
+                                        />
+                                    </div>
+                                </div>
+
+                                <!-- Conhecimento Fato -->
+                                <div class="flex flex-col">
+                                    <label
+                                        class="text-xs font-bold text-gray-700 mb-2"
+                                        >Conhecimento do fato?</label
+                                    >
+                                    <div
+                                        class="flex items-center justify-left h-10"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="form-checkbox text-save-primary w-5 h-5"
+                                            bind:checked={
+                                                item.AVF_Conhecimento_Fato
+                                            }
+                                            on:change={autosave}
+                                        />
+                                    </div>
+                                </div>
+                                <!-- Rede Apoio -->
+                                <div class="flex flex-col">
+                                    <label
+                                        class="text-xs font-bold text-gray-700 mb-2"
+                                        >É rede de apoio?</label
+                                    >
+                                    <div
+                                        class="flex items-center justify-left h-10"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="form-checkbox text-save-primary w-5 h-5"
+                                            bind:checked={item.AVF_Rede_Apoio}
+                                            on:change={autosave}
+                                        />
+                                    </div>
+                                </div>
+
+                                <!-- Alteração Vínculo -->
+                                <div class="flex flex-col md:col-span-1">
+                                    <label
+                                        class="text-xs font-bold text-gray-700 mb-2"
+                                        >Alteração de vínculo pós violência</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="w-full text-sm rounded border-gray-300"
+                                        bind:value={
+                                            item.AVF_Alt_Vinculo_Pos_Violencia
+                                        }
+                                        on:input={autosave}
+                                        placeholder="Descreva..."
+                                    />
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Alteração de Vínculo (Full width row inside item) -->
-                        <div class="col-span-1 md:col-span-12 mt-2">
-                            <label class="text-xs font-bold block"
-                                >Alteração de vínculo pós violência:</label
-                            >
+                        <!-- Botão Remover -->
+                        {#if apoioList.length > 1}
+                            <div class="flex justify-end mt-3">
+                                <button
+                                    class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition"
+                                    on:click={() => removeApoio(i)}
+                                >
+                                    × Remover pessoa
+                                </button>
+                            </div>
+                        {/if}
+                    </div>
+                {/each}
+
+                <button
+                    class="mt-4 bg-save-primary text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition"
+                    on:click={addApoio}
+                >
+                    Incluir pessoa
+                </button>
+            </div>
+
+            <!-- Container2_29: Alterações no Sistema Familiar -->
+            <div class="border-2 border-gray-200 rounded-lg p-4 shadow-sm">
+                <div class="block">
+                    <span class="text-gray-700 font-semibold block mb-2"
+                        >Houve alterações no sistema familiar e comunitário em
+                        razão da vitimização ou a ela relacionadas?</span
+                    >
+                    <div class="flex space-x-4">
+                        <label class="inline-flex items-center">
                             <input
-                                type="text"
-                                class="w-full text-xs rounded border-gray-300"
-                                bind:value={item.AVF_Alt_Vinculo_Pos_Violencia}
-                                placeholder="Descreva alteração..."
+                                type="radio"
+                                class="form-radio text-save-primary"
+                                bind:group={data.Alt_Fam_Com_Vitim}
+                                value="Sim"
+                                on:change={autosave}
                             />
-                        </div>
+                            <span class="ml-2">Sim</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                class="form-radio text-save-primary"
+                                bind:group={data.Alt_Fam_Com_Vitim}
+                                value="Não"
+                                on:change={() => {
+                                    data.Alt_Fam_Com_Vitim_Descr = "";
+                                    autosave();
+                                }}
+                            />
+                            <span class="ml-2">Não</span>
+                        </label>
                     </div>
                 </div>
-            {/each}
-
-            <button
-                class="mt-4 bg-save-primary text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition"
-                on:click={addApoio}
-            >
-                + Incluir pessoa
-            </button>
-        </div>
-
-        <!-- Alterações no Sistema Familiar (Container2_29) -->
-        <div class="border-b pb-4">
-            <div class="block">
-                <span class="text-gray-700 font-semibold block mb-1"
-                    >Houve alterações no sistema familiar e comunitário em razão
-                    da vitimização ou a ela relacionadas?</span
-                >
-                <div class="flex space-x-4">
-                    <label class="inline-flex items-center">
-                        <input
-                            type="radio"
-                            class="form-radio text-save-primary"
-                            bind:group={data.Alt_Fam_Com_Vitim}
-                            value="Sim"
-                        />
-                        <span class="ml-2">Sim</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input
-                            type="radio"
-                            class="form-radio text-save-primary"
-                            bind:group={data.Alt_Fam_Com_Vitim}
-                            value="Não"
-                            on:change={() =>
-                                (data.Alt_Fam_Com_Vitim_Descr = "")}
-                        />
-                        <span class="ml-2">Não</span>
-                    </label>
-                </div>
-            </div>
-            {#if data.Alt_Fam_Com_Vitim === "Sim"}
-                <label class="block mt-2">
-                    <span class="text-gray-700 font-semibold">Descreva:</span>
-                    <input
-                        type="text"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                        bind:value={data.Alt_Fam_Com_Vitim_Descr}
-                    />
-                </label>
-            {/if}
-
-            <div class="block mt-4">
-                <span class="text-gray-700 font-semibold block mb-1"
-                    >Foi identificada vulnerabilidade relacionada aos vínculos
-                    familiares e comunitários?</span
-                >
-                <div class="flex space-x-4">
-                    <label class="inline-flex items-center">
-                        <input
-                            type="radio"
-                            class="form-radio text-save-primary"
-                            bind:group={data.Vulnerab_Vinculos_Fam}
-                            value="Sim"
-                        />
-                        <span class="ml-2">Sim</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input
-                            type="radio"
-                            class="form-radio text-save-primary"
-                            bind:group={data.Vulnerab_Vinculos_Fam}
-                            value="Não"
-                            on:change={() =>
-                                (data.Vulnerab_Vinculos_Fam_Descr = "")}
-                        />
-                        <span class="ml-2">Não</span>
-                    </label>
-                </div>
-            </div>
-            {#if data.Vulnerab_Vinculos_Fam === "Sim"}
-                <label class="block mt-2">
-                    <span class="text-gray-700 font-semibold">Descreva:</span>
-                    <input
-                        type="text"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                        bind:value={data.Vulnerab_Vinculos_Fam_Descr}
-                    />
-                </label>
-            {/if}
-        </div>
-
-        <!-- Vitimização Secundária e Terciária (Container2_31) -->
-        <div>
-            <div class="block">
-                <span class="text-gray-700 font-semibold block mb-1"
-                    >Vítima identificada como vulnerável à vitimização
-                    secundária e terciária?</span
-                >
-                <div class="flex space-x-4">
-                    <label class="inline-flex items-center">
-                        <input
-                            type="radio"
-                            class="form-radio text-save-primary"
-                            bind:group={data.Vulnerab_Vitim_Sec_Ter}
-                            value="Sim"
-                        />
-                        <span class="ml-2">Sim</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input
-                            type="radio"
-                            class="form-radio text-save-primary"
-                            bind:group={data.Vulnerab_Vitim_Sec_Ter}
-                            value="Não"
-                            on:change={() => {
-                                data.Tipo_Vitim = "";
-                                data.Tipo_Vitim_Descr = "";
-                            }}
-                        />
-                        <span class="ml-2">Não</span>
-                    </label>
-                </div>
-            </div>
-
-            {#if data.Vulnerab_Vitim_Sec_Ter === "Sim"}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                    <label class="block">
-                        <span class="text-gray-700 font-semibold"
-                            >Qual é o tipo de vitimização?</span
-                        >
-                        <select
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Tipo_Vitim}
-                        >
-                            <option value="">Selecione...</option>
-                            <option value="Secundária">Secundária</option>
-                            <option value="Terciária">Terciária</option>
-                        </select>
-                    </label>
-                    <label class="block">
+                {#if data.Alt_Fam_Com_Vitim === "Sim"}
+                    <label class="block mt-3">
                         <span class="text-gray-700 font-semibold"
                             >Descreva:</span
                         >
                         <input
                             type="text"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                            bind:value={data.Tipo_Vitim_Descr}
+                            bind:value={data.Alt_Fam_Com_Vitim_Descr}
+                            on:input={autosave}
                         />
                     </label>
+                {/if}
+
+                <div class="block mt-4">
+                    <span class="text-gray-700 font-semibold block mb-2"
+                        >Foi identificada vulnerabilidade relacionada aos
+                        vínculos familiares e comunitários?</span
+                    >
+                    <div class="flex space-x-4">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                class="form-radio text-save-primary"
+                                bind:group={data.Vulnerab_Vinculos_Fam}
+                                value="Sim"
+                                on:change={autosave}
+                            />
+                            <span class="ml-2">Sim</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                class="form-radio text-save-primary"
+                                bind:group={data.Vulnerab_Vinculos_Fam}
+                                value="Não"
+                                on:change={() => {
+                                    data.Vulnerab_Vinculos_Fam_Descr = "";
+                                    autosave();
+                                }}
+                            />
+                            <span class="ml-2">Não</span>
+                        </label>
+                    </div>
                 </div>
-            {/if}
-        </div>
-        <!-- Manual Save Button -->
-        <div class="md:col-span-2 flex justify-end mt-4">
-            <button
-                class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
-                on:click={manualSave}
-                disabled={saving || loading}
-            >
-                {saving ? "Salvando..." : "Salvar Dados"}
-            </button>
+                {#if data.Vulnerab_Vinculos_Fam === "Sim"}
+                    <label class="block mt-3">
+                        <span class="text-gray-700 font-semibold"
+                            >Descreva:</span
+                        >
+                        <input
+                            type="text"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                            bind:value={data.Vulnerab_Vinculos_Fam_Descr}
+                            on:input={autosave}
+                        />
+                    </label>
+                {/if}
+            </div>
+
+            <!-- Container2_31: Vitimização Secundária e Terciária -->
+            <div class="border-2 border-gray-200 rounded-lg p-4 shadow-sm">
+                <div class="block">
+                    <span class="text-gray-700 font-semibold block mb-2"
+                        >Vítima identificada como vulnerável à vitimização
+                        secundária e terciária?</span
+                    >
+                    <div class="flex space-x-4">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                class="form-radio text-save-primary"
+                                bind:group={data.Vulnerab_Vitim_Sec_Ter}
+                                value="Sim"
+                                on:change={autosave}
+                            />
+                            <span class="ml-2">Sim</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                class="form-radio text-save-primary"
+                                bind:group={data.Vulnerab_Vitim_Sec_Ter}
+                                value="Não"
+                                on:change={() => {
+                                    data.Tipo_Vitim = "";
+                                    data.Tipo_Vitim_Descr = "";
+                                    autosave();
+                                }}
+                            />
+                            <span class="ml-2">Não</span>
+                        </label>
+                    </div>
+                </div>
+
+                {#if data.Vulnerab_Vitim_Sec_Ter === "Sim"}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                        <label class="block">
+                            <span class="text-gray-700 font-semibold"
+                                >Qual é o tipo de vitimização?</span
+                            >
+                            <select
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={data.Tipo_Vitim}
+                                on:change={autosave}
+                            >
+                                <option value="">Selecione...</option>
+                                <option value="Secundária">Secundária</option>
+                                <option value="Terciária">Terciária</option>
+                            </select>
+                        </label>
+                        <label class="block">
+                            <span class="text-gray-700 font-semibold"
+                                >Descreva:</span
+                            >
+                            <input
+                                type="text"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                bind:value={data.Tipo_Vitim_Descr}
+                                on:input={autosave}
+                            />
+                        </label>
+                    </div>
+                {/if}
+            </div>
+
+            <!-- Manual Save Button -->
+            <div class="flex justify-end mt-6">
+                <button
+                    class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
+                    on:click={manualSave}
+                    disabled={saving || loading}
+                >
+                    {saving ? "Salvando..." : "Salvar Dados"}
+                </button>
+            </div>
         </div>
     {/if}
 </div>
