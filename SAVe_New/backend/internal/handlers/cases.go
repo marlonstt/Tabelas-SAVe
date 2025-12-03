@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"save-backend/internal/database"
 	"save-backend/internal/models"
@@ -62,8 +63,21 @@ func GetCaseById(c *gin.Context) {
 	var encerramento models.SAVe_Encerramento
 	database.DB.First(&encerramento, id)
 
-	var agressores []models.SAVe_Agressor
-	database.DB.Where("\"ID_Caso\" = ?", id).Find(&agressores)
+	// var agressores []models.SAVe_Agressor
+	// database.DB.Where("\"ID_Caso\" = ?", id).Find(&agressores)
+
+	var perfilAgressores []models.SAVe_Perfil_Agressor
+	database.DB.Where("\"ID_Caso\" = ?", id).Find(&perfilAgressores)
+
+	// Fetch addresses for all aggressors
+	var perfilAgressorEnderecos []models.SAVe_Perfil_Agressor_Endereco
+	database.DB.Where("\"ID_Caso\" = ?", id).Find(&perfilAgressorEnderecos)
+
+	// Map addresses to aggressors for the response if needed, or send flat lists
+	// Sending flat lists is easier if the frontend reconstructs it, but nesting is nicer.
+	// Let's send both or nest them. For now, let's send them as separate lists in the JSON
+	// and let the frontend handle the mapping, or we can create a response struct.
+	// Given the current pattern, we just dump the tables.
 
 	var situacaoJuridica models.SAVe_Situacao_Juridica
 	database.DB.First(&situacaoJuridica, id)
@@ -140,15 +154,17 @@ func GetCaseById(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"geral":               geral,
-		"dadosEntrada":        dadosEntrada,
-		"identificacao":       identificacao,
-		"telefones":           telefones,
-		"emails":              emails,
-		"enderecos":           enderecos,
-		"casosVinculados":     casosVinculados,
-		"encerramento":        encerramento,
-		"agressor":            agressores,
+		"geral":             geral,
+		"dadosEntrada":      dadosEntrada,
+		"identificacao":     identificacao,
+		"telefones":         telefones,
+		"emails":            emails,
+		"enderecos":         enderecos,
+		"casosVinculados":   casosVinculados,
+		"encerramento":      encerramento,
+		"agressor":          perfilAgressores,        // Changed from agressores
+		"agressorEnderecos": perfilAgressorEnderecos, // Added
+
 		"situacaoJuridica":    situacaoJuridica,
 		"situacaoJuridica2":   situacaoJuridica2,
 		"processos":           situacaoJuridicaIP,
@@ -938,7 +954,10 @@ func UpdateCaseSection(c *gin.Context) {
 
 	case "agressor":
 		var input struct {
-			Agressores []models.SAVe_Agressor `json:"agressores"`
+			Agressores []struct {
+				models.SAVe_Perfil_Agressor
+				Enderecos []models.SAVe_Perfil_Agressor_Endereco `json:"enderecos"`
+			} `json:"agressores"`
 		}
 
 		if err := c.ShouldBindJSON(&input); err != nil {
@@ -948,21 +967,46 @@ func UpdateCaseSection(c *gin.Context) {
 
 		tx := database.DB.Begin()
 
-		// Delete all existing agressores for this case
-		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Agressor{}).Error; err != nil {
+		// Delete all existing agressores and their addresses for this case
+		// First delete addresses (child table)
+		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Perfil_Agressor_Endereco{}).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old agressor addresses"})
+			return
+		}
+
+		// Then delete aggressors
+		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Perfil_Agressor{}).Error; err != nil {
 			tx.Rollback()
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete old agressores"})
 			return
 		}
 
 		// Create new ones
-		for _, agressor := range input.Agressores {
+		for _, item := range input.Agressores {
+			agressor := item.SAVe_Perfil_Agressor
 			agressor.ID_Caso = id
 			agressor.ID = 0 // Ensure new ID
+			agressor.Modificado = time.Now()
+
 			if err := tx.Create(&agressor).Error; err != nil {
 				tx.Rollback()
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create agressor"})
 				return
+			}
+
+			// Create addresses for this agressor
+			for _, end := range item.Enderecos {
+				end.ID_Caso = id
+				end.ID_Perfil_Agressor = agressor.ID // Link to the newly created agressor
+				end.ID = 0                           // Ensure new ID
+				end.Modificado = time.Now()
+
+				if err := tx.Create(&end).Error; err != nil {
+					tx.Rollback()
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create agressor address"})
+					return
+				}
 			}
 		}
 

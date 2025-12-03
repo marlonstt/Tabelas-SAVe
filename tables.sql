@@ -596,24 +596,70 @@ CREATE TABLE "SAVe_Vitimizacao" (
     "VT_Espec_Outras_vit" TEXT
 );
 
--- Table: SAVe_Agressor
-CREATE TABLE "SAVe_Agressor" (
+-- Table: SAVe_Agressor (REMOVED - Superseded by SAVe_Perfil_Agressor)
+-- CREATE TABLE "SAVe_Agressor" (
+--     "ID" SERIAL PRIMARY KEY,
+--     "ID_Caso" INTEGER,
+--     "Tipo" TEXT,
+--     "Nome" TEXT,
+--     "Apelido" TEXT,
+--     "Idade" INTEGER,
+--     "Sexo" TEXT,
+--     "Raca" TEXT,
+--     "Relacao" TEXT,
+--     "Ocupacao" TEXT,
+--     "Renda" TEXT,
+--     "Escolaridade" TEXT,
+--     "Endereco" TEXT,
+--     "Antecedentes" TEXT,
+--     "Uso_Drogas" TEXT,
+--     "Porte_Arma" TEXT
+-- );
+
+-- Table: SAVe_Perfil_Agressor
+CREATE TABLE "SAVe_Perfil_Agressor" (
     "ID" SERIAL PRIMARY KEY,
     "ID_Caso" INTEGER,
-    "Tipo" TEXT,
-    "Nome" TEXT,
-    "Apelido" TEXT,
-    "Idade" INTEGER,
-    "Sexo" TEXT,
-    "Raca" TEXT,
-    "Relacao" TEXT,
-    "Ocupacao" TEXT,
-    "Renda" TEXT,
-    "Escolaridade" TEXT,
-    "Endereco" TEXT,
-    "Antecedentes" TEXT,
-    "Uso_Drogas" TEXT,
-    "Porte_Arma" TEXT
+    "PA_Nome_Civil" TEXT,
+    "PA_Nome_Social_Ancestral" TEXT,
+    "PA_Apelido" TEXT,
+    "PA_Data_Nascimento" TEXT,
+    "PA_Idade" INTEGER,
+    "PA_Filiacao_Mae" TEXT,
+    "PA_Filiacao_Pai" TEXT,
+    "PA_Nacionalidade" TEXT,
+    "PA_Naturalidade" TEXT,
+    "PA_Doc_CPF" TEXT,
+    "PA_Doc_RG" TEXT,
+    "PA_Doc_Situacao" TEXT,
+    "PA_PPS_Sexo" TEXT,
+    "PA_PPS_Identidade_Sexual" TEXT,
+    "PA_PPS_Identidade_Genero" TEXT,
+    "PA_PPS_Raca_Cor_Etnia" TEXT,
+    "PA_PPS_Estado_Civil" TEXT,
+    "PA_PPS_Religiao" TEXT,
+    "PA_Tipo_Agressor" TEXT,
+    "PA_CNPJ" TEXT,
+    "PA_Razao_Social" TEXT,
+    "PA_Endereco_Juridica" TEXT,
+    "PA_Vitima_Multiplos_Agress" TEXT,
+    "Modificado" TIMESTAMP
+);
+
+-- Table: SAVe_Perfil_Agressor_Endereco
+CREATE TABLE "SAVe_Perfil_Agressor_Endereco" (
+    "ID" SERIAL PRIMARY KEY,
+    "ID_Caso" INTEGER,
+    "ID_Perfil_Agressor" INTEGER,
+    "PAE_Endereco" TEXT,
+    "PAE_Numero" TEXT,
+    "PAE_Complemento" TEXT,
+    "PAE_Bairro" TEXT,
+    "PAE_Cidade" TEXT,
+    "PAE_UF" TEXT,
+    "PAE_CEP" TEXT,
+    "PAE_Situacao_Moradia" TEXT,
+    "Modificado" TIMESTAMP
 );
 
 -- Table: SAVe_SinteseAnalitica

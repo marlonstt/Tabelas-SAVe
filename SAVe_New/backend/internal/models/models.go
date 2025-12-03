@@ -673,7 +673,7 @@ func (SAVe_Vitimizacao) TableName() string {
 	return "\"SAVe_Vitimizacao\""
 }
 
-// SAVe_Agressor model (1:N relationship)
+// SAVe_Agressor model (Legacy - kept for reference if needed, but superseded by SAVe_Perfil_Agressor)
 type SAVe_Agressor struct {
 	ID           int    `gorm:"primaryKey;autoIncrement;column:\"ID\"" json:"ID"`
 	ID_Caso      int    `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
@@ -695,6 +695,58 @@ type SAVe_Agressor struct {
 
 func (SAVe_Agressor) TableName() string {
 	return "\"SAVe_Agressor\""
+}
+
+type SAVe_Perfil_Agressor struct {
+	ID                         int       `gorm:"primaryKey;autoIncrement;column:\"ID\"" json:"ID"`
+	ID_Caso                    int       `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
+	PA_Nome_Civil              string    `gorm:"column:\"PA_Nome_Civil\"" json:"PA_Nome_Civil"`
+	PA_Nome_Social_Ancestral   string    `gorm:"column:\"PA_Nome_Social_Ancestral\"" json:"PA_Nome_Social_Ancestral"`
+	PA_Apelido                 string    `gorm:"column:\"PA_Apelido\"" json:"PA_Apelido"`
+	PA_Data_Nascimento         string    `gorm:"column:\"PA_Data_Nascimento\"" json:"PA_Data_Nascimento"`
+	PA_Idade                   int       `gorm:"column:\"PA_Idade\"" json:"PA_Idade"`
+	PA_Filiacao_Mae            string    `gorm:"column:\"PA_Filiacao_Mae\"" json:"PA_Filiacao_Mae"`
+	PA_Filiacao_Pai            string    `gorm:"column:\"PA_Filiacao_Pai\"" json:"PA_Filiacao_Pai"`
+	PA_Nacionalidade           string    `gorm:"column:\"PA_Nacionalidade\"" json:"PA_Nacionalidade"`
+	PA_Naturalidade            string    `gorm:"column:\"PA_Naturalidade\"" json:"PA_Naturalidade"`
+	PA_Doc_CPF                 string    `gorm:"column:\"PA_Doc_CPF\"" json:"PA_Doc_CPF"`
+	PA_Doc_RG                  string    `gorm:"column:\"PA_Doc_RG\"" json:"PA_Doc_RG"`
+	PA_Doc_Situacao            string    `gorm:"column:\"PA_Doc_Situacao\"" json:"PA_Doc_Situacao"`
+	PA_PPS_Sexo                string    `gorm:"column:\"PA_PPS_Sexo\"" json:"PA_PPS_Sexo"`
+	PA_PPS_Identidade_Sexual   string    `gorm:"column:\"PA_PPS_Identidade_Sexual\"" json:"PA_PPS_Identidade_Sexual"`
+	PA_PPS_Identidade_Genero   string    `gorm:"column:\"PA_PPS_Identidade_Genero\"" json:"PA_PPS_Identidade_Genero"`
+	PA_PPS_Raca_Cor_Etnia      string    `gorm:"column:\"PA_PPS_Raca_Cor_Etnia\"" json:"PA_PPS_Raca_Cor_Etnia"`
+	PA_PPS_Estado_Civil        string    `gorm:"column:\"PA_PPS_Estado_Civil\"" json:"PA_PPS_Estado_Civil"`
+	PA_PPS_Religiao            string    `gorm:"column:\"PA_PPS_Religiao\"" json:"PA_PPS_Religiao"`
+	PA_Tipo_Agressor           string    `gorm:"column:\"PA_Tipo_Agressor\"" json:"PA_Tipo_Agressor"`
+	PA_CNPJ                    string    `gorm:"column:\"PA_CNPJ\"" json:"PA_CNPJ"`
+	PA_Razao_Social            string    `gorm:"column:\"PA_Razao_Social\"" json:"PA_Razao_Social"`
+	PA_Endereco_Juridica       string    `gorm:"column:\"PA_Endereco_Juridica\"" json:"PA_Endereco_Juridica"`
+	PA_Vitima_Multiplos_Agress string    `gorm:"column:\"PA_Vitima_Multiplos_Agress\"" json:"PA_Vitima_Multiplos_Agress"`
+	Modificado                 time.Time `gorm:"column:\"Modificado\"" json:"Modificado"`
+}
+
+func (SAVe_Perfil_Agressor) TableName() string {
+	return "\"SAVe_Perfil_Agressor\""
+}
+
+type SAVe_Perfil_Agressor_Endereco struct {
+	ID                   int       `gorm:"primaryKey;autoIncrement;column:\"ID\"" json:"ID"`
+	ID_Caso              int       `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
+	ID_Perfil_Agressor   int       `gorm:"column:\"ID_Perfil_Agressor\"" json:"ID_Perfil_Agressor"`
+	PAE_Endereco         string    `gorm:"column:\"PAE_Endereco\"" json:"PAE_Endereco"`
+	PAE_Numero           string    `gorm:"column:\"PAE_Numero\"" json:"PAE_Numero"`
+	PAE_Complemento      string    `gorm:"column:\"PAE_Complemento\"" json:"PAE_Complemento"`
+	PAE_Bairro           string    `gorm:"column:\"PAE_Bairro\"" json:"PAE_Bairro"`
+	PAE_Cidade           string    `gorm:"column:\"PAE_Cidade\"" json:"PAE_Cidade"`
+	PAE_UF               string    `gorm:"column:\"PAE_UF\"" json:"PAE_UF"`
+	PAE_CEP              string    `gorm:"column:\"PAE_CEP\"" json:"PAE_CEP"`
+	PAE_Situacao_Moradia string    `gorm:"column:\"PAE_Situacao_Moradia\"" json:"PAE_Situacao_Moradia"`
+	Modificado           time.Time `gorm:"column:\"Modificado\"" json:"Modificado"`
+}
+
+func (SAVe_Perfil_Agressor_Endereco) TableName() string {
+	return "\"SAVe_Perfil_Agressor_Endereco\""
 }
 
 type SAVe_SinteseAnalitica struct {
