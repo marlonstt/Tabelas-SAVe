@@ -647,6 +647,20 @@
 
     $: if (data) autosave();
 
+    function handleDateChange(agressor: any) {
+        if (agressor.PA_Data_Nascimento) {
+            const birthDate = new Date(agressor.PA_Data_Nascimento);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            agressor.PA_Idade = age;
+            autosave();
+        }
+    }
+
     function addAgressor() {
         data.agressores = [
             ...data.agressores,

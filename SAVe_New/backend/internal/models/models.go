@@ -139,7 +139,7 @@ type SAVe_Encerramento struct {
 	ID_Caso                 int    `gorm:"primaryKey;column:\"ID_Caso\"" json:"ID_Caso"`
 	Observacao              string `gorm:"column:\"Observacao\"" json:"Observacao"`
 	Data                    string `gorm:"column:\"Data\"" json:"Data_Encerramento"`
-	Forma_Encerramento      string `gorm:"column:\"Forma_Encerramento_Caso\"" json:"Forma_Encerramento"`
+	Forma_Encerramento_Caso string `gorm:"column:\"Forma_Encerramento_Caso\"" json:"Forma_Encerramento_Caso"`
 	Especifique_Outros      string `gorm:"column:\"Especifique_Outros\"" json:"Especifique_Outros"`
 	Encaminhamento_Pos_Alta string `gorm:"column:\"Encaminhamento_Pos_Alta\"" json:"Encaminhamento_Pos_Alta"`
 }

@@ -1018,35 +1018,6 @@ func UpdateCaseSection(c *gin.Context) {
 
 		c.JSON(http.StatusOK, gin.H{"message": "Agressor data saved successfully"})
 
-	case "encerramento":
-		var input models.SAVe_Encerramento
-		if err := c.ShouldBindJSON(&input); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		input.ID_Caso = id
-		tx := database.DB.Begin()
-
-		var count int64
-		tx.Model(&models.SAVe_Encerramento{}).Where("\"ID_Caso\" = ?", id).Count(&count)
-		if count == 0 {
-			if err := tx.Create(&input).Error; err != nil {
-				tx.Rollback()
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create encerramento: " + err.Error()})
-				return
-			}
-		} else {
-			if err := tx.Model(&models.SAVe_Encerramento{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
-				tx.Rollback()
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update encerramento: " + err.Error()})
-				return
-			}
-		}
-
-		tx.Commit()
-		c.JSON(http.StatusOK, gin.H{"message": "Encerramento updated successfully"})
-
 	case "acompanhamentos":
 		// Redirect to vinculos endpoint
 		var input struct {
@@ -1115,32 +1086,6 @@ func UpdateCaseSection(c *gin.Context) {
 
 		tx.Commit()
 		c.JSON(http.StatusOK, gin.H{"message": "Sintese Analitica updated successfully"})
-
-	case "geral":
-		var input struct {
-			Tipo_Form string `json:"Tipo_Form"`
-		}
-		if err := c.ShouldBindJSON(&input); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		updates := map[string]interface{}{}
-		if input.Tipo_Form != "" {
-			updates["Tipo_Form"] = input.Tipo_Form
-		}
-
-		if len(updates) > 0 {
-			tx := database.DB.Begin()
-			if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Updates(updates).Error; err != nil {
-				tx.Rollback()
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral info: " + err.Error()})
-				return
-			}
-			tx.Commit()
-		}
-
-		c.JSON(http.StatusOK, gin.H{"message": "Geral info updated successfully"})
 
 	case "ensino-trab-renda":
 		var input models.SAVe_Ensino_trab_renda
@@ -1247,6 +1192,68 @@ func UpdateCaseSection(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"message": "Habitacao Territorio updated successfully"})
+
+	case "geral":
+		var input models.SAVe_Geral
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		// Ensure ID is set correctly
+		input.ID_Caso = id
+
+		tx := database.DB.Begin()
+
+		// Use Updates to allow partial updates (e.g. only Paginas_Visitadas)
+		// But we need to be careful not to overwrite other fields with zero values if the struct is empty
+		// Gin ShouldBindJSON might parse partial JSON into the struct, leaving others as zero values.
+		// GORM Updates with struct only updates non-zero fields.
+		if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral info: " + err.Error()})
+			return
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Geral info updated successfully"})
+
+	case "encerramento":
+		var input models.SAVe_Encerramento
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		input.ID_Caso = id
+		tx := database.DB.Begin()
+
+		var count int64
+		tx.Model(&models.SAVe_Encerramento{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create encerramento: " + err.Error()})
+				return
+			}
+		} else {
+			if err := tx.Model(&models.SAVe_Encerramento{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update encerramento: " + err.Error()})
+				return
+			}
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Encerramento updated successfully"})
 
 	default:
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid section"})

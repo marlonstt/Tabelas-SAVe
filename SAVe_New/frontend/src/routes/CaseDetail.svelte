@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import api from "../lib/api";
+  import { isGlobalSaving } from "../lib/stores";
 
   // Import Section Components
   import DadosEntrada from "../components/sections/DadosEntrada.svelte";
@@ -87,6 +88,8 @@
       ? allSections.filter((s) => briefTabs.includes(s.id))
       : allSections;
 
+  let visitedPages: string[] = [];
+
   onMount(async () => {
     try {
       const response = await api.get(`/cases/${id}`);
@@ -97,6 +100,16 @@
             ? "completo"
             : "breve";
       }
+
+      // Initialize visited pages
+      if (caseData?.geral?.Paginas_Visitadas) {
+        visitedPages = caseData.geral.Paginas_Visitadas.split(";").filter(
+          (p: string) => p,
+        );
+      }
+
+      // Mark initial tab as visited
+      markPageAsVisited(activeTab);
     } catch (err) {
       console.warn("Backend unavailable, using Mock Data");
       caseData = {
@@ -110,6 +123,19 @@
     }
   });
 
+  async function markPageAsVisited(pageId: string) {
+    if (!visitedPages.includes(pageId)) {
+      visitedPages = [...visitedPages, pageId];
+      try {
+        await api.put(`/cases/${id}/geral`, {
+          Paginas_Visitadas: visitedPages.join(";"),
+        });
+      } catch (err) {
+        console.error("Error saving visited pages:", err);
+      }
+    }
+  }
+
   async function setFormType(type: "breve" | "completo") {
     const oldType = formType;
     formType = type;
@@ -117,6 +143,7 @@
     // If switching to brief and current tab is not allowed, switch to first allowed tab
     if (type === "breve" && !briefTabs.includes(activeTab)) {
       activeTab = "dadosEntrada";
+      markPageAsVisited(activeTab);
     }
 
     try {
@@ -234,13 +261,24 @@
       <nav class="flex space-x-1 py-3">
         {#each visibleSections as section}
           <button
-            on:click={() => (activeTab = section.id)}
-            class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border border-transparent
+            disabled={$isGlobalSaving}
+            on:click={() => {
+              if ($isGlobalSaving) return;
+              activeTab = section.id;
+              markPageAsVisited(section.id);
+            }}
+            class="relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border border-transparent flex flex-col items-center
                    {activeTab === section.id
               ? 'bg-save-primary text-white shadow-md transform scale-105'
-              : 'text-gray-600 hover:bg-gray-100 hover:text-save-primary hover:border-gray-200'}"
+              : 'text-gray-600 hover:bg-gray-100 hover:text-save-primary hover:border-gray-200'}
+                   {$isGlobalSaving ? 'opacity-50 cursor-not-allowed' : ''}"
           >
             {section.label}
+            {#if visitedPages.includes(section.id)}
+              <span
+                class="absolute -bottom-1 w-1.5 h-1.5 bg-green-500 rounded-full"
+              ></span>
+            {/if}
           </button>
         {/each}
       </nav>

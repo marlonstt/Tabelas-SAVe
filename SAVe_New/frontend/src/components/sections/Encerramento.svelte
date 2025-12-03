@@ -15,7 +15,7 @@
     $: if (caseId) {
         data = {
             Data_Encerramento: "",
-            Forma_Encerramento: "",
+            Forma_Encerramento_Caso: "",
             Especifique_Outros: "",
             Observacao: "",
             Encaminhamento_Pos_Alta: "",
@@ -35,7 +35,7 @@
                 );
                 data = {
                     Data_Encerramento: "",
-                    Forma_Encerramento: "",
+                    Forma_Encerramento_Caso: "",
                     Especifique_Outros: "",
                     Observacao: "",
                     Encaminhamento_Pos_Alta: "",
@@ -46,7 +46,7 @@
                 );
                 data = {
                     Data_Encerramento: "",
-                    Forma_Encerramento: "",
+                    Forma_Encerramento_Caso: "",
                     Especifique_Outros: "",
                     Observacao: "",
                     Encaminhamento_Pos_Alta: "",
@@ -213,7 +213,7 @@
                 <span class="text-gray-700">Forma de Encerramento</span>
                 <select
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                    bind:value={data.Forma_Encerramento}
+                    bind:value={data.Forma_Encerramento_Caso}
                     on:change={autosave}
                 >
                     <option value="">Selecione...</option>
@@ -225,7 +225,7 @@
                 </select>
             </label>
 
-            {#if data.Forma_Encerramento === "Outros"}
+            {#if data.Forma_Encerramento_Caso === "Outros"}
                 <label class="block">
                     <span class="text-gray-700">Especifique</span>
                     <input
