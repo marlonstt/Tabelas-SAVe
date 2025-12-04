@@ -1,6 +1,4 @@
 <script lang="ts">
-    export let caseId: string;
-
     const referencias = [
         {
             descricao: "Guia Metodológico PAV",

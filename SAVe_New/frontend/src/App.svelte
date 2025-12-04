@@ -65,12 +65,15 @@
     <Sidebar {user} {currentPath} onLogout={logout} />
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col relative overflow-hidden">
+    <div
+      class="flex-1 flex flex-col relative overflow-hidden"
+      style="background: linear-gradient(135deg, #FFFFFF 0%, #EEF2FF 100%);"
+    >
       <!-- Footer Vinheta (Background) -->
       <img
         src="/CasaLilian-vinheta.png"
         alt="Vinheta Casa Lilian"
-        class="absolute bottom-0 right-0 w-full h-auto object-cover opacity-60 pointer-events-none z-0"
+        class="absolute bottom-0 right-0 w-full h-auto object-cover opacity-40 pointer-events-none z-0"
       />
 
       <!-- Content Scrollable -->

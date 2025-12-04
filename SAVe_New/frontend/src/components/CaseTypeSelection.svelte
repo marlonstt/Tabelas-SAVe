@@ -25,9 +25,11 @@
         class="bg-white rounded-xl shadow-2xl p-10 max-w-4xl w-full mx-4 transform transition-all"
         transition:scale
         on:click|stopPropagation
+        on:keydown|stopPropagation
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
+        tabindex="-1"
     >
         <div class="text-center mb-8">
             <h2 id="modal-title" class="text-2xl font-bold text-gray-800 mb-2">

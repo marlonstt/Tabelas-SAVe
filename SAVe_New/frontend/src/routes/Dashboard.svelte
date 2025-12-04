@@ -155,7 +155,7 @@
     </div>
   {:else}
     <div
-      class="bg-white rounded-lg shadow overflow-hidden border border-gray-200"
+      class="bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-200"
     >
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
@@ -336,7 +336,7 @@
 
     <!-- Bottom Filters -->
     <div
-      class="mt-6 flex flex-col md:flex-row justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+      class="mt-6 flex flex-col md:flex-row justify-between items-center bg-white p-4 rounded-lg shadow-2xl border border-gray-200"
     >
       <div class="flex items-center w-full md:w-auto mb-4 md:mb-0">
         <span class="material-icons text-gray-400 mr-2">search</span>
