@@ -26,6 +26,13 @@
                 acompanhamentos: loadedAcompanhamentos.map((a: any) => ({
                     ...a,
                     Data: a.Data ? a.Data.split("T")[0] : "",
+                    Sintese: stripHtml(a.Sintese || ""),
+                    Encaminhamento: stripHtml(a.Encaminhamento || ""),
+                    _ResponsaveisList: a.Responsaveis
+                        ? a.Responsaveis.split(",").filter(
+                              (s: string) => s.trim() !== "",
+                          )
+                        : [],
                 })),
             };
         } catch (err) {
@@ -49,6 +56,16 @@
             lastSavedData = JSON.stringify(data);
         }
     });
+
+    function stripHtml(html: string) {
+        if (!html) return "";
+        // Create a temporary element to use browser's parsing
+        const tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        let text = tmp.textContent || tmp.innerText || "";
+        // Remove extra whitespace
+        return text.replace(/\s+/g, " ").trim();
+    }
 
     async function loadResponsaveis() {
         try {
@@ -113,7 +130,10 @@
                 Tipo_Atendimento: "Presencial",
                 Sintese: "",
                 Encaminhamento: "",
+                Encaminhamento_Rede: "",
+                Especifique_Encaminhamento: "",
                 Responsaveis: "",
+                _ResponsaveisList: [],
             },
         ];
         autosave();
@@ -198,12 +218,37 @@
                                 on:change={autosave}
                             >
                                 <option value="">Selecione...</option>
-                                <option value="Presencial">Presencial</option>
-                                <option value="Telefônico">Telefônico</option>
-                                <option value="Visita Domiciliar"
-                                    >Visita Domiciliar</option
+                                <option value="Acolhimento emergencial"
+                                    >Acolhimento emergencial</option
                                 >
-                                <option value="Outros">Outros</option>
+                                <option value="Atendimento inicial"
+                                    >Atendimento inicial</option
+                                >
+                                <option value="Atendimentos de acompanhamento"
+                                    >Atendimentos de acompanhamento</option
+                                >
+                                <option value="Orientação">Orientação</option>
+                                <option
+                                    value="Reuniões para discussão dos casos (interna ou externa)"
+                                    >Reuniões para discussão dos casos (interna
+                                    ou externa)</option
+                                >
+                                <option
+                                    value="Diligências de articulação de rede (para inclusão e/ou acompanhamento)"
+                                    >Diligências de articulação de rede (para
+                                    inclusão e/ou acompanhamento)</option
+                                >
+                                <option
+                                    value="Acompanhamento em audiências judiciais"
+                                    >Acompanhamento em audiências judiciais</option
+                                >
+                                <option value="Relatórios multidisciplinares"
+                                    >Relatórios multidisciplinares</option
+                                >
+                                <option
+                                    value="Consulta aos autos/diligência jurídica"
+                                    >Consulta aos autos/diligência jurídica</option
+                                >
                             </select>
                         </label>
 
@@ -222,12 +267,21 @@
                         <div class="md:col-span-2">
                             <label class="block">
                                 <span class="text-gray-700"
-                                    >Encaminhamentos</span
+                                    >Encaminhamento para Rede</span
                                 >
                                 <select
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={acomp.Encaminhamento}
-                                    on:change={autosave}
+                                    bind:value={acomp.Encaminhamento_Rede}
+                                    on:change={() => {
+                                        if (
+                                            acomp.Encaminhamento_Rede !==
+                                            "Outros"
+                                        ) {
+                                            acomp.Especifique_Encaminhamento =
+                                                "";
+                                        }
+                                        autosave();
+                                    }}
                                 >
                                     <option value="">Selecione...</option>
                                     <option value="Rede de proteção à mulher"
@@ -255,21 +309,107 @@
                             </label>
                         </div>
 
+                        {#if acomp.Encaminhamento_Rede === "Outros"}
+                            <div class="md:col-span-2">
+                                <label class="block">
+                                    <span class="text-gray-700"
+                                        >Especifique Encaminhamento</span
+                                    >
+                                    <input
+                                        type="text"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                        bind:value={
+                                            acomp.Especifique_Encaminhamento
+                                        }
+                                        on:input={autosave}
+                                    />
+                                </label>
+                            </div>
+                        {/if}
+
+                        <div class="md:col-span-2">
+                            <label class="block">
+                                <span class="text-gray-700"
+                                    >Encaminhamentos</span
+                                >
+                                <textarea
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                    rows="3"
+                                    bind:value={acomp.Encaminhamento}
+                                    on:input={autosave}
+                                ></textarea>
+                            </label>
+                        </div>
+
                         <div class="md:col-span-2">
                             <label class="block">
                                 <span class="text-gray-700">Responsáveis</span>
+
+                                <!-- Selected Responsibles Tags -->
+                                <div class="flex flex-wrap gap-2 mb-2">
+                                    {#each acomp._ResponsaveisList as respName, j}
+                                        <span
+                                            class="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded flex items-center"
+                                        >
+                                            {respName}
+                                            <button
+                                                type="button"
+                                                class="ml-1 text-blue-600 hover:text-blue-800 focus:outline-none"
+                                                on:click={() => {
+                                                    acomp._ResponsaveisList.splice(
+                                                        j,
+                                                        1,
+                                                    );
+                                                    acomp._ResponsaveisList =
+                                                        acomp._ResponsaveisList; // Trigger reactivity
+                                                    acomp.Responsaveis =
+                                                        acomp._ResponsaveisList.join(
+                                                            ",",
+                                                        );
+                                                    autosave();
+                                                }}
+                                            >
+                                                ×
+                                            </button>
+                                        </span>
+                                    {/each}
+                                </div>
+
+                                <!-- Add Responsible Dropdown -->
                                 <select
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={acomp.Responsaveis}
-                                    on:change={autosave}
+                                    value=""
+                                    on:change={(e) => {
+                                        const selectedName =
+                                            e.currentTarget.value;
+                                        if (
+                                            selectedName &&
+                                            !acomp._ResponsaveisList.includes(
+                                                selectedName,
+                                            )
+                                        ) {
+                                            acomp._ResponsaveisList = [
+                                                ...acomp._ResponsaveisList,
+                                                selectedName,
+                                            ];
+                                            acomp.Responsaveis =
+                                                acomp._ResponsaveisList.join(
+                                                    ",",
+                                                );
+                                            autosave();
+                                        }
+                                        e.currentTarget.value = ""; // Reset dropdown
+                                    }}
                                 >
                                     <option value=""
-                                        >Selecione um responsável...</option
+                                        >+ Adicionar Responsável...</option
                                     >
                                     {#each responsaveisList as resp}
-                                        <option value={resp.Nome}
-                                            >{resp.Nome} - {resp.Cargo}</option
-                                        >
+                                        {#if !acomp._ResponsaveisList.includes(resp.Nome)}
+                                            <option value={resp.Nome}>
+                                                {resp.Nome} - {resp.Cargo}
+                                            </option>
+                                        {/if}
                                     {/each}
                                 </select>
                             </label>

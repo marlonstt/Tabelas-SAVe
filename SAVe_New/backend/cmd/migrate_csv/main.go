@@ -125,7 +125,32 @@ func migrateTable(db *gorm.DB, filePath string, model interface{}) {
 					value = cleanDate(value)
 				}
 
+				// Fix for SAVe_Acompanhamentos column name mismatch
+				if field.Name == "Tipo_Atendimento" && modelType.Name() == "SAVe_Acompanhamentos" {
+					// Check if header is "Tipo_Atend" (already handled by findFieldByColumnName if we add logic there, but here is safer)
+					// Actually, findFieldByColumnName returns nil if it doesn't match.
+					// So we need to handle it BEFORE findFieldByColumnName or inside it.
+					// But we are iterating headers.
+				}
+
 				setFieldValue(newStruct.FieldByIndex(field.Index), value)
+			} else {
+				// Handle mismatched columns manually
+				if modelType.Name() == "SAVe_Acompanhamentos" && header == "Tipo_Atend" {
+					// Find Tipo_Atendimento field
+					f, _ := modelType.FieldByName("Tipo_Atendimento")
+					setFieldValue(newStruct.FieldByIndex(f.Index), value)
+				}
+			}
+		}
+
+		// Log specific case for debugging
+		if modelType.Name() == "SAVe_Acompanhamentos" {
+			// Check ID_Caso field
+			idCasoField, _ := modelType.FieldByName("ID_Caso")
+			idCasoVal := newStruct.FieldByIndex(idCasoField.Index).Int()
+			if idCasoVal == 455 {
+				log.Printf("Found Case 455 in CSV. Inserting...")
 			}
 		}
 

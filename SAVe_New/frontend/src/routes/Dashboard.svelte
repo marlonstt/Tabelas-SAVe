@@ -304,13 +304,25 @@
                   {c.Comarca || "-"}
                 </td>
                 <td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">
-                  -
+                  <div
+                    class="w-48 max-h-12 overflow-y-auto whitespace-normal break-words bg-gray-50 rounded p-1 border border-gray-100 text-xs"
+                  >
+                    {c.RespPsicossocial || "-"}
+                  </div>
                 </td>
                 <td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">
-                  -
+                  <div
+                    class="w-48 max-h-12 overflow-y-auto whitespace-normal break-words bg-gray-50 rounded p-1 border border-gray-100 text-xs"
+                  >
+                    {c.RespJuridico || "-"}
+                  </div>
                 </td>
-                <td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">
-                  {c.Tipo_Vitima || "-"}
+                <td class="px-2 py-1 text-xs text-gray-500">
+                  <div
+                    class="w-48 max-h-12 overflow-y-auto whitespace-normal break-words bg-gray-50 rounded p-1 border border-gray-100 text-xs"
+                  >
+                    {c.Tipo_Vitima || "-"}
+                  </div>
                 </td>
                 <td class="px-2 py-1 text-xs text-gray-500">
                   <div

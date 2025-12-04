@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"save-backend/internal/database"
@@ -23,6 +24,106 @@ func GetAllCases(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching cases"})
 		return
 	}
+
+	// 1. Fetch all Responsaveis to map Name -> Area
+	var responsaveis []models.SAVe_Responsaveis
+	if err := database.DB.Find(&responsaveis).Error; err != nil {
+		fmt.Println("Error fetching responsaveis:", err)
+		// Continue without them, just logging
+	}
+	respMap := make(map[string]string)
+	for _, r := range responsaveis {
+		respMap[strings.TrimSpace(r.Nome)] = strings.TrimSpace(r.Area)
+	}
+
+	// 2. Fetch all Acompanhamentos (ID_Caso, Responsaveis)
+	type AcompPartial struct {
+		ID_Caso      int
+		Responsaveis string
+	}
+	var acomps []AcompPartial
+	if err := database.DB.Table("\"SAVe_Acompanhamentos\"").Select("\"ID_Caso\", \"Responsaveis\"").Find(&acomps).Error; err != nil {
+		fmt.Println("Error fetching acompanhamentos:", err)
+	}
+
+	// Map CaseID -> List of Responsaveis strings
+	caseAcomps := make(map[int][]string)
+	for _, a := range acomps {
+		if a.Responsaveis != "" {
+			caseAcomps[a.ID_Caso] = append(caseAcomps[a.ID_Caso], a.Responsaveis)
+		}
+	}
+
+	// 4. Fetch extra details (Comarca_origem, N_procedimento_MPE)
+	type ExtraDetails struct {
+		ID_Caso            int
+		N_procedimento_MPE string
+		Comarca_origem     string
+	}
+	var details []ExtraDetails
+	if err := database.DB.Table("\"SAVe_DadosDeEntrada\"").Select("\"ID_Caso\", \"N_procedimento_MPE\", \"Comarca_origem\"").Find(&details).Error; err != nil {
+		fmt.Println("Error fetching extra details:", err)
+	}
+	detailsMap := make(map[int]ExtraDetails)
+	for _, d := range details {
+		detailsMap[d.ID_Caso] = d
+	}
+
+	// 5. Populate RespPsicossocial, RespJuridico, and fix fields
+	for i := range cases {
+		caseID := cases[i].ID_Caso
+
+		// Get extra details
+		if detail, ok := detailsMap[caseID]; ok {
+			// Fix Num_Processo if missing
+			if cases[i].Num_Processo == "" {
+				cases[i].Num_Processo = detail.N_procedimento_MPE
+			}
+			// Overwrite Comarca with Comarca_origem if present
+			if detail.Comarca_origem != "" {
+				cases[i].Comarca = detail.Comarca_origem
+			}
+		}
+
+		acompList := caseAcomps[caseID]
+
+		psicoSet := make(map[string]bool)
+		juridicoSet := make(map[string]bool)
+
+		for _, respStr := range acompList {
+			names := strings.Split(respStr, ",")
+			for _, name := range names {
+				name = strings.TrimSpace(name)
+				if name == "" {
+					continue
+				}
+				area, exists := respMap[name]
+				if exists {
+					if area == "Psicossocial" {
+						psicoSet[name] = true
+					} else if area == "Direito" {
+						juridicoSet[name] = true
+					}
+				}
+			}
+		}
+
+		// Helper to join unique names
+		joinKeys := func(m map[string]bool) string {
+			keys := make([]string, 0, len(m))
+			for k := range m {
+				keys = append(keys, k)
+			}
+			if len(keys) == 0 {
+				return "*Pendente Preenchimento*"
+			}
+			return strings.Join(keys, ", ")
+		}
+
+		cases[i].RespPsicossocial = joinKeys(psicoSet)
+		cases[i].RespJuridico = joinKeys(juridicoSet)
+	}
+
 	fmt.Printf("GetAllCases: Found %d cases\n", len(cases))
 	c.JSON(http.StatusOK, cases)
 }

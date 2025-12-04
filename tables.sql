@@ -556,6 +556,8 @@ CREATE TABLE "SAVe_Acompanhamentos" (
     "Tipo_Atendimento" TEXT,
     "Sintese" TEXT,
     "Encaminhamento" TEXT,
+    "Encaminhamento_Rede" TEXT,
+    "Especifique_Encaminhamento" TEXT,
     "Responsaveis" TEXT
 );
 

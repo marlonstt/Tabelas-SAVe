@@ -112,6 +112,12 @@ func Connect() {
 		&models.SAVe_protecao_seguranca{},
 		&models.SAVe_protecao_seguranca_ameacadores{},
 		&models.SAVe_protecao_seguranca_adolescente{},
+		&models.SAVe_Acompanhamentos{},
+		&models.SAVe_Vitimizacao{},
+		&models.SAVe_Perfil_Agressor{},
+		&models.SAVe_Perfil_Agressor_Endereco{},
+		&models.SAVe_Sintese_Analitica{},
+		&models.SAVe_Usuarios{},
 	)
 	if err != nil {
 		log.Println("ERROR: Failed to migrate other tables:", err)

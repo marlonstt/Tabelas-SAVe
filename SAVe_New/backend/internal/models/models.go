@@ -16,6 +16,8 @@ type SAVe_Geral struct {
 	Encerrado         string `gorm:"column:\"Encerrado\"" json:"Encerrado"`
 	Nome              string `gorm:"column:\"Nome\"" json:"Nome"`
 	Tipo_Crime        string `gorm:"column:\"Tipo_Crime\"" json:"Tipo_Crime"`
+	RespPsicossocial  string `gorm:"-" json:"RespPsicossocial"`
+	RespJuridico      string `gorm:"-" json:"RespJuridico"`
 }
 
 func (SAVe_Geral) TableName() string {
@@ -618,13 +620,15 @@ func (SAVe_protecao_seguranca_adolescente) TableName() string {
 }
 
 type SAVe_Acompanhamentos struct {
-	ID               uint   `gorm:"primaryKey;column:\"ID\"" json:"ID"`
-	ID_Caso          int    `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
-	Data             string `gorm:"column:\"Data\"" json:"Data"`
-	Tipo_Atendimento string `gorm:"column:\"Tipo_Atendimento\"" json:"Tipo_Atendimento"`
-	Sintese          string `gorm:"column:\"Sintese\"" json:"Sintese"`
-	Encaminhamento   string `gorm:"column:\"Encaminhamento\"" json:"Encaminhamento"`
-	Responsaveis     string `gorm:"column:\"Responsaveis\"" json:"Responsaveis"`
+	ID                         uint   `gorm:"primaryKey;column:\"ID\"" json:"ID"`
+	ID_Caso                    int    `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
+	Data                       string `gorm:"column:\"Data\"" json:"Data"`
+	Tipo_Atendimento           string `gorm:"column:\"Tipo_Atendimento\"" json:"Tipo_Atendimento"`
+	Sintese                    string `gorm:"column:\"Sintese\"" json:"Sintese"`
+	Encaminhamento             string `gorm:"column:\"Encaminhamento\"" json:"Encaminhamento"`
+	Encaminhamento_Rede        string `gorm:"column:\"Encaminhamento_Rede\"" json:"Encaminhamento_Rede"`
+	Especifique_Encaminhamento string `gorm:"column:\"Especifique_Encaminhamento\"" json:"Especifique_Encaminhamento"`
+	Responsaveis               string `gorm:"column:\"Responsaveis\"" json:"Responsaveis"`
 }
 
 func (SAVe_Acompanhamentos) TableName() string {
