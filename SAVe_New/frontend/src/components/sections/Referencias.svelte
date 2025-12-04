@@ -1,4 +1,10 @@
 <script lang="ts">
+    export let caseId: string = "";
+    export let caseData: any = undefined;
+
+    // Silence unused warning
+    $: _ = { caseId, caseData };
+
     const referencias = [
         {
             descricao: "Guia Metodológico PAV",
