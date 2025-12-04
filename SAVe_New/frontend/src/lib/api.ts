@@ -1,9 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api', //IP local(só roda localmente)
-  //baseURL: 'http://10.15.128.46:8080/api', //IP do servidor (esta máquina)
-  //baseURL: 'http://192.168.18.45:3000/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   headers: {
     'Content-Type': 'application/json',
   },
