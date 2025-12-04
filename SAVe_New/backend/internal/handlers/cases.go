@@ -250,10 +250,10 @@ func CreateCase(c *gin.Context) {
 }
 
 func DeleteCase(c *gin.Context) {
-	// Check for Admin role
-	role, exists := c.Get("userRole")
-	if !exists || (role != "Admin" && role != "admin") {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Admin access required"})
+	// Check for specific admin email
+	email, exists := c.Get("userEmail")
+	if !exists || email != "admin@mpmg.mp.br" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Apenas o administrador principal pode excluir casos"})
 		return
 	}
 
@@ -307,6 +307,107 @@ func DeleteCase(c *gin.Context) {
 	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Casos_Vinculados{}).Error; err != nil {
 		tx.Rollback()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete casos vinculados"})
+		return
+	}
+
+	// 5. Other Tables
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Encerramento{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete encerramento"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Situacao_Juridica{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete situacao juridica"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Situacao_Juridica2{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete situacao juridica 2"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Situacao_Juridica_Incluir_processo{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete processos"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Saude{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete saude"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Habitacao_territorio{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete habitacao territorio"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Assistencia{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete assistencia"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Ensino_trab_renda{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete ensino trab renda"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Vinculos{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete vinculos"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Vinculos_Apoio{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete vinculos apoio"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_protecao_seguranca{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete protecao seguranca"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_protecao_seguranca_ameacadores{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete ameacadores"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_protecao_seguranca_adolescente{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete adolescentes"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Acompanhamentos{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete acompanhamentos"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Vitimizacao{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete vitimizacao"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Perfil_Agressor_Endereco{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete agressor enderecos"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Perfil_Agressor{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete agressor"})
+		return
+	}
+	if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Sintese_Analitica{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete sintese analitica"})
+		return
+	}
+
+	// Delete potential legacy/duplicate table SAVe_SinteseAnalitica
+	if err := tx.Exec("DELETE FROM \"SAVe_SinteseAnalitica\" WHERE \"ID_Caso\" = ?", id).Error; err != nil {
+		// We log but continue if table doesn't exist, or fail?
+		// Given user requirement, we treat it as a required table.
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete legacy sintese analitica"})
 		return
 	}
 

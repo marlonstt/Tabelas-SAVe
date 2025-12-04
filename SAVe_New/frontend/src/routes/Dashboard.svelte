@@ -157,9 +157,9 @@
     <div
       class="bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-200"
     >
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
         <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+          <thead class="bg-gray-50 sticky top-0 z-10">
             <tr>
               <th
                 scope="col"

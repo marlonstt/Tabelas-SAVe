@@ -89,14 +89,40 @@
       : allSections;
 
   let visitedPages: string[] = [];
+  let canDelete = false;
+
+  async function deleteCase() {
+    if (
+      !confirm(
+        "Tem certeza que deseja excluir este caso? Esta ação não pode ser desfeita.",
+      )
+    ) {
+      return;
+    }
+    try {
+      await api.delete(`/cases/${id}`);
+      alert("Caso excluído com sucesso!");
+      window.location.href = "/dashboard";
+    } catch (err: any) {
+      console.error("Erro ao excluir caso:", err);
+      alert(
+        "Erro ao excluir caso: " + (err.response?.data?.error || err.message),
+      );
+    }
+  }
 
   onMount(async () => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    canDelete = user.email === "admin@mpmg.mp.br";
     try {
       const response = await api.get(`/cases/${id}`);
       caseData = response.data;
       if (caseData?.geral?.Tipo_Form) {
+        const tipo = caseData.geral.Tipo_Form.toLowerCase();
         formType =
-          caseData.geral.Tipo_Form.toLowerCase() === "completo"
+          tipo === "completo" ||
+          tipo === "versão completa" ||
+          tipo === "versao completa"
             ? "completo"
             : "breve";
       }
@@ -226,6 +252,16 @@
           >
             <span class="material-icons text-sm">lock_open</span>
             Reabrir Caso
+          </button>
+        {/if}
+
+        {#if canDelete}
+          <button
+            on:click={deleteCase}
+            class="px-3 py-1.5 text-xs font-medium rounded-md bg-red-500 hover:bg-red-600 text-white transition-all duration-200 shadow-sm flex items-center gap-1 ml-2"
+          >
+            <span class="material-icons text-sm">delete</span>
+            Excluir
           </button>
         {/if}
 

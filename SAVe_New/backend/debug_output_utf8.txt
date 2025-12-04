@@ -1,0 +1,5 @@
+Migrating Todas listas SAVe/SAVe_Ensino-trab-renda.csv...
+First header: "\"ID_Caso\""
+Found 347 records in CSV
+First record struct: {ID_Caso:0 Grau_escolaridade: Estuda_atualmente: Nome_instituicao: Tipo_instituicao: Retorno_estudos: Situacao_trabalho: Profissao: Valor_renda: Valor_renda_esp: TR_Prejuizo_trabalho: TR_tipo_prejuizo: TR_descricao_prejuizo: PT_prejuizo_patrimonio: PT_Descricao_pp: VE_prejuizo_escolar: VE_tipo_PE: VE_descricao_pe: Demanda_educacional:false Desc_demanda_educacional: Demanda_trabalhista:false Desc_demanda_trabalhista: Esta_Afastado: Motivo_afastamento: Motivo_Afastamento_Detalhado: CreatedAt:0001-01-01 00:00:00 +0000 UTC UpdatedAt:0001-01-01 00:00:00 +0000 UTC}
+Error inserting record 0 in Todas listas SAVe/SAVe_Ensino-trab-renda.csv: ERRO: o valor nulo na coluna "ID_Caso" da relação "SAVe_Ensino_Trab_Renda" viola a restrição de não-nulo (SQLSTATE 23502)
