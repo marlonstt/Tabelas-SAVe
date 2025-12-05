@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import api from "../lib/api";
   import { isGlobalSaving } from "../lib/stores";
+  import ConfirmModal from "../components/ConfirmModal.svelte";
 
   // Import Section Components
   import DadosEntrada from "../components/sections/DadosEntrada.svelte";
@@ -90,15 +91,13 @@
 
   let visitedPages: string[] = [];
   let canDelete = false;
+  let showConfirmModal = false;
 
-  async function deleteCase() {
-    if (
-      !confirm(
-        "Tem certeza que deseja excluir este caso? Esta ação não pode ser desfeita.",
-      )
-    ) {
-      return;
-    }
+  function deleteCase() {
+    showConfirmModal = true;
+  }
+
+  async function confirmDeleteCase() {
     try {
       await api.delete(`/cases/${id}`);
       alert("Caso excluído com sucesso!");
@@ -108,6 +107,7 @@
       alert(
         "Erro ao excluir caso: " + (err.response?.data?.error || err.message),
       );
+      showConfirmModal = false;
     }
   }
 
@@ -257,6 +257,7 @@
 
         {#if canDelete}
           <button
+            type="button"
             on:click={deleteCase}
             class="px-3 py-1.5 text-xs font-medium rounded-md bg-red-500 hover:bg-red-600 text-white transition-all duration-200 shadow-sm flex items-center gap-1 ml-2"
           >
@@ -344,6 +345,15 @@
       {/each}
     </div>
   </div>
+
+  <ConfirmModal
+    isOpen={showConfirmModal}
+    title="Excluir Caso"
+    message="Tem certeza que deseja excluir este caso? Esta ação não pode ser desfeita."
+    confirmText="Excluir"
+    on:close={() => (showConfirmModal = false)}
+    on:confirm={confirmDeleteCase}
+  />
 {/if}
 
 <style>

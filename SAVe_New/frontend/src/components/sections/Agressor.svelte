@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import api from "../../lib/api";
+    import ConfirmModal from "../ConfirmModal.svelte";
 
     export let caseId: string;
 
@@ -12,6 +13,10 @@
     let saveTimeout: any;
     let lastSavedData: string = "";
     let saveStatus = "";
+
+    // Modal state
+    let showConfirmModal = false;
+    let agressorToDeleteIndex: number | null = null;
 
     // Options for dropdowns
     const sexoOptions = ["Feminino", "Masculino", "Intersexo", "Não informado"];
@@ -660,11 +665,24 @@
     }
 
     function removeAgressor(index: number) {
-        if (confirm("Tem certeza que deseja remover este agressor?")) {
-            data.agressores = data.agressores.filter(
-                (_: any, i: number) => i !== index,
+        console.log("Solicitando remoção do agressor índice:", index);
+        agressorToDeleteIndex = index;
+        showConfirmModal = true;
+    }
+
+    function confirmDeleteAgressor() {
+        if (agressorToDeleteIndex !== null) {
+            console.log(
+                "Confirmada remoção do agressor índice:",
+                agressorToDeleteIndex,
             );
+            data.agressores = data.agressores.filter(
+                (_: any, i: number) => i !== agressorToDeleteIndex,
+            );
+            console.log("Novos agressores:", data.agressores);
             autosave();
+            agressorToDeleteIndex = null;
+            showConfirmModal = false;
         }
     }
 
@@ -1310,3 +1328,12 @@
         </div>
     {/if}
 </div>
+
+<ConfirmModal
+    isOpen={showConfirmModal}
+    title="Remover Agressor"
+    message="Tem certeza que deseja remover este agressor? Esta ação não pode ser desfeita."
+    confirmText="Remover"
+    on:close={() => (showConfirmModal = false)}
+    on:confirm={confirmDeleteAgressor}
+/>

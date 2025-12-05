@@ -1,11 +1,16 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import api from "../lib/api";
+    import ConfirmModal from "./ConfirmModal.svelte";
 
     let responsaveis: any[] = [];
     let loading = true;
     let showModal = false;
     let editingId: number | null = null;
+
+    // Confirm Modal State
+    let showConfirmModal = false;
+    let responsavelToDeleteId: number | null = null;
 
     // Form data
     let nome = "";
@@ -105,16 +110,24 @@
         }
     }
 
-    async function deleteResponsavel(id: number) {
-        if (!confirm("Tem certeza que deseja excluir este responsável?"))
-            return;
+    function deleteResponsavel(id: number) {
+        responsavelToDeleteId = id;
+        showConfirmModal = true;
+    }
 
-        try {
-            await api.delete(`/admin/responsaveis/${id}`);
-            loadResponsaveis();
-        } catch (error) {
-            console.error("Error deleting responsavel:", error);
-            alert("Erro ao excluir responsável.");
+    async function confirmDeleteResponsavel() {
+        if (responsavelToDeleteId) {
+            try {
+                await api.delete(
+                    `/admin/responsaveis/${responsavelToDeleteId}`,
+                );
+                loadResponsaveis();
+                showConfirmModal = false;
+                responsavelToDeleteId = null;
+            } catch (error) {
+                console.error("Error deleting responsavel:", error);
+                alert("Erro ao excluir responsável.");
+            }
         }
     }
 </script>
@@ -188,6 +201,7 @@
                                     Editar
                                 </button>
                                 <button
+                                    type="button"
                                     class="text-red-600 hover:text-red-900"
                                     on:click={() => deleteResponsavel(resp.ID)}
                                 >
@@ -283,3 +297,12 @@
         </div>
     {/if}
 </div>
+
+<ConfirmModal
+    isOpen={showConfirmModal}
+    title="Excluir Responsável"
+    message="Tem certeza que deseja excluir este responsável?"
+    confirmText="Excluir"
+    on:close={() => (showConfirmModal = false)}
+    on:confirm={confirmDeleteResponsavel}
+/>

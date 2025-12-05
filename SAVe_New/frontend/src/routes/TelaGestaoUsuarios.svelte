@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import api from "../lib/api";
+    import ConfirmModal from "../components/ConfirmModal.svelte";
 
     interface User {
         id: number;
@@ -16,6 +17,11 @@
     let loading = true;
     let showModal = false;
     let editingUser: User | null = null;
+
+    // Confirm Modal State
+    let showConfirmModal = false;
+    let userToDeleteId: number | null = null;
+
     let formData = {
         email: "",
         cargo: "",
@@ -79,14 +85,21 @@
         }
     }
 
-    async function handleDeleteUser(id: number) {
-        if (!confirm("Tem certeza que deseja excluir este usuário?")) return;
+    function handleDeleteUser(id: number) {
+        userToDeleteId = id;
+        showConfirmModal = true;
+    }
 
-        try {
-            await api.delete(`/admin/users/${id}`);
-            fetchUsers();
-        } catch (error) {
-            alert("Erro ao excluir usuário");
+    async function confirmDeleteUser() {
+        if (userToDeleteId) {
+            try {
+                await api.delete(`/admin/users/${userToDeleteId}`);
+                fetchUsers();
+                showConfirmModal = false;
+                userToDeleteId = null;
+            } catch (error) {
+                alert("Erro ao excluir usuário");
+            }
         }
     }
 </script>
@@ -221,6 +234,7 @@
                                         Editar
                                     </button>
                                     <button
+                                        type="button"
                                         on:click={() =>
                                             handleDeleteUser(user.id)}
                                         class="text-red-600 hover:text-red-800 font-semibold hover:underline ml-3"
@@ -370,3 +384,12 @@
         </div>
     </div>
 {/if}
+
+<ConfirmModal
+    isOpen={showConfirmModal}
+    title="Excluir Usuário"
+    message="Tem certeza que deseja excluir este usuário?"
+    confirmText="Excluir"
+    on:close={() => (showConfirmModal = false)}
+    on:confirm={confirmDeleteUser}
+/>
