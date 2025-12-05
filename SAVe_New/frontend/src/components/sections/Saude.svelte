@@ -1065,7 +1065,7 @@
                         <span
                             class="block text-sm font-medium text-gray-700 mb-1"
                         >
-                            Acompanhamento no RAPS?
+                            Faz acompanhamento na Rede de Atenção Psicossocial?
                         </span>
                         <div class="flex gap-4">
                             <label class="inline-flex items-center">
@@ -1235,113 +1235,6 @@
 
             <hr class="border-gray-200" />
 
-            <!-- Impacto na Saúde -->
-            <div class="space-y-4">
-                <h3 class="text-lg font-semibold text-gray-700">
-                    Impacto na Saúde
-                </h3>
-                <div>
-                    <span class="block text-sm font-medium text-gray-700 mb-1">
-                        Houve impacto na saúde?
-                    </span>
-                    <div class="flex gap-4">
-                        <label class="inline-flex items-center">
-                            <input
-                                type="radio"
-                                bind:group={data.IV_Houve_Impacto_Saude}
-                                value="Sim"
-                                on:change={() =>
-                                    handleRadioChange(
-                                        "IV_Houve_Impacto_Saude",
-                                        "Sim",
-                                    )}
-                                class="form-radio text-blue-600"
-                            />
-                            <span class="ml-2">Sim</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="radio"
-                                bind:group={data.IV_Houve_Impacto_Saude}
-                                value="Não"
-                                on:change={() =>
-                                    handleRadioChange(
-                                        "IV_Houve_Impacto_Saude",
-                                        "Não",
-                                        [
-                                            "IV_Lesoes_Nao_Fatais",
-                                            "IV_Defic_vitimizacao",
-                                            "IV_Defic_vitimizacao_tipo",
-                                            "IV_Problemas_De_Saude",
-                                            "IV_Comp_Cogn_Comport",
-                                            "IV_Comp_Cogn_Comport_tipo",
-                                            "IV_Outro",
-                                            "IV_Outro_espec",
-                                        ],
-                                    )}
-                                class="form-radio text-blue-600"
-                            />
-                            <span class="ml-2">Não</span>
-                        </label>
-                    </div>
-                </div>
-
-                {#if data.IV_Houve_Impacto_Saude === "Sim"}
-                    <div class="space-y-4 ml-4 border-l-2 border-gray-200 pl-4">
-                        <!-- Lesões não fatais -->
-                        <div class="flex flex-col space-y-2">
-                            <label class="inline-flex items-center">
-                                <input
-                                    type="checkbox"
-                                    bind:checked={data.IV_Lesoes_Nao_Fatais}
-                                    on:change={() => {
-                                        if (!data.IV_Lesoes_Nao_Fatais) {
-                                            data.IV_Defic_vitimizacao = "";
-                                            data.IV_Defic_vitimizacao_tipo = "";
-                                        }
-                                        autosave();
-                                    }}
-                                    class="form-checkbox h-4 w-4 text-blue-600"
-                                />
-                                <span class="ml-2 text-sm text-gray-700"
-                                    >Lesões não fatais</span
-                                >
-                            </label>
-                            {#each mentalHealthOptions as option}
-                                <label class="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        checked={data.IV_Impacto_Saude_Mental_tipos &&
-                                            data.IV_Impacto_Saude_Mental_tipos.split(
-                                                ";",
-                                            ).includes(option.value)}
-                                        on:change={() =>
-                                            toggleMentalHealth(option.value)}
-                                        class="form-checkbox h-4 w-4 text-blue-600"
-                                    />
-                                    <span class="ml-2 text-sm text-gray-700"
-                                        >{option.label}</span
-                                    >
-                                </label>
-                            {/each}
-                        </div>
-                        {#if data.IV_Impacto_Saude_Mental_tipos && data.IV_Impacto_Saude_Mental_tipos.split(";").includes("ISTOutros")}
-                            <div class="mt-2 ml-6">
-                                <input
-                                    type="text"
-                                    bind:value={data.IV_ISTOutros_esp}
-                                    on:input={autosave}
-                                    placeholder="Especifique..."
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                />
-                            </div>
-                        {/if}
-                    </div>
-                {/if}
-            </div>
-
-            <hr class="border-gray-200" />
-
             <!-- Relação familiar e de cuidado -->
             <div class="space-y-4">
                 <h3 class="text-lg font-semibold text-gray-700">
@@ -1403,6 +1296,113 @@
                         </div>
                     {/if}
                 </div>
+            </div>
+
+            <hr class="border-gray-200" />
+
+            <!-- Impacto na Saúde -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700">
+                    Impacto na Saúde
+                </h3>
+                <div>
+                    <span class="block text-sm font-medium text-gray-700 mb-1">
+                        Houve impacto na saúde?
+                    </span>
+                    <div class="flex gap-4">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                bind:group={data.IV_Houve_Impacto_Saude}
+                                value="Sim"
+                                on:change={() =>
+                                    handleRadioChange(
+                                        "IV_Houve_Impacto_Saude",
+                                        "Sim",
+                                    )}
+                                class="form-radio text-blue-600"
+                            />
+                            <span class="ml-2">Sim</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                bind:group={data.IV_Houve_Impacto_Saude}
+                                value="Não"
+                                on:change={() =>
+                                    handleRadioChange(
+                                        "IV_Houve_Impacto_Saude",
+                                        "Não",
+                                        [
+                                            "IV_Lesoes_Nao_Fatais",
+                                            "IV_Defic_vitimizacao",
+                                            "IV_Defic_vitimizacao_tipo",
+                                            "IV_Problemas_De_Saude",
+                                            "IV_Comp_Cogn_Comport",
+                                            "IV_Comp_Cogn_Comport_tipo",
+                                            "IV_Outro",
+                                            "IV_Outro_espec",
+                                        ],
+                                    )}
+                                class="form-radio text-blue-600"
+                            />
+                            <span class="ml-2">Não</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!--{#if data.IV_Houve_Impacto_Saude === "Sim"}-->
+                <div class="space-y-4 ml-4 border-l-2 border-gray-200 pl-4">
+                    <!-- Lesões não fatais -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="checkbox"
+                                bind:checked={data.IV_Lesoes_Nao_Fatais}
+                                on:change={() => {
+                                    if (!data.IV_Lesoes_Nao_Fatais) {
+                                        data.IV_Defic_vitimizacao = "";
+                                        data.IV_Defic_vitimizacao_tipo = "";
+                                    }
+                                    autosave();
+                                }}
+                                class="form-checkbox h-4 w-4 text-blue-600"
+                            />
+                            <span class="ml-2 text-sm text-gray-700"
+                                >Lesões não fatais</span
+                            >
+                        </label>
+                        {#each mentalHealthOptions as option}
+                            <label class="inline-flex items-center">
+                                <input
+                                    type="checkbox"
+                                    checked={data.IV_Impacto_Saude_Mental_tipos &&
+                                        data.IV_Impacto_Saude_Mental_tipos.split(
+                                            ";",
+                                        ).includes(option.value)}
+                                    on:change={() =>
+                                        toggleMentalHealth(option.value)}
+                                    class="form-checkbox h-4 w-4 text-blue-600"
+                                />
+                                <span class="ml-2 text-sm text-gray-700"
+                                    >{option.label}</span
+                                >
+                            </label>
+                        {/each}
+                    </div>
+                    {#if data.IV_Impacto_Saude_Mental_tipos && data.IV_Impacto_Saude_Mental_tipos.split(";").includes("ISTOutros")}
+                        <div class="mt-2 ml-6">
+                            <input
+                                type="text"
+                                bind:value={data.IV_ISTOutros_esp}
+                                on:input={autosave}
+                                placeholder="Especifique..."
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            />
+                        </div>
+                    {/if}
+                </div>
+                <!--{/if}-->
             </div>
 
             <!-- Manual Save Button -->

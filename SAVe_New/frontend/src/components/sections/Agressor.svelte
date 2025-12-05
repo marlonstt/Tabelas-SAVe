@@ -72,7 +72,7 @@
         "Situação de Rua",
         "Outra",
     ];
-    const tipoAgressorOptions = ["Pessoa Natural", "Pessoa Jurídica"];
+    const tipoAgressorOptions = ["Natural", "Jurídica"];
     const docSituacaoOptions = ["Regular", "Irregular", "Pendente"];
     const nacionalidadeOptions = [
         "Afegã (Afeganistão)",
@@ -651,7 +651,7 @@
         data.agressores = [
             ...data.agressores,
             {
-                PA_Tipo_Agressor: "Pessoa Natural",
+                PA_Tipo_Agressor: "",
                 enderecos: [],
                 Modificado: new Date().toISOString(),
             },
@@ -757,6 +757,7 @@
                                 Agressor {i + 1}
                             </h3>
                             <button
+                                type="button"
                                 class="text-red-500 hover:text-red-700 flex items-center text-sm"
                                 on:click={() => removeAgressor(i)}
                             >

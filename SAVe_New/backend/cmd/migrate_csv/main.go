@@ -141,6 +141,90 @@ func migrateTable(db *gorm.DB, filePath string, model interface{}) {
 					f, _ := modelType.FieldByName("Tipo_Atendimento")
 					setFieldValue(newStruct.FieldByIndex(f.Index), value)
 				}
+				if modelType.Name() == "SAVe_Identificacao_email" && (strings.EqualFold(header, "E-mail") || strings.EqualFold(header, "Email")) {
+					f, _ := modelType.FieldByName("Email")
+					setFieldValue(newStruct.FieldByIndex(f.Index), value)
+				}
+			}
+		}
+
+		// Custom logic to prevent duplicates for Phones and Emails
+		if modelType.Name() == "SAVe_Identificacao_telefone" {
+			var existing models.SAVe_Identificacao_telefone
+			idCasoField := newStruct.FieldByName("ID_Caso")
+			telefoneField := newStruct.FieldByName("TelefoneDDD")
+
+			// Only check if ID_Caso is valid (not 0)
+			if idCasoField.Int() != 0 {
+				if err := tx.Where("\"ID_Caso\" = ? AND \"TelefoneDDD\" = ?", idCasoField.Int(), telefoneField.String()).First(&existing).Error; err == nil {
+					// Found existing, update ID so GORM updates instead of inserts
+					newStruct.FieldByName("ID").SetInt(int64(existing.ID))
+				}
+			}
+		} else if modelType.Name() == "SAVe_Identificacao_email" {
+			var existing models.SAVe_Identificacao_email
+			idCasoField := newStruct.FieldByName("ID_Caso")
+			emailField := newStruct.FieldByName("Email")
+
+			// Only check if ID_Caso is valid (not 0)
+			if idCasoField.Int() != 0 {
+				if err := tx.Where("\"ID_Caso\" = ? AND \"Email\" = ?", idCasoField.Int(), emailField.String()).First(&existing).Error; err == nil {
+					// Found existing, update ID so GORM updates instead of inserts
+					newStruct.FieldByName("ID").SetInt(int64(existing.ID))
+				}
+			}
+		} else if modelType.Name() == "SAVe_Identificacao_endereco" {
+			var existing models.SAVe_Identificacao_endereco
+			idCasoField := newStruct.FieldByName("ID_Caso")
+			enderecoField := newStruct.FieldByName("Endereco")
+			numeroField := newStruct.FieldByName("Numero")
+
+			// Only check if ID_Caso is valid (not 0)
+			if idCasoField.Int() != 0 {
+				if err := tx.Where("\"ID_Caso\" = ? AND \"Endereco\" = ? AND \"Numero\" = ?", idCasoField.Int(), enderecoField.String(), numeroField.String()).First(&existing).Error; err == nil {
+					// Found existing, update ID so GORM updates instead of inserts
+					newStruct.FieldByName("ID").SetInt(int64(existing.ID))
+				}
+			}
+		} else if modelType.Name() == "SAVe_Usuarios" {
+			var existing models.SAVe_Usuarios
+			emailField := newStruct.FieldByName("Email")
+
+			if emailField.String() != "" {
+				if err := tx.Where("email = ?", emailField.String()).First(&existing).Error; err == nil {
+					// Found existing, update ID so GORM updates instead of inserts
+					newStruct.FieldByName("ID").SetInt(int64(existing.ID))
+				}
+			}
+		} else if modelType.Name() == "SAVe_Perfil_Agressor" {
+			var existing models.SAVe_Perfil_Agressor
+			idCasoField := newStruct.FieldByName("ID_Caso")
+			nomeCivilField := newStruct.FieldByName("PA_Nome_Civil")
+			razaoSocialField := newStruct.FieldByName("PA_Razao_Social")
+
+			if idCasoField.Int() != 0 {
+				query := tx.Where("\"ID_Caso\" = ?", idCasoField.Int())
+
+				// Check for duplicate based on Name or Razao Social
+				if nomeCivilField.String() != "" {
+					query = query.Where("\"PA_Nome_Civil\" = ?", nomeCivilField.String())
+				} else if razaoSocialField.String() != "" {
+					query = query.Where("\"PA_Razao_Social\" = ?", razaoSocialField.String())
+				} else {
+					// If neither name nor razao social is present, skip duplicate check or handle as needed
+					// For now, let's assume one of them must be present for a valid duplicate check
+					// Or we could check other fields if necessary.
+					// If both are empty, it might be an empty record or just ID_Caso.
+					// Let's try to match just ID_Caso if it's the only thing? No, that would merge all aggressors for a case.
+					// So if no name/razao, we proceed as new (or maybe it's a bad record).
+				}
+
+				if nomeCivilField.String() != "" || razaoSocialField.String() != "" {
+					if err := query.First(&existing).Error; err == nil {
+						// Found existing, update ID
+						newStruct.FieldByName("ID").SetInt(int64(existing.ID))
+					}
+				}
 			}
 		}
 
@@ -218,6 +302,30 @@ func cleanDate(value string) string {
 	return value
 }
 
+func parseTime(value string) *time.Time {
+	if value == "" {
+		return nil
+	}
+
+	layouts := []string{
+		"02/01/2006",
+		"02/01/2006 15:04",
+		"02/01/2006 15:04:05",
+		"2006-01-02",
+		"2006-01-02 15:04:05",
+		"2006-01-02T15:04:05Z",
+		time.RFC3339,
+	}
+
+	for _, layout := range layouts {
+		t, err := time.Parse(layout, value)
+		if err == nil {
+			return &t
+		}
+	}
+	return nil
+}
+
 func findFieldByColumnName(t reflect.Type, colName string) *reflect.StructField {
 	// Trim quotes from column name
 	colName = strings.Trim(colName, "\"")
@@ -290,5 +398,12 @@ func setFieldValue(field reflect.Value, value string) {
 			val = true
 		}
 		field.SetBool(val)
+	case reflect.Ptr:
+		if field.Type() == reflect.TypeOf((*time.Time)(nil)) {
+			t := parseTime(value)
+			if t != nil {
+				field.Set(reflect.ValueOf(t))
+			}
+		}
 	}
 }

@@ -962,6 +962,137 @@
                 </div>
             </div>
 
+            <!-- Telefones e E-mails -->
+            <div class="border-b pb-4">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Telefones -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-700">
+                                Telefones de contato
+                            </h3>
+                            <button
+                                class="bg-save-primary text-white px-4 py-2 rounded text-sm hover:bg-save-secondary transition-colors"
+                                on:click={addTelefone}
+                            >
+                                Incluir telefone
+                            </button>
+                        </div>
+
+                        <div class="space-y-4">
+                            {#if data.telefones.length > 0}
+                                <div
+                                    class="flex text-sm font-semibold text-gray-700 px-2"
+                                >
+                                    <div class="w-1/2 text-center">
+                                        Atualizado em
+                                    </div>
+                                    <div class="w-1/2 text-center">
+                                        Telefone com DDD
+                                    </div>
+                                    <div class="w-8"></div>
+                                </div>
+                            {/if}
+                            {#each data.telefones as telefone, i}
+                                <div class="flex items-center gap-2">
+                                    <div class="w-1/2">
+                                        <input
+                                            type="text"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm bg-gray-100"
+                                            value={telefone.Atualizado
+                                                ? new Date(
+                                                      telefone.Atualizado,
+                                                  ).toLocaleDateString()
+                                                : ""}
+                                            disabled
+                                        />
+                                    </div>
+                                    <div class="w-1/2">
+                                        <input
+                                            type="text"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                            placeholder="(00) 0000-0000"
+                                            bind:value={telefone.TelefoneDDD}
+                                            on:blur={autosave}
+                                        />
+                                    </div>
+                                    <button
+                                        class="text-red-500 hover:text-red-700"
+                                        on:click={() => removeTelefone(i)}
+                                        title="Remover telefone"
+                                    >
+                                        <span class="material-icons">close</span
+                                        >
+                                    </button>
+                                </div>
+                            {/each}
+                        </div>
+                    </div>
+
+                    <!-- E-mails -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-700">
+                                E-mails
+                            </h3>
+                            <button
+                                class="bg-save-primary text-white px-4 py-2 rounded text-sm hover:bg-save-secondary transition-colors"
+                                on:click={addEmail}
+                            >
+                                Incluir e-mail
+                            </button>
+                        </div>
+
+                        <div class="space-y-4">
+                            {#if data.emails.length > 0}
+                                <div
+                                    class="flex text-sm font-semibold text-gray-700 px-2"
+                                >
+                                    <div class="w-1/3 text-center">
+                                        Atualizado em
+                                    </div>
+                                    <div class="w-2/3 text-center">E-mail</div>
+                                    <div class="w-8"></div>
+                                </div>
+                            {/if}
+                            {#each data.emails as email, i}
+                                <div class="flex items-center gap-2">
+                                    <div class="w-1/3">
+                                        <input
+                                            type="text"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm bg-gray-100"
+                                            value={email.Atualizado
+                                                ? new Date(
+                                                      email.Atualizado,
+                                                  ).toLocaleDateString()
+                                                : ""}
+                                            disabled
+                                        />
+                                    </div>
+                                    <div class="w-2/3">
+                                        <input
+                                            type="text"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                            placeholder="exemplo@gmail.com"
+                                            bind:value={email.Email}
+                                            on:blur={autosave}
+                                        />
+                                    </div>
+                                    <button
+                                        class="text-red-500 hover:text-red-700"
+                                        on:click={() => removeEmail(i)}
+                                        title="Remover e-mail"
+                                    >
+                                        <span class="material-icons">close</span
+                                        >
+                                    </button>
+                                </div>
+                            {/each}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Endereço(s) -->
             <div class="border-b pb-4">
                 <div class="flex justify-between items-center mb-4">
@@ -1151,137 +1282,6 @@
                 </div>
             </div>
 
-            <!-- Telefones e E-mails -->
-            <div class="border-b pb-4">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Telefones -->
-                    <div>
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-semibold text-gray-700">
-                                Telefones de contato
-                            </h3>
-                            <button
-                                class="bg-save-primary text-white px-4 py-2 rounded text-sm hover:bg-save-secondary transition-colors"
-                                on:click={addTelefone}
-                            >
-                                Incluir telefone
-                            </button>
-                        </div>
-
-                        <div class="space-y-4">
-                            {#if data.telefones.length > 0}
-                                <div
-                                    class="flex text-sm font-semibold text-gray-700 px-2"
-                                >
-                                    <div class="w-1/2 text-center">
-                                        Atualizado em
-                                    </div>
-                                    <div class="w-1/2 text-center">
-                                        Telefone com DDD
-                                    </div>
-                                    <div class="w-8"></div>
-                                </div>
-                            {/if}
-                            {#each data.telefones as telefone, i}
-                                <div class="flex items-center gap-2">
-                                    <div class="w-1/2">
-                                        <input
-                                            type="text"
-                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm bg-gray-100"
-                                            value={telefone.Atualizado
-                                                ? new Date(
-                                                      telefone.Atualizado,
-                                                  ).toLocaleDateString()
-                                                : ""}
-                                            disabled
-                                        />
-                                    </div>
-                                    <div class="w-1/2">
-                                        <input
-                                            type="text"
-                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                            placeholder="(00) 0000-0000"
-                                            bind:value={telefone.TelefoneDDD}
-                                            on:blur={autosave}
-                                        />
-                                    </div>
-                                    <button
-                                        class="text-red-500 hover:text-red-700"
-                                        on:click={() => removeTelefone(i)}
-                                        title="Remover telefone"
-                                    >
-                                        <span class="material-icons">close</span
-                                        >
-                                    </button>
-                                </div>
-                            {/each}
-                        </div>
-                    </div>
-
-                    <!-- E-mails -->
-                    <div>
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-semibold text-gray-700">
-                                E-mails
-                            </h3>
-                            <button
-                                class="bg-save-primary text-white px-4 py-2 rounded text-sm hover:bg-save-secondary transition-colors"
-                                on:click={addEmail}
-                            >
-                                Incluir e-mail
-                            </button>
-                        </div>
-
-                        <div class="space-y-4">
-                            {#if data.emails.length > 0}
-                                <div
-                                    class="flex text-sm font-semibold text-gray-700 px-2"
-                                >
-                                    <div class="w-1/3 text-center">
-                                        Atualizado em
-                                    </div>
-                                    <div class="w-2/3 text-center">E-mail</div>
-                                    <div class="w-8"></div>
-                                </div>
-                            {/if}
-                            {#each data.emails as email, i}
-                                <div class="flex items-center gap-2">
-                                    <div class="w-1/3">
-                                        <input
-                                            type="text"
-                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm bg-gray-100"
-                                            value={email.Atualizado
-                                                ? new Date(
-                                                      email.Atualizado,
-                                                  ).toLocaleDateString()
-                                                : ""}
-                                            disabled
-                                        />
-                                    </div>
-                                    <div class="w-2/3">
-                                        <input
-                                            type="text"
-                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                            placeholder="exemplo@gmail.com"
-                                            bind:value={email.Email}
-                                            on:blur={autosave}
-                                        />
-                                    </div>
-                                    <button
-                                        class="text-red-500 hover:text-red-700"
-                                        on:click={() => removeEmail(i)}
-                                        title="Remover e-mail"
-                                    >
-                                        <span class="material-icons">close</span
-                                        >
-                                    </button>
-                                </div>
-                            {/each}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Pessoa de Confiança -->
             <div class="border-b pb-4">
                 <h3 class="text-lg font-semibold text-gray-700 mb-4">
@@ -1331,6 +1331,7 @@
                             <option value="Feminino">Feminino</option>
                             <option value="Masculino">Masculino</option>
                             <option value="Intersexo">Intersexo</option>
+                            <option value="Não informado">Não informado</option>
                         </select>
                     </label>
                     <label class="block">
@@ -1340,13 +1341,18 @@
                             bind:value={data.PPS_idgenero}
                         >
                             <option value="">Selecione...</option>
-                            <option value="Mulher Cis">Mulher Cis</option>
-                            <option value="Mulher Trans">Mulher Trans</option>
-                            <option value="Homem Cis">Homem Cis</option>
-                            <option value="Homem Trans">Homem Trans</option>
-                            <option value="Não-Binário">Não-Binário</option>
+                            <option value="Mulher cisgênero"
+                                >Mulher cisgênero</option
+                            >
+                            <option value="Mulher trans">Mulher trans</option>
+                            <option value="Homem cisgênero"
+                                >Homem cisgênero</option
+                            >
+                            <option value="Homem trans">Homem trans</option>
                             <option value="Travesti">Travesti</option>
-                            <option value="Outros">Outros</option>
+                            <option value="Não binária">Não binária</option>
+                            <option value="Outra">Outra</option>
+                            <option value="Não informado">Não informado</option>
                         </select>
                     </label>
                     <label class="block">
@@ -1357,13 +1363,18 @@
                         >
                             <option value="">Selecione...</option>
                             <option value="Heterossexual">Heterossexual</option>
-                            <option value="Homossexual (Lésbica/Gay)"
-                                >Homossexual (Lésbica/Gay)</option
+                            <option value="Homossexual - Lésbica"
+                                >Homossexual - Lésbica</option
+                            >
+                            <option value="Homossexual - Gay"
+                                >Homossexual - Gay</option
                             >
                             <option value="Bissexual">Bissexual</option>
                             <option value="Pansexual">Pansexual</option>
                             <option value="Assexual">Assexual</option>
-                            <option value="Outros">Outros</option>
+                            <option value="Queer">Queer</option>
+                            <option value="Outra">Outra</option>
+                            <option value="Não informado">Não informado</option>
                         </select>
                     </label>
                     <label class="block">
@@ -1373,11 +1384,12 @@
                             bind:value={data.PPS_Raca_cor_etnia}
                         >
                             <option value="">Selecione...</option>
-                            <option value="Branca">Branca</option>
-                            <option value="Preta">Preta</option>
-                            <option value="Parda">Parda</option>
-                            <option value="Amarela">Amarela</option>
+                            <option value="Branco">Branco</option>
+                            <option value="Preto">Preto</option>
+                            <option value="Pardo">Pardo</option>
+                            <option value="Amarelo">Amarelo</option>
                             <option value="Indígena">Indígena</option>
+                            <option value="Outro">Outro</option>
                         </select>
                     </label>
                     <label class="block">
@@ -1390,11 +1402,14 @@
                             <option value="Católica">Católica</option>
                             <option value="Evangélica">Evangélica</option>
                             <option value="Espírita">Espírita</option>
-                            <option value="Matriz Africana"
-                                >Matriz Africana</option
+                            <option value="Umbanda">Umbanda</option>
+                            <option value="Candomblé">Candomblé</option>
+                            <option value="Testemunha de Jeová"
+                                >Testemunha de Jeová</option
                             >
-                            <option value="Sem Religião">Sem Religião</option>
-                            <option value="Outras">Outras</option>
+                            <option value="Sem religião">Sem religião</option>
+                            <option value="Outras">Outro</option>
+                            <option value="Não informado">Não informado</option>
                         </select>
                     </label>
                     <label class="block">
@@ -1404,11 +1419,19 @@
                             bind:value={data.PPS_estado_civil}
                         >
                             <option value="">Selecione...</option>
-                            <option value="Solteira(o)">Solteira(o)</option>
-                            <option value="Casada(o)">Casada(o)</option>
-                            <option value="Divorciada(o)">Divorciada(o)</option>
-                            <option value="Viúva(o)">Viúva(o)</option>
-                            <option value="União Estável">União Estável</option>
+                            <option value="Solteira (o)">Solteira (o)</option>
+                            <option value="Casada (o)">Casada (o)</option>
+                            <option value="Divorciada (o)"
+                                >Divorciada (o)</option
+                            >
+                            <option value="Viuvo">Viúvo</option>
+                            <option value="União estável s/ declaração"
+                                >União estável s/ declaração</option
+                            >
+                            <option value="União estável c/ declaração"
+                                >União estável c/ declaração</option
+                            >
+                            <option value="Separada (o)">Separada (o)</option>
                         </select>
                     </label>
                 </div>
