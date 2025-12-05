@@ -34,6 +34,7 @@
             PE_cargo: "",
             Possui_Relacionado: "Não",
             Tipo_Vitima: "",
+            Classificacao_vitima: "",
             Vitimizacao: "",
             Vit_Terciaria_Origem: "",
             Classificacao_crime: "",
@@ -703,7 +704,7 @@
                                 >
                                 <select
                                     class="block w-[250px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                    bind:value={data.Tipo_Vitima}
+                                    bind:value={data.Classificacao_vitima}
                                 >
                                     <option value="">Selecione...</option>
                                     <option value="Vítima direta"
