@@ -1008,7 +1008,7 @@
                         </div>
                         <div class="flex-1">
                             <label
-                                class="block text-sm font-semibold text-gray-800 mb-1 text-right"
+                                class="block text-sm font-semibold text-gray-800 mb-1 text-left"
                                 >Tipo penal:</label
                             >
                             <input
@@ -1036,7 +1036,7 @@
                         </div>
                         <div class="flex-1">
                             <label
-                                class="block text-sm font-semibold text-gray-800 mb-1 text-right"
+                                class="block text-sm font-semibold text-gray-800 mb-1 text-left"
                                 >Tipo penal:</label
                             >
                             <input
@@ -1064,7 +1064,7 @@
                         </div>
                         <div class="flex-1">
                             <label
-                                class="block text-sm font-semibold text-gray-800 mb-1 text-right"
+                                class="block text-sm font-semibold text-gray-800 mb-1 text-left"
                                 >Tipo penal:</label
                             >
                             <input
@@ -1092,7 +1092,7 @@
                         </div>
                         <div class="flex-1">
                             <label
-                                class="block text-sm font-semibold text-gray-800 mb-1 text-right"
+                                class="block text-sm font-semibold text-gray-800 mb-1 text-left"
                                 >Tipo penal:</label
                             >
                             <input
@@ -1120,7 +1120,7 @@
                         </div>
                         <div class="flex-1">
                             <label
-                                class="block text-sm font-semibold text-gray-800 mb-1 text-right"
+                                class="block text-sm font-semibold text-gray-800 mb-1 text-left"
                                 >Tipo penal:</label
                             >
                             <input
@@ -1148,7 +1148,7 @@
                         </div>
                         <div class="flex-1">
                             <label
-                                class="block text-sm font-semibold text-gray-800 mb-1 text-right"
+                                class="block text-sm font-semibold text-gray-800 mb-1 text-left"
                                 >Tipo penal:</label
                             >
                             <input
@@ -1176,7 +1176,7 @@
                         </div>
                         <div class="flex-1">
                             <label
-                                class="block text-sm font-semibold text-gray-800 mb-1 text-right"
+                                class="block text-sm font-semibold text-gray-800 mb-1 text-left"
                                 >Tipo penal:</label
                             >
                             <input

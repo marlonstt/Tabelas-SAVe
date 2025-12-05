@@ -286,7 +286,7 @@
                                         <div class="flex items-center gap-2">
                                             <input
                                                 type="text"
-                                                class="block w-[350px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                                 bind:value={caso.id_vitima}
                                                 placeholder="ID do caso ou nome da vítima"
                                             />
@@ -323,7 +323,7 @@
                             >
                             <input
                                 type="date"
-                                class="block w-[159px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                 bind:value={data.Data}
                             />
                         </div>
@@ -335,7 +335,7 @@
                                 >Comarca de origem:</label
                             >
                             <select
-                                class="block w-[332px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                 bind:value={data.Comarca_origem}
                             >
                                 <option value="">Selecione...</option>
@@ -353,7 +353,7 @@
                             >
                             <input
                                 type="text"
-                                class="block w-[329px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                 bind:value={data.N_procedimento_MPE}
                             />
                         </div>
@@ -421,7 +421,7 @@
                                 >Quem encaminha:</label
                             >
                             <select
-                                class="block w-[604px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                 bind:value={data.Quem_encaminha}
                             >
                                 <option value="">Selecione...</option>
@@ -439,7 +439,7 @@
                             >
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Nome -->
                             <div>
                                 <label
@@ -448,7 +448,7 @@
                                 >
                                 <input
                                     type="text"
-                                    class="block w-[306px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                     bind:value={data.PE_nome}
                                 />
                             </div>
@@ -461,7 +461,7 @@
                                 >
                                 <input
                                     type="text"
-                                    class="block w-[235px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                     bind:value={data.PE_telefone}
                                 />
                             </div>
@@ -474,7 +474,7 @@
                                 >
                                 <input
                                     type="email"
-                                    class="block w-[306px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                     bind:value={data.PE_email}
                                 />
                             </div>
@@ -487,7 +487,7 @@
                                 >
                                 <input
                                     type="text"
-                                    class="block w-[235px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                     bind:value={data.PE_cargo}
                                 />
                             </div>
@@ -501,14 +501,28 @@
                 class="border border-gray-300 rounded-lg p-4 shadow-sm relative"
                 style="height: auto;"
             >
-                <div class="flex gap-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-2"
+                    >Crimes ou ato infracional que está relacionado</label
+                >
+                <div class="flex flex-col lg:flex-row gap-6">
                     <!-- Left Column: Crimes -->
-                    <div class="w-[400px]">
-                        <label
-                            class="block text-sm font-semibold text-gray-700 mb-2"
-                            >Crimes ou ato infracional que está relacionado</label
-                        >
+                    <div class="w-full lg:w-1/3">
                         <div class="space-y-2">
+                            <!-- Classificação do Crime -->
+                            <div class="mt-4">
+                                <label
+                                    class="block text-sm font-semibold text-gray-700 mb-1"
+                                    >Classificação do crime ou ato infracional:</label
+                                >
+                                <select
+                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                    bind:value={data.Classificacao_crime}
+                                >
+                                    <option value="">Selecione...</option>
+                                    <option value="Consumado">Consumado</option>
+                                    <option value="Tentado">Tentado</option>
+                                </select>
+                            </div>
                             <!-- Crimes contra a vida -->
                             <div>
                                 <label class="inline-flex items-center">
@@ -674,28 +688,12 @@
                                     </div>
                                 {/if}
                             </div>
-
-                            <!-- Classificação do Crime -->
-                            <div class="mt-4">
-                                <label
-                                    class="block text-sm font-semibold text-gray-700 mb-1"
-                                    >Classificação do crime ou ato infracional:</label
-                                >
-                                <select
-                                    class="block w-[372px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                    bind:value={data.Classificacao_crime}
-                                >
-                                    <option value="">Selecione...</option>
-                                    <option value="Consumado">Consumado</option>
-                                    <option value="Tentado">Tentado</option>
-                                </select>
-                            </div>
                         </div>
                     </div>
 
                     <!-- Right Column: Classificação Vítima, Vitimização, Observações -->
                     <div class="flex-1 space-y-4">
-                        <div class="flex gap-4">
+                        <div class="flex flex-col sm:flex-row gap-4">
                             <!-- Classificação Vítima -->
                             <div>
                                 <label
@@ -703,7 +701,7 @@
                                     >Classificação da Vítima:</label
                                 >
                                 <select
-                                    class="block w-[250px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                     bind:value={data.Classificacao_vitima}
                                 >
                                     <option value="">Selecione...</option>
@@ -733,7 +731,7 @@
                                 >
                                 <div class="flex gap-2">
                                     <select
-                                        class="block w-[250px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                         bind:value={data.Vitimizacao}
                                     >
                                         <option value="">Selecione...</option>
@@ -751,7 +749,7 @@
                                         <div>
                                             <input
                                                 type="text"
-                                                class="block w-[280px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                                 placeholder="Qual a origem? *"
                                                 bind:value={
                                                     data.Vit_Terciaria_Origem
@@ -764,14 +762,13 @@
                         </div>
 
                         <!-- Observações -->
-                        <div>
+                        <div class="p-8">
                             <label
                                 class="block text-sm font-semibold text-gray-700 mb-1"
                                 >Observações:</label
                             >
                             <textarea
-                                class="block w-[668px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                style="height: 143px;"
+                                class="block w-full h-[300px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                 bind:value={data.Observacao}
                             ></textarea>
                         </div>
