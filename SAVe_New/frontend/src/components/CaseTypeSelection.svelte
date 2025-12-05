@@ -116,7 +116,7 @@
                 <p class="text-xs text-gray-500 text-left">
                     <span class="font-semibold">Obs:</span> Os formulários salvam
                     automaticamente ao editar os campos, mas, ao final de cada tela,
-                    poderá clicar para "Salvar Dados".
+                    poderá clicar para 'Salvar Dados'.
                 </p>
             </div>
         </div>

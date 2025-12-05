@@ -232,6 +232,83 @@
         <p>Carregando...</p>
     {:else}
         <div class="space-y-6">
+            <!-- Container1_7: Related Cases (Bottom) -->
+            <div class="border border-gray-300 rounded-lg p-4 shadow-sm">
+                <div class="flex items-center gap-4 mb-4">
+                    <label class="text-sm font-semibold text-gray-700"
+                        >Possui caso(s) relacionado?</label
+                    >
+                    <div class="flex gap-4">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                class="form-radio text-save-primary h-5 w-5"
+                                name="relacionado"
+                                value="Não"
+                                bind:group={data.Possui_Relacionado}
+                            />
+                            <span class="ml-2 text-sm">Não</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input
+                                type="radio"
+                                class="form-radio text-save-primary h-5 w-5"
+                                name="relacionado"
+                                value="Sim"
+                                bind:group={data.Possui_Relacionado}
+                            />
+                            <span class="ml-2 text-sm">Sim</span>
+                        </label>
+                    </div>
+                </div>
+
+                {#if data.Possui_Relacionado === "Sim"}
+                    <div class="flex gap-8 items-start">
+                        <button
+                            class="bg-green-600 text-white px-4 py-1 rounded shadow hover:bg-green-700 transition-colors text-xs font-semibold h-8"
+                            on:click={addCasoRelacionado}
+                        >
+                            Vincular caso
+                        </button>
+
+                        <div class="flex-1">
+                            <label
+                                class="block text-sm font-semibold text-gray-700 mb-2"
+                                >Casos vinculados:</label
+                            >
+                            {#if data.casosRelacionados.length === 0}
+                                <div class="text-sm text-gray-500 italic">
+                                    Não possui casos relacionados
+                                </div>
+                            {:else}
+                                <div class="space-y-2">
+                                    {#each data.casosRelacionados as caso, i}
+                                        <div class="flex items-center gap-2">
+                                            <input
+                                                type="text"
+                                                class="block w-[350px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
+                                                bind:value={caso.id_vitima}
+                                                placeholder="ID do caso ou nome da vítima"
+                                            />
+                                            <button
+                                                class="text-red-500 hover:text-red-700"
+                                                on:click={() =>
+                                                    removeCasoRelacionado(i)}
+                                            >
+                                                <span
+                                                    class="material-icons text-lg"
+                                                    >cancel</span
+                                                >
+                                            </button>
+                                        </div>
+                                    {/each}
+                                </div>
+                            {/if}
+                        </div>
+                    </div>
+                {/if}
+            </div>
+
             <div class="flex flex-col md:flex-row gap-6">
                 <!-- Container1_5: Case Info (Left) -->
                 <div
@@ -417,83 +494,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Container1_7: Related Cases (Bottom) -->
-            <div class="border border-gray-300 rounded-lg p-4 shadow-sm">
-                <div class="flex items-center gap-4 mb-4">
-                    <label class="text-sm font-semibold text-gray-700"
-                        >Possui caso(s) relacionado?</label
-                    >
-                    <div class="flex gap-4">
-                        <label class="inline-flex items-center">
-                            <input
-                                type="radio"
-                                class="form-radio text-save-primary h-5 w-5"
-                                name="relacionado"
-                                value="Não"
-                                bind:group={data.Possui_Relacionado}
-                            />
-                            <span class="ml-2 text-sm">Não</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input
-                                type="radio"
-                                class="form-radio text-save-primary h-5 w-5"
-                                name="relacionado"
-                                value="Sim"
-                                bind:group={data.Possui_Relacionado}
-                            />
-                            <span class="ml-2 text-sm">Sim</span>
-                        </label>
-                    </div>
-                </div>
-
-                {#if data.Possui_Relacionado === "Sim"}
-                    <div class="flex gap-8 items-start">
-                        <button
-                            class="bg-green-600 text-white px-4 py-1 rounded shadow hover:bg-green-700 transition-colors text-xs font-semibold h-8"
-                            on:click={addCasoRelacionado}
-                        >
-                            Vincular caso
-                        </button>
-
-                        <div class="flex-1">
-                            <label
-                                class="block text-sm font-semibold text-gray-700 mb-2"
-                                >Casos vinculados:</label
-                            >
-                            {#if data.casosRelacionados.length === 0}
-                                <div class="text-sm text-gray-500 italic">
-                                    Não possui casos relacionados
-                                </div>
-                            {:else}
-                                <div class="space-y-2">
-                                    {#each data.casosRelacionados as caso, i}
-                                        <div class="flex items-center gap-2">
-                                            <input
-                                                type="text"
-                                                class="block w-[350px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
-                                                bind:value={caso.id_vitima}
-                                                placeholder="ID do caso ou nome da vítima"
-                                            />
-                                            <button
-                                                class="text-red-500 hover:text-red-700"
-                                                on:click={() =>
-                                                    removeCasoRelacionado(i)}
-                                            >
-                                                <span
-                                                    class="material-icons text-lg"
-                                                    >cancel</span
-                                                >
-                                            </button>
-                                        </div>
-                                    {/each}
-                                </div>
-                            {/if}
-                        </div>
-                    </div>
-                {/if}
             </div>
 
             <!-- containerBgData_2: Observações, Vitimização, Crimes -->

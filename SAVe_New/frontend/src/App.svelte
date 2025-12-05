@@ -64,10 +64,10 @@
     <!-- Sidebar -->
     <Sidebar {user} {currentPath} onLogout={logout} />
 
-    <!-- Main Content Area -->
+    <!-- Main Content Area "background: linear-gradient(135deg, #FFFFFF 0%, #EEF2FF 100%);" -->
     <div
       class="flex-1 flex flex-col relative overflow-hidden"
-      style="background: linear-gradient(135deg, #FFFFFF 0%, #EEF2FF 100%);"
+      style="background: linear-gradient(135deg, #EEF2FF 0%, #FFFFFF 50%, #EEF2FF 100%);"
     >
       <!-- Footer Vinheta (Background) -->
       <img
