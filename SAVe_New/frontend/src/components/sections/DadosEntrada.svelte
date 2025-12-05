@@ -70,13 +70,12 @@
 
             // Parse Crimes Categories (Crime_relacionado)
             if (data.Crime_relacionado) {
-                data.crimes = data.Crime_relacionado.split("; ").filter(
-                    (c: string) => c.trim() !== "",
-                );
+                data.crimes = data.Crime_relacionado.split(";")
+                    .map((c: string) => c.trim())
+                    .filter((c: string) => c !== "");
             } else {
                 data.crimes = [];
             }
-
             // Parse Specific Crimes (Crime_relacionado_especifico)
             if (data.Crime_relacionado_especifico) {
                 data.specificCrimes = data.Crime_relacionado_especifico.split(
