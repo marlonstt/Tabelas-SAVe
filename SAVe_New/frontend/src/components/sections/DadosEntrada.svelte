@@ -111,6 +111,8 @@
 
         // Update Crime_relacionado_especifico before saving
         data.Crime_relacionado_especifico = data.specificCrimes.join("; ");
+        // Update Crime_relacionado before saving
+        data.Crime_relacionado = data.crimes.join("; ");
 
         const currentData = JSON.stringify(data);
         if (currentData === lastSavedData) return;
@@ -184,6 +186,8 @@
 
         // Update Crime_relacionado_especifico before saving
         data.Crime_relacionado_especifico = data.specificCrimes.join("; ");
+        // Update Crime_relacionado before saving
+        data.Crime_relacionado = data.crimes.join("; ");
 
         try {
             await api.put(`/cases/${caseId}/dados-entrada`, data);
@@ -396,17 +400,18 @@
                                     />
                                     <span class="ml-2 text-[15px]">Sim</span>
                                 </label>
-                            </div>
-                            <button
-                                type="button"
-                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
-                                on:click={() =>
-                                    (data.Precisa_Atendimento_Esp = "")}
-                                title="Limpar seleção"
-                            >
-                                <span class="material-icons text-sm">close</span
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() =>
+                                        (data.Precisa_Atendimento_Esp = "")}
+                                    title="Limpar seleção"
                                 >
-                            </button>
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
+                            </div>
                         </div>
 
                         {#if data.Precisa_Atendimento_Esp === "Sim"}

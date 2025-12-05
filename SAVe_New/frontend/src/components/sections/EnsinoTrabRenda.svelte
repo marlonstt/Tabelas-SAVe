@@ -707,6 +707,7 @@
                                         type="checkbox"
                                         class="form-checkbox text-save-primary"
                                         bind:checked={data.Demanda_educacional}
+                                        on:change={autosave}
                                     />
                                     <span
                                         class="ml-2 font-semibold text-gray-700"
@@ -736,6 +737,7 @@
                                         type="checkbox"
                                         class="form-checkbox text-save-primary"
                                         bind:checked={data.Demanda_trabalhista}
+                                        on:change={autosave}
                                     />
                                     <span
                                         class="ml-2 font-semibold text-gray-700"
