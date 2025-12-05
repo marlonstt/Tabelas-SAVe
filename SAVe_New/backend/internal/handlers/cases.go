@@ -634,7 +634,7 @@ func UpdateCaseSection(c *gin.Context) {
 				return
 			}
 		} else {
-			if err := tx.Model(&models.SAVe_DadosDeEntrada{}).Where("\"ID_Caso\" = ?", id).Updates(&input.SAVe_DadosDeEntrada).Error; err != nil {
+			if err := tx.Save(&input.SAVe_DadosDeEntrada).Error; err != nil {
 				tx.Rollback()
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update dados de entrada"})
 				return
@@ -658,7 +658,7 @@ func UpdateCaseSection(c *gin.Context) {
 					return
 				}
 			} else {
-				if err := tx.Model(&models.SAVe_Casos_Vinculados{}).Where("\"ID_Caso\" = ?", id).Updates(&casosVinculados).Error; err != nil {
+				if err := tx.Save(&casosVinculados).Error; err != nil {
 					tx.Rollback()
 					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update casos vinculados"})
 					return
@@ -668,15 +668,10 @@ func UpdateCaseSection(c *gin.Context) {
 
 		// 4. Update SAVe_Geral fields
 		updates := map[string]interface{}{}
-		if input.SAVe_DadosDeEntrada.Data != "" {
-			updates["Data"] = input.SAVe_DadosDeEntrada.Data
-		}
-		if input.SAVe_DadosDeEntrada.Comarca_origem != "" {
-			updates["Comarca"] = input.SAVe_DadosDeEntrada.Comarca_origem
-		}
-		if input.TipoVitima != "" {
-			updates["Tipo_Vitima"] = input.TipoVitima
-		}
+		updates["Data"] = input.SAVe_DadosDeEntrada.Data
+		updates["Comarca"] = input.SAVe_DadosDeEntrada.Comarca_origem
+		updates["Tipo_Vitima"] = input.TipoVitima
+
 		// Update Tipo_Crime in SAVe_Geral
 		// PowerApps logic uses the specific crimes (Crime_relacionado_especifico) + classification
 		tipoCrime := input.SAVe_DadosDeEntrada.Crime_relacionado_especifico
@@ -687,12 +682,8 @@ func UpdateCaseSection(c *gin.Context) {
 		if input.SAVe_DadosDeEntrada.Classificacao_crime != "" {
 			tipoCrime += " (" + input.SAVe_DadosDeEntrada.Classificacao_crime + ")"
 		}
-		if tipoCrime != "" {
-			updates["Tipo_Crime"] = tipoCrime
-		}
-		if input.SAVe_DadosDeEntrada.N_procedimento_MPE != "" {
-			updates["Num_Processo"] = input.SAVe_DadosDeEntrada.N_procedimento_MPE
-		}
+		updates["Tipo_Crime"] = tipoCrime
+		updates["Num_Processo"] = input.SAVe_DadosDeEntrada.N_procedimento_MPE
 
 		if len(updates) > 0 {
 			if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Updates(updates).Error; err != nil {
@@ -736,7 +727,7 @@ func UpdateCaseSection(c *gin.Context) {
 				return
 			}
 		} else {
-			if err := tx.Model(&models.SAVe_Identificacao{}).Where("\"ID_Caso\" = ?", id).Updates(&input.SAVe_Identificacao).Error; err != nil {
+			if err := tx.Save(&input.SAVe_Identificacao).Error; err != nil {
 				tx.Rollback()
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update identificacao"})
 				return
@@ -744,12 +735,11 @@ func UpdateCaseSection(c *gin.Context) {
 		}
 
 		// 2. Update SAVe_Geral Nome if Nome_RC is present
-		if input.SAVe_Identificacao.Nome_RC != "" {
-			if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Update("Nome", input.SAVe_Identificacao.Nome_RC).Error; err != nil {
-				tx.Rollback()
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral name"})
-				return
-			}
+		// Always update name, allowing clearing
+		if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Update("Nome", input.SAVe_Identificacao.Nome_RC).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral name"})
+			return
 		}
 
 		// 3. Save Enderecos (Delete all and recreate)
@@ -918,7 +908,7 @@ func UpdateCaseSection(c *gin.Context) {
 				return
 			}
 		} else {
-			if err := tx.Model(&models.SAVe_Saude{}).Where("\"ID_Caso\" = ?", id).Updates(&input.Saude).Error; err != nil {
+			if err := tx.Save(&input.Saude).Error; err != nil {
 				tx.Rollback()
 				log.Println("Error updating SAVe_Saude:", err)
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update saude: " + err.Error()})
@@ -953,7 +943,7 @@ func UpdateCaseSection(c *gin.Context) {
 				return
 			}
 		} else {
-			if err := tx.Model(&models.SAVe_Vinculos{}).Where("\"ID_Caso\" = ?", id).Updates(&input.Vinculos).Error; err != nil {
+			if err := tx.Save(&input.Vinculos).Error; err != nil {
 				tx.Rollback()
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update vinculos"})
 				return
@@ -1100,7 +1090,7 @@ func UpdateCaseSection(c *gin.Context) {
 				return
 			}
 		} else {
-			if err := tx.Model(&models.SAVe_protecao_seguranca{}).Where("\"ID_Caso\" = ?", id).Updates(&input.ProtecaoSeguranca).Error; err != nil {
+			if err := tx.Save(&input.ProtecaoSeguranca).Error; err != nil {
 				tx.Rollback()
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update protecao seguranca"})
 				return
@@ -1299,7 +1289,7 @@ func UpdateCaseSection(c *gin.Context) {
 				return
 			}
 		} else {
-			if err := tx.Model(&models.SAVe_Ensino_trab_renda{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+			if err := tx.Save(&input).Error; err != nil {
 				tx.Rollback()
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update ensino trab renda: " + err.Error()})
 				return
@@ -1337,7 +1327,7 @@ func UpdateCaseSection(c *gin.Context) {
 			tx.Where("\"ID_Caso\" = ?", id).First(&existing)
 			input.ID = existing.ID
 
-			if err := tx.Model(&models.SAVe_Assistencia{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+			if err := tx.Save(&input).Error; err != nil {
 				tx.Rollback()
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update assistencia: " + err.Error()})
 				return
@@ -1402,7 +1392,7 @@ func UpdateCaseSection(c *gin.Context) {
 		// But we need to be careful not to overwrite other fields with zero values if the struct is empty
 		// Gin ShouldBindJSON might parse partial JSON into the struct, leaving others as zero values.
 		// GORM Updates with struct only updates non-zero fields.
-		if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+		if err := tx.Save(&input).Error; err != nil {
 			tx.Rollback()
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral info: " + err.Error()})
 			return
@@ -1434,7 +1424,7 @@ func UpdateCaseSection(c *gin.Context) {
 				return
 			}
 		} else {
-			if err := tx.Model(&models.SAVe_Encerramento{}).Where("\"ID_Caso\" = ?", id).Updates(&input).Error; err != nil {
+			if err := tx.Save(&input).Error; err != nil {
 				tx.Rollback()
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update encerramento: " + err.Error()})
 				return

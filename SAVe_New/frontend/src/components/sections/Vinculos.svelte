@@ -529,6 +529,17 @@
                             />
                             <span class="ml-2">Não</span>
                         </label>
+                        <button
+                            type="button"
+                            class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                            on:click={() => {
+                                data.Alt_Fam_Com_Vitim = "";
+                                autosave();
+                            }}
+                            title="Limpar seleção"
+                        >
+                            <span class="material-icons text-sm">close</span>
+                        </button>
                     </div>
                 </div>
                 {#if data.Alt_Fam_Com_Vitim === "Sim"}
@@ -574,6 +585,17 @@
                             />
                             <span class="ml-2">Não</span>
                         </label>
+                        <button
+                            type="button"
+                            class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                            on:click={() => {
+                                data.Vulnerab_Vinculos_Fam = "";
+                                autosave();
+                            }}
+                            title="Limpar seleção"
+                        >
+                            <span class="material-icons text-sm">close</span>
+                        </button>
                     </div>
                 </div>
                 {#if data.Vulnerab_Vinculos_Fam === "Sim"}
@@ -623,6 +645,17 @@
                             />
                             <span class="ml-2">Não</span>
                         </label>
+                        <button
+                            type="button"
+                            class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                            on:click={() => {
+                                data.Vulnerab_Vitim_Sec_Ter = "";
+                                autosave();
+                            }}
+                            title="Limpar seleção"
+                        >
+                            <span class="material-icons text-sm">close</span>
+                        </button>
                     </div>
                 </div>
 

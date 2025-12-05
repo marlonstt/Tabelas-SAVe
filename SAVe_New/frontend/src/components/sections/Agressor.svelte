@@ -796,6 +796,7 @@
                                     bind:value={agressor.PA_Tipo_Agressor}
                                     on:change={autosave}
                                 >
+                                    <option value="">Selecione...</option>
                                     {#each tipoAgressorOptions as option}
                                         <option value={option}>{option}</option>
                                     {/each}
@@ -1024,6 +1025,19 @@
                                             >
                                         </label>
                                     {/each}
+                                    <button
+                                        type="button"
+                                        class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                        on:click={() => {
+                                            agressor.PA_Doc_Situacao = "";
+                                            autosave();
+                                        }}
+                                        title="Limpar seleção"
+                                    >
+                                        <span class="material-icons text-sm"
+                                            >close</span
+                                        >
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -1285,6 +1299,21 @@
                                                             >
                                                         </label>
                                                     {/each}
+                                                    <button
+                                                        type="button"
+                                                        class="ml-1 text-gray-400 hover:text-red-500 transition-colors"
+                                                        on:click={() => {
+                                                            endereco.PAE_Situacao_Moradia =
+                                                                "";
+                                                            autosave();
+                                                        }}
+                                                        title="Limpar seleção"
+                                                    >
+                                                        <span
+                                                            class="material-icons text-xs"
+                                                            >close</span
+                                                        >
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

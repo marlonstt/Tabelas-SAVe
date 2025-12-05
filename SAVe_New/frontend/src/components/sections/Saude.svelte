@@ -261,6 +261,19 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange(
+                                        "HS_Pessoa_deficiencia",
+                                        "",
+                                    )}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.HS_Pessoa_deficiencia === "Sim"}
@@ -326,6 +339,16 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange("HS_Condicao_saude", "")}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.HS_Condicao_saude === "Sim"}
@@ -372,6 +395,20 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.HS_Condicao_saude_acompanhamento =
+                                            "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </div>
                     {/if}
@@ -418,6 +455,19 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange(
+                                        "HS_Cond_saude_nao_perma",
+                                        "",
+                                    )}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.HS_Cond_saude_nao_perma === "Sim"}
@@ -466,6 +516,20 @@
                                         />
                                         <span class="ml-2">Não</span>
                                     </label>
+                                    <button
+                                        type="button"
+                                        class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                        on:click={() => {
+                                            data.HS_Cond_saude_nao_perma_acomp =
+                                                "";
+                                            autosave();
+                                        }}
+                                        title="Limpar seleção"
+                                    >
+                                        <span class="material-icons text-sm"
+                                            >close</span
+                                        >
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -513,6 +577,16 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange("HS_Aux_saude", "")}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.HS_Aux_saude === "Sim"}
@@ -555,6 +629,19 @@
                                         />
                                         <span class="ml-2">Não</span>
                                     </label>
+                                    <button
+                                        type="button"
+                                        class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                        on:click={() => {
+                                            data.HS_Aux_saude_acomp = "";
+                                            autosave();
+                                        }}
+                                        title="Limpar seleção"
+                                    >
+                                        <span class="material-icons text-sm"
+                                            >close</span
+                                        >
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -602,6 +689,16 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange("HS_Vitim_sexual", "")}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.HS_Vitim_sexual === "Sim"}
@@ -648,6 +745,19 @@
                                         />
                                         <span class="ml-2">Não</span>
                                     </label>
+                                    <button
+                                        type="button"
+                                        class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                        on:click={() => {
+                                            data.HS_Vitim_sexual_acomp = "";
+                                            autosave();
+                                        }}
+                                        title="Limpar seleção"
+                                    >
+                                        <span class="material-icons text-sm"
+                                            >close</span
+                                        >
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -692,6 +802,16 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange("HS_Medic_continua", "")}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.HS_Medic_continua === "Sim"}
@@ -748,6 +868,16 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange("HS_Medic_psiq", "")}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.HS_Medic_psiq === "Sim"}
@@ -808,6 +938,16 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange("FR_Alcool", "")}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.FR_Alcool === "Sim"}
@@ -859,6 +999,16 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange("FR_Cigarro", "")}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.FR_Cigarro === "Sim"}
@@ -915,6 +1065,19 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange(
+                                        "FR_Subst_psicoativas",
+                                        "",
+                                    )}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.FR_Subst_psicoativas === "Sim"}
@@ -966,6 +1129,16 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange("FR_Apoio", "")}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.FR_Apoio === "Sim"}
@@ -1031,6 +1204,16 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange("RS_Acomp_publica", "")}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.RS_Acomp_publica === "Sim"}
@@ -1100,6 +1283,16 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange("RS_Acomp_RAPS", "")}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.RS_Acomp_RAPS === "Sim"}
@@ -1179,6 +1372,16 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange("RS_Plano_saude", "")}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.RS_Plano_saude === "Sim"}
@@ -1279,6 +1482,19 @@
                                 />
                                 <span class="ml-2">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    handleRadioChange(
+                                        "RFC_Familia_Vulnerab",
+                                        "",
+                                    )}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
                     {#if data.RFC_Familia_Vulnerab === "Sim"}
@@ -1348,6 +1564,15 @@
                             />
                             <span class="ml-2">Não</span>
                         </label>
+                        <button
+                            type="button"
+                            class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                            on:click={() =>
+                                handleRadioChange("IV_Houve_Impacto_Saude", "")}
+                            title="Limpar seleção"
+                        >
+                            <span class="material-icons text-sm">close</span>
+                        </button>
                     </div>
                 </div>
 

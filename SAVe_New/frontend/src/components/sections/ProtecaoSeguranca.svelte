@@ -332,6 +332,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.PS_Ameaca_Autor_Vitim = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </label>
 
@@ -361,6 +374,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.PS_Ameaca_Conhece = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </label>
 
@@ -390,6 +416,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.PS_Ameaca_Mais_Autor = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </label>
 
@@ -543,6 +582,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.PS_Reside_Com_Autor = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </label>
 
@@ -573,6 +625,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.PS_Relacao_Poder = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </label>
 
@@ -618,6 +683,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.PS_Ameacas_Anteriores = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </label>
 
@@ -793,6 +871,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.PS_Ameaca_Meios_Concretizar = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </label>
 
@@ -1006,6 +1097,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.PS_Ameaca_Crianca_Adolescente = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </label>
 
@@ -1550,6 +1654,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.PS_Vitima_Violencia_Domestica = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </div>
 
@@ -1579,6 +1696,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.PS_Vitima_Crime_Odio = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </div>
 
@@ -1612,6 +1742,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.PS_Rede_Aplicou_Protocolo_FF = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </div>
 
@@ -1645,6 +1788,20 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.PS_Rede_Aplicou_Protocolo_Roger =
+                                            "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </div>
 
@@ -1679,6 +1836,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.PS_Deseja_Aplicar_FONAR = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </div>
                     </div>

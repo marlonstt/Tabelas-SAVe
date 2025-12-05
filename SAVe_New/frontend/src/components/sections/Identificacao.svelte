@@ -887,7 +887,21 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
                     <!-- Situação -->
                     <div class="lg:col-span-4">
-                        <span class="block text-gray-700 mb-2">Situação:</span>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="block text-gray-700">Situação:</span>
+                            {#if data.DC_situacao}
+                                <button
+                                    type="button"
+                                    class="text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => (data.DC_situacao = "")}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
+                            {/if}
+                        </div>
                         <div class="flex flex-col gap-2">
                             <label class="inline-flex items-center">
                                 <input
@@ -1121,10 +1135,29 @@
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
                                 <!-- Situação Moradia -->
                                 <div class="lg:col-span-4">
-                                    <span
-                                        class="block text-gray-700 mb-2 text-sm font-semibold"
-                                        >Situação:</span
-                                    >
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span
+                                            class="block text-gray-700 text-sm font-semibold"
+                                            >Situação:</span
+                                        >
+                                        {#if endereco.Moradia_Situacao}
+                                            <button
+                                                type="button"
+                                                class="text-gray-400 hover:text-red-500 transition-colors"
+                                                on:click={() => {
+                                                    endereco.Moradia_Situacao =
+                                                        "";
+                                                    autosave();
+                                                }}
+                                                title="Limpar seleção"
+                                            >
+                                                <span
+                                                    class="material-icons text-sm"
+                                                    >close</span
+                                                >
+                                            </button>
+                                        {/if}
+                                    </div>
                                     <div class="flex flex-col gap-2">
                                         {#each ["Casa própria", "Aluguel", "Em situação de rua", "Outro"] as option}
                                             <label

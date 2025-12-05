@@ -483,6 +483,21 @@
                                                     <span class="ml-2">Não</span
                                                     >
                                                 </label>
+                                                <button
+                                                    type="button"
+                                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                                    on:click={() => {
+                                                        data.Reconhecido_funai =
+                                                            "";
+                                                        autosave();
+                                                    }}
+                                                    title="Limpar seleção"
+                                                >
+                                                    <span
+                                                        class="material-icons text-sm"
+                                                        >close</span
+                                                    >
+                                                </button>
                                             </div>
                                         </div>
                                     {/if}
@@ -539,6 +554,21 @@
                                                     <span class="ml-2">Não</span
                                                     >
                                                 </label>
+                                                <button
+                                                    type="button"
+                                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                                    on:click={() => {
+                                                        data.Reconhecido_fund_palmares =
+                                                            "";
+                                                        autosave();
+                                                    }}
+                                                    title="Limpar seleção"
+                                                >
+                                                    <span
+                                                        class="material-icons text-sm"
+                                                        >close</span
+                                                    >
+                                                </button>
                                             </div>
                                         </div>
                                     {/if}
@@ -624,6 +654,21 @@
                                                             >Não</span
                                                         >
                                                     </label>
+                                                    <button
+                                                        type="button"
+                                                        class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                                        on:click={() => {
+                                                            data.Reconhecido_orgao_publico =
+                                                                "";
+                                                            autosave();
+                                                        }}
+                                                        title="Limpar seleção"
+                                                    >
+                                                        <span
+                                                            class="material-icons text-sm"
+                                                            >close</span
+                                                        >
+                                                    </button>
                                                 </div>
                                             </div>
                                             <div>
@@ -672,6 +717,19 @@
                                             />
                                             <span class="ml-2">Não</span>
                                         </label>
+                                        <button
+                                            type="button"
+                                            class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                            on:click={() => {
+                                                data.titulado_incra = "";
+                                                autosave();
+                                            }}
+                                            title="Limpar seleção"
+                                        >
+                                            <span class="material-icons text-sm"
+                                                >close</span
+                                            >
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -1109,6 +1167,18 @@
                                 />
                                 <span class="ml-2 text-gray-700">Não</span>
                             </label>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() => {
+                                    data.RV_Mudanca_domicilio = "";
+                                    autosave();
+                                }}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
                     </div>
 

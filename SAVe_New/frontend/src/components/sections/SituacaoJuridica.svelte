@@ -681,6 +681,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.SJ_Medidas_Prot_Cautelar = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </div>
                         {#if data.SJ_Medidas_Prot_Cautelar === "Sim"}
@@ -727,6 +740,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.SJ_Compartilhado_Rede = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </div>
 
@@ -762,6 +788,19 @@
                                         />
                                         <span class="ml-2">Não</span>
                                     </label>
+                                    <button
+                                        type="button"
+                                        class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                        on:click={() => {
+                                            data.SJ_Relato_Descumprimento = "";
+                                            autosave();
+                                        }}
+                                        title="Limpar seleção"
+                                    >
+                                        <span class="material-icons text-sm"
+                                            >close</span
+                                        >
+                                    </button>
                                 </div>
                             </div>
                             {#if data.SJ_Relato_Descumprimento === "Sim"}
@@ -809,6 +848,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.SJ_Vitima_Intimada = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </div>
 
@@ -839,6 +891,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.SJ_Agressor_Intimado = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </div>
                     {/if}
@@ -1288,9 +1353,22 @@
         <div
             class="border-2 border-gray-200 rounded-lg p-4 bg-white relative mt-6"
         >
-            <h3 class="text-sm font-semibold text-gray-600 mb-4">
-                Fase da Persecução Penal no momento do primeiro atendimento
-            </h3>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-sm font-semibold text-gray-600">
+                    Fase da Persecução Penal no momento do primeiro atendimento
+                </h3>
+                <button
+                    type="button"
+                    class="text-xs text-gray-400 hover:text-red-500 transition-colors flex items-center"
+                    on:click={() => {
+                        data.SJ_Fase_Persecucao_Penal = "";
+                        handlePhaseChange();
+                    }}
+                >
+                    <span class="material-icons text-sm mr-1">close</span>
+                    Limpar
+                </button>
+            </div>
 
             <div class="space-y-3">
                 <label class="flex items-center">
@@ -1369,9 +1447,22 @@
         <div
             class="border-2 border-gray-200 rounded-lg p-4 bg-white relative mt-6"
         >
-            <h3 class="text-sm font-semibold text-gray-600 mb-4">
-                Situação jurídica atual do autor
-            </h3>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-sm font-semibold text-gray-600">
+                    Situação jurídica atual do autor
+                </h3>
+                <button
+                    type="button"
+                    class="text-xs text-gray-400 hover:text-red-500 transition-colors flex items-center"
+                    on:click={() => {
+                        data.SJ_Status_Juridico_Autor = "";
+                        autosave();
+                    }}
+                >
+                    <span class="material-icons text-sm mr-1">close</span>
+                    Limpar
+                </button>
+            </div>
 
             <div class="space-y-3">
                 <label class="flex items-center">
@@ -1471,9 +1562,22 @@
         <div
             class="border-2 border-gray-200 rounded-lg p-4 bg-white relative mt-6"
         >
-            <h3 class="text-sm font-semibold text-gray-600 mb-4">
-                Resultado do julgamento
-            </h3>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-sm font-semibold text-gray-600">
+                    Resultado do julgamento
+                </h3>
+                <button
+                    type="button"
+                    class="text-xs text-gray-400 hover:text-red-500 transition-colors flex items-center"
+                    on:click={() => {
+                        situacaoJuridica2.SJ2_Resultado_Julgamento = "";
+                        autosave();
+                    }}
+                >
+                    <span class="material-icons text-sm mr-1">close</span>
+                    Limpar
+                </button>
+            </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Left Column: Checkboxes -->
@@ -1629,6 +1733,18 @@
                             />
                             <span class="ml-2">Não</span>
                         </label>
+                        <button
+                            type="button"
+                            class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                            on:click={() => {
+                                situacaoJuridica2.SJ2_Apuracao_Investigacao =
+                                    "";
+                                autosave();
+                            }}
+                            title="Limpar seleção"
+                        >
+                            <span class="material-icons text-sm">close</span>
+                        </button>
                     </div>
                     {#if situacaoJuridica2.SJ2_Apuracao_Investigacao === "Sim"}
                         <div class="mt-2">
@@ -1679,6 +1795,18 @@
                             />
                             <span class="ml-2">Não</span>
                         </label>
+                        <button
+                            type="button"
+                            class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                            on:click={() => {
+                                situacaoJuridica2.SJ2_Pedido_Reparacao_Denuncia =
+                                    "";
+                                autosave();
+                            }}
+                            title="Limpar seleção"
+                        >
+                            <span class="material-icons text-sm">close</span>
+                        </button>
                     </div>
                     {#if situacaoJuridica2.SJ2_Pedido_Reparacao_Denuncia === "Sim"}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
@@ -1758,6 +1886,17 @@
                             />
                             <span class="ml-2">Não</span>
                         </label>
+                        <button
+                            type="button"
+                            class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                            on:click={() => {
+                                situacaoJuridica2.SJ2_Condenacao_Reparacao = "";
+                                autosave();
+                            }}
+                            title="Limpar seleção"
+                        >
+                            <span class="material-icons text-sm">close</span>
+                        </button>
                     </div>
                     {#if situacaoJuridica2.SJ2_Condenacao_Reparacao === "Sim"}
                         <div class="mt-2">

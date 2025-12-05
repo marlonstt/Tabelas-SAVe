@@ -259,6 +259,14 @@
                             <span class="ml-2 text-sm">Sim</span>
                         </label>
                     </div>
+                    <button
+                        type="button"
+                        class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                        on:click={() => (data.Possui_Relacionado = "")}
+                        title="Limpar seleção"
+                    >
+                        <span class="material-icons text-sm">close</span>
+                    </button>
                 </div>
 
                 {#if data.Possui_Relacionado === "Sim"}
@@ -389,6 +397,16 @@
                                     <span class="ml-2 text-[15px]">Sim</span>
                                 </label>
                             </div>
+                            <button
+                                type="button"
+                                class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                on:click={() =>
+                                    (data.Precisa_Atendimento_Esp = "")}
+                                title="Limpar seleção"
+                            >
+                                <span class="material-icons text-sm">close</span
+                                >
+                            </button>
                         </div>
 
                         {#if data.Precisa_Atendimento_Esp === "Sim"}

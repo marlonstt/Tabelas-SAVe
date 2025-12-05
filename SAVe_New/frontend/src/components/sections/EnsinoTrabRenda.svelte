@@ -290,6 +290,19 @@
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
+                                <button
+                                    type="button"
+                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    on:click={() => {
+                                        data.Esta_Afastado = "";
+                                        autosave();
+                                    }}
+                                    title="Limpar seleção"
+                                >
+                                    <span class="material-icons text-sm"
+                                        >close</span
+                                    >
+                                </button>
                             </div>
                         </div>
 
@@ -467,6 +480,19 @@
                                         />
                                         <span class="ml-2">Não</span>
                                     </label>
+                                    <button
+                                        type="button"
+                                        class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                        on:click={() => {
+                                            data.TR_Prejuizo_trabalho = "";
+                                            autosave();
+                                        }}
+                                        title="Limpar seleção"
+                                    >
+                                        <span class="material-icons text-sm"
+                                            >close</span
+                                        >
+                                    </button>
                                 </div>
                             </div>
 
@@ -547,6 +573,19 @@
                                         />
                                         <span class="ml-2">Não</span>
                                     </label>
+                                    <button
+                                        type="button"
+                                        class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                        on:click={() => {
+                                            data.PT_prejuizo_patrimonio = "";
+                                            autosave();
+                                        }}
+                                        title="Limpar seleção"
+                                    >
+                                        <span class="material-icons text-sm"
+                                            >close</span
+                                        >
+                                    </button>
                                 </div>
                             </div>
 
@@ -597,6 +636,19 @@
                                         />
                                         <span class="ml-2">Não</span>
                                     </label>
+                                    <button
+                                        type="button"
+                                        class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                                        on:click={() => {
+                                            data.VE_prejuizo_escolar = "";
+                                            autosave();
+                                        }}
+                                        title="Limpar seleção"
+                                    >
+                                        <span class="material-icons text-sm"
+                                            >close</span
+                                        >
+                                    </button>
                                 </div>
                             </div>
 
