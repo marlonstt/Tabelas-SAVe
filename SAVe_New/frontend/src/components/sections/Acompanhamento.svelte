@@ -256,7 +256,7 @@
                             <label class="block">
                                 <span class="text-gray-700">Síntese</span>
                                 <textarea
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
+                                    class="mt-1 block w-full h-[250px] rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                     rows="3"
                                     bind:value={acomp.Sintese}
                                     on:input={autosave}
