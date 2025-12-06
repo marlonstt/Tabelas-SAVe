@@ -145,8 +145,23 @@ func GetCaseById(c *gin.Context) {
 	var dadosEntrada models.SAVe_DadosDeEntrada
 	database.DB.First(&dadosEntrada, id)
 
+	// Fix: Pre-fill DadosEntrada from Geral if missing or empty
+	if dadosEntrada.ID_Caso == 0 {
+		dadosEntrada.ID_Caso = id
+		dadosEntrada.Comarca_origem = geral.Comarca
+		dadosEntrada.N_procedimento_MPE = geral.Num_Processo
+		dadosEntrada.Data = geral.Data
+		dadosEntrada.Classificacao_vitima = geral.Tipo_Vitima
+	}
+
 	var identificacao models.SAVe_Identificacao
 	database.DB.First(&identificacao, id)
+
+	// Fix: Pre-fill Identificacao Name from Geral if missing or empty
+	if identificacao.ID_Caso == 0 || identificacao.Nome_RC == "" {
+		identificacao.ID_Caso = id
+		identificacao.Nome_RC = geral.Nome
+	}
 
 	var telefones []models.SAVe_Identificacao_telefone
 	database.DB.Where("\"ID_Caso\" = ?", id).Find(&telefones)
@@ -666,14 +681,24 @@ func UpdateCaseSection(c *gin.Context) {
 			}
 		}
 
-		// 4. Update SAVe_Geral fields
+		// 4. Update SAVe_Geral fields only if they are not empty
+		// This prevents accidental clearing of fields during autosave
 		updates := map[string]interface{}{}
-		updates["Data"] = input.SAVe_DadosDeEntrada.Data
-		updates["Comarca"] = input.SAVe_DadosDeEntrada.Comarca_origem
-		updates["Tipo_Vitima"] = input.TipoVitima
 
-		// Update Tipo_Crime in SAVe_Geral
-		// PowerApps logic uses the specific crimes (Crime_relacionado_especifico) + classification
+		if input.SAVe_DadosDeEntrada.Data != "" {
+			updates["Data"] = input.SAVe_DadosDeEntrada.Data
+		}
+		if input.SAVe_DadosDeEntrada.Comarca_origem != "" {
+			updates["Comarca"] = input.SAVe_DadosDeEntrada.Comarca_origem
+		}
+		if input.TipoVitima != "" {
+			updates["Tipo_Vitima"] = input.TipoVitima
+		}
+		if input.SAVe_DadosDeEntrada.N_procedimento_MPE != "" {
+			updates["Num_Processo"] = input.SAVe_DadosDeEntrada.N_procedimento_MPE
+		}
+
+		// Update Tipo_Crime in SAVe_Geral only if we have crime data
 		tipoCrime := input.SAVe_DadosDeEntrada.Crime_relacionado_especifico
 		if tipoCrime == "" {
 			tipoCrime = input.SAVe_DadosDeEntrada.Crime_relacionado
@@ -682,8 +707,10 @@ func UpdateCaseSection(c *gin.Context) {
 		if input.SAVe_DadosDeEntrada.Classificacao_crime != "" {
 			tipoCrime += " (" + input.SAVe_DadosDeEntrada.Classificacao_crime + ")"
 		}
-		updates["Tipo_Crime"] = tipoCrime
-		updates["Num_Processo"] = input.SAVe_DadosDeEntrada.N_procedimento_MPE
+
+		if tipoCrime != "" {
+			updates["Tipo_Crime"] = tipoCrime
+		}
 
 		if len(updates) > 0 {
 			if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Updates(updates).Error; err != nil {
@@ -734,12 +761,14 @@ func UpdateCaseSection(c *gin.Context) {
 			}
 		}
 
-		// 2. Update SAVe_Geral Nome if Nome_RC is present
-		// Always update name, allowing clearing
-		if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Update("Nome", input.SAVe_Identificacao.Nome_RC).Error; err != nil {
-			tx.Rollback()
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral name"})
-			return
+		// 2. Update SAVe_Geral Nome if Nome_RC is present and not empty
+		// Only update if there's an actual name to save, preventing accidental clearing
+		if input.SAVe_Identificacao.Nome_RC != "" {
+			if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Update("Nome", input.SAVe_Identificacao.Nome_RC).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral name"})
+				return
+			}
 		}
 
 		// 3. Save Enderecos (Delete all and recreate)
@@ -796,13 +825,11 @@ func UpdateCaseSection(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"message": "Identificacao updated"})
-
 	case "situacao-juridica":
 		fmt.Println("Received situacao-juridica update request")
 		var input struct {
 			models.SAVe_Situacao_Juridica
-			SituacaoJuridica2 models.SAVe_Situacao_Juridica2                   `json:"situacaoJuridica2"`
-			Processos         []models.SAVe_Situacao_Juridica_Incluir_processo `json:"processos"`
+			Processos []models.SAVe_Situacao_Juridica_Incluir_processo `json:"processos"`
 		}
 
 		if err := c.ShouldBindJSON(&input); err != nil {
@@ -813,12 +840,10 @@ func UpdateCaseSection(c *gin.Context) {
 		fmt.Printf("Bound input: %+v\n", input)
 
 		input.SAVe_Situacao_Juridica.ID_Caso = id
-		input.SituacaoJuridica2.ID_Caso = id
 
 		tx := database.DB.Begin()
 
 		// 1. Save SAVe_Situacao_Juridica
-		input.SAVe_Situacao_Juridica.ID_Caso = id // Ensure ID_Caso is set
 		var count int64
 		tx.Model(&models.SAVe_Situacao_Juridica{}).Where("\"ID_Caso\" = ?", id).Count(&count)
 		if count == 0 {
@@ -838,28 +863,7 @@ func UpdateCaseSection(c *gin.Context) {
 			}
 		}
 
-		// 2. Save SAVe_Situacao_Juridica2
-		input.SituacaoJuridica2.ID_Caso = id // Ensure ID_Caso is set
-		var count2 int64
-		tx.Model(&models.SAVe_Situacao_Juridica2{}).Where("\"ID_Caso\" = ?", id).Count(&count2)
-		if count2 == 0 {
-			if err := tx.Create(&input.SituacaoJuridica2).Error; err != nil {
-				tx.Rollback()
-				log.Println("Error creating SAVe_Situacao_Juridica2:", err)
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create situacao juridica 2: " + err.Error()})
-				return
-			}
-		} else {
-			// Use Save to ensure zero values (false, empty strings) are updated
-			if err := tx.Save(&input.SituacaoJuridica2).Error; err != nil {
-				tx.Rollback()
-				log.Println("Error updating SAVe_Situacao_Juridica2:", err)
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update situacao juridica 2: " + err.Error()})
-				return
-			}
-		}
-
-		// 3. Save Processos (Delete all and recreate)
+		// 2. Save Processos (Delete all and recreate)
 		if err := tx.Where("\"ID_Caso\" = ?", id).Delete(&models.SAVe_Situacao_Juridica_Incluir_processo{}).Error; err != nil {
 			tx.Rollback()
 			log.Println("Error deleting old Processos:", err)
@@ -1388,10 +1392,20 @@ func UpdateCaseSection(c *gin.Context) {
 
 		tx := database.DB.Begin()
 
-		// Use Updates to allow partial updates (e.g. only Paginas_Visitadas)
-		// But we need to be careful not to overwrite other fields with zero values if the struct is empty
-		// Gin ShouldBindJSON might parse partial JSON into the struct, leaving others as zero values.
-		// GORM Updates with struct only updates non-zero fields.
+		// Fetch existing record to preserve Nome if input.Nome is empty
+		var existing models.SAVe_Geral
+		if err := tx.Where("\"ID_Caso\" = ?", id).First(&existing).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch existing geral: " + err.Error()})
+			return
+		}
+
+		// Preserve Nome if input doesn't have it
+		if input.Nome == "" {
+			input.Nome = existing.Nome
+		}
+
+		// Use Save to update
 		if err := tx.Save(&input).Error; err != nil {
 			tx.Rollback()
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral info: " + err.Error()})
@@ -1438,6 +1452,38 @@ func UpdateCaseSection(c *gin.Context) {
 
 		c.JSON(http.StatusOK, gin.H{"message": "Encerramento updated successfully"})
 
+	case "situacao-juridica-2":
+		var input models.SAVe_Situacao_Juridica2
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		input.ID_Caso = id
+		tx := database.DB.Begin()
+
+		var count int64
+		tx.Model(&models.SAVe_Situacao_Juridica2{}).Where("\"ID_Caso\" = ?", id).Count(&count)
+		if count == 0 {
+			if err := tx.Create(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create situacao juridica 2: " + err.Error()})
+				return
+			}
+		} else {
+			if err := tx.Save(&input).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update situacao juridica 2: " + err.Error()})
+				return
+			}
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Situacao Juridica 2 updated successfully"})
 	default:
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid section"})
 	}
@@ -1463,4 +1509,51 @@ func ReopenCase(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Case reopened successfully"})
+}
+
+func GetCaseSection(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	section := c.Param("section")
+
+	switch section {
+	case "situacao-juridica":
+		var data models.SAVe_Situacao_Juridica
+		if err := database.DB.Where("\"ID_Caso\" = ?", id).First(&data).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Record not found"})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			}
+			return
+		}
+
+		var processos []models.SAVe_Situacao_Juridica_Incluir_processo
+		database.DB.Where("\"ID_Caso\" = ?", id).Find(&processos)
+
+		c.JSON(http.StatusOK, gin.H{
+			"SAVe_Situacao_Juridica": data,
+			"processos":              processos,
+		})
+
+	case "situacao-juridica-2":
+		var data models.SAVe_Situacao_Juridica2
+		if err := database.DB.Where("\"ID_Caso\" = ?", id).First(&data).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Record not found"})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			}
+			return
+		}
+		c.JSON(http.StatusOK, data)
+
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid section"})
+	}
 }

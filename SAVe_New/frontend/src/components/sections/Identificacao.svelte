@@ -609,22 +609,23 @@
         if (currentData === lastSavedData) return;
 
         clearTimeout(saveTimeout);
-        // saving = true;
-
         saveTimeout = setTimeout(async () => {
-            if (saving) return;
+            if (saving) return; // Double check
             saving = true;
+            saveStatus = "Salvando...";
             try {
                 await api.put(`/cases/${caseId}/identificacao`, data);
-                // console.log("Autosaving Identificacao...", data);
-                // await new Promise((r) => setTimeout(r, 500));
+                console.log("Autosaving Identificacao...", data);
+                saveStatus = "Salvo! ✅";
                 lastSavedData = currentData;
+                setTimeout(() => (saveStatus = ""), 2000);
             } catch (err) {
                 console.error("Error autosaving", err);
+                saveStatus = "Erro ao salvar ❌";
             } finally {
                 saving = false;
             }
-        }, 1000);
+        }, 2000);
     }
 
     async function manualSave() {
@@ -737,8 +738,8 @@
     </div>
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving || loading}
-        class:opacity-100={!saving && !loading}
+        class:opacity-0={saving || loading || !saveStatus}
+        class:opacity-100={!saving && !loading && saveStatus}
     >
         <span
             class="flex items-center {saveStatus.includes('Erro')
@@ -750,7 +751,7 @@
             {:else if saveStatus.includes("Salvo")}
                 <span class="material-icons text-sm mr-1">check</span>
             {/if}
-            {saveStatus || "Salvo"}
+            {saveStatus}
         </span>
     </div>
 

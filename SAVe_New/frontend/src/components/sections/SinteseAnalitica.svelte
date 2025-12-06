@@ -450,8 +450,8 @@
     </div>
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving || loading}
-        class:opacity-100={!saving && !loading}
+        class:opacity-0={saving || loading || !saveStatus}
+        class:opacity-100={!saving && !loading && saveStatus}
     >
         <span
             class="flex items-center {saveStatus.includes('Erro')
@@ -463,7 +463,7 @@
             {:else if saveStatus.includes("Salvo")}
                 <span class="material-icons text-sm mr-1">check</span>
             {/if}
-            {saveStatus || "Salvo"}
+            {saveStatus}
         </span>
     </div>
 

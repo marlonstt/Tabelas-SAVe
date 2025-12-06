@@ -77,6 +77,7 @@ func main() {
 				cases.DELETE("/:id", handlers.DeleteCase)
 				cases.PUT("/:id/archive", handlers.ArchiveCase)
 				cases.PUT("/:id/reopen", handlers.ReopenCase)
+				cases.GET("/:id/:section", handlers.GetCaseSection)
 				cases.PUT("/:id/:section", handlers.UpdateCaseSection)
 			}
 		}

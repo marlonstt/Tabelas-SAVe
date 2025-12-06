@@ -737,8 +737,8 @@
     </div>
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving || loading}
-        class:opacity-100={!saving && !loading}
+        class:opacity-0={saving || loading || !saveStatus}
+        class:opacity-100={!saving && !loading && saveStatus}
     >
         <span
             class="flex items-center {saveStatus.includes('Erro')
@@ -750,7 +750,7 @@
             {:else if saveStatus.includes("Salvo")}
                 <span class="material-icons text-sm mr-1">check</span>
             {/if}
-            {saveStatus || "Salvo"}
+            {saveStatus}
         </span>
     </div>
 
@@ -794,7 +794,17 @@
                                 <select
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                     bind:value={agressor.PA_Tipo_Agressor}
-                                    on:change={autosave}
+                                    on:change={() => {
+                                        if (
+                                            agressor.PA_Tipo_Agressor !==
+                                            "Jurídica"
+                                        ) {
+                                            agressor.PA_CNPJ = "";
+                                            agressor.PA_Razao_Social = "";
+                                            agressor.PA_Endereco_Juridica = "";
+                                        }
+                                        autosave();
+                                    }}
                                 >
                                     <option value="">Selecione...</option>
                                     {#each tipoAgressorOptions as option}
@@ -821,7 +831,7 @@
                             </label>
                         </div>
 
-                        {#if agressor.PA_Tipo_Agressor === "Pessoa Jurídica"}
+                        {#if agressor.PA_Tipo_Agressor === "Jurídica"}
                             <div
                                 class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 p-4 rounded"
                             >

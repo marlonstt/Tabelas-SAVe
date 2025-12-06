@@ -111,8 +111,8 @@
     </div>
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving || loading}
-        class:opacity-100={!saving && !loading}
+        class:opacity-0={saving || loading || !saveStatus}
+        class:opacity-100={!saving && !loading && saveStatus}
     >
         <span
             class="flex items-center {saveStatus.includes('Erro')
@@ -124,7 +124,7 @@
             {:else if saveStatus.includes("Salvo")}
                 <span class="material-icons text-sm mr-1">check</span>
             {/if}
-            {saveStatus || "Salvo"}
+            {saveStatus}
         </span>
     </div>
 
@@ -187,7 +187,13 @@
                         <select
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.Estuda_atualmente}
-                            on:change={autosave}
+                            on:change={() => {
+                                if (data.Estuda_atualmente !== "Sim") {
+                                    data.Nome_instituicao = "";
+                                    data.Tipo_instituicao = "";
+                                }
+                                autosave();
+                            }}
                         >
                             <option value="">Selecione...</option>
                             <option value="Sim">Sim</option>
@@ -278,6 +284,7 @@
                                         class="form-radio text-save-primary"
                                         bind:group={data.Esta_Afastado}
                                         value="Sim"
+                                        on:change={autosave}
                                     />
                                     <span class="ml-2">Sim</span>
                                 </label>
@@ -287,6 +294,12 @@
                                         class="form-radio text-save-primary"
                                         bind:group={data.Esta_Afastado}
                                         value="Não"
+                                        on:change={() => {
+                                            data.Motivo_afastamento = "";
+                                            data.Motivo_Afastamento_Detalhado =
+                                                "";
+                                            autosave();
+                                        }}
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
@@ -295,6 +308,8 @@
                                     class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                                     on:click={() => {
                                         data.Esta_Afastado = "";
+                                        data.Motivo_afastamento = "";
+                                        data.Motivo_Afastamento_Detalhado = "";
                                         autosave();
                                     }}
                                     title="Limpar seleção"
@@ -413,6 +428,12 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.Valor_renda}
+                                on:change={() => {
+                                    if (data.Valor_renda !== "Outro valor") {
+                                        data.Valor_renda_esp = "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Menos de um salário mínimo"
@@ -466,6 +487,7 @@
                                                 data.TR_Prejuizo_trabalho
                                             }
                                             value="Sim"
+                                            on:change={autosave}
                                         />
                                         <span class="ml-2">Sim</span>
                                     </label>
@@ -477,6 +499,11 @@
                                                 data.TR_Prejuizo_trabalho
                                             }
                                             value="Não"
+                                            on:change={() => {
+                                                data.TR_tipo_prejuizo = "";
+                                                data.TR_descricao_prejuizo = "";
+                                                autosave();
+                                            }}
                                         />
                                         <span class="ml-2">Não</span>
                                     </label>
@@ -485,6 +512,8 @@
                                         class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                                         on:click={() => {
                                             data.TR_Prejuizo_trabalho = "";
+                                            data.TR_tipo_prejuizo = "";
+                                            data.TR_descricao_prejuizo = "";
                                             autosave();
                                         }}
                                         title="Limpar seleção"
@@ -559,6 +588,7 @@
                                                 data.PT_prejuizo_patrimonio
                                             }
                                             value="Sim"
+                                            on:change={autosave}
                                         />
                                         <span class="ml-2">Sim</span>
                                     </label>
@@ -570,6 +600,10 @@
                                                 data.PT_prejuizo_patrimonio
                                             }
                                             value="Não"
+                                            on:change={() => {
+                                                data.PT_Descricao_pp = "";
+                                                autosave();
+                                            }}
                                         />
                                         <span class="ml-2">Não</span>
                                     </label>
@@ -578,6 +612,7 @@
                                         class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                                         on:click={() => {
                                             data.PT_prejuizo_patrimonio = "";
+                                            data.PT_Descricao_pp = "";
                                             autosave();
                                         }}
                                         title="Limpar seleção"
@@ -622,6 +657,7 @@
                                                 data.VE_prejuizo_escolar
                                             }
                                             value="Sim"
+                                            on:change={autosave}
                                         />
                                         <span class="ml-2">Sim</span>
                                     </label>
@@ -633,6 +669,11 @@
                                                 data.VE_prejuizo_escolar
                                             }
                                             value="Não"
+                                            on:change={() => {
+                                                data.VE_tipo_PE = "";
+                                                data.VE_descricao_pe = "";
+                                                autosave();
+                                            }}
                                         />
                                         <span class="ml-2">Não</span>
                                     </label>
@@ -641,6 +682,8 @@
                                         class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                                         on:click={() => {
                                             data.VE_prejuizo_escolar = "";
+                                            data.VE_tipo_PE = "";
+                                            data.VE_descricao_pe = "";
                                             autosave();
                                         }}
                                         title="Limpar seleção"
@@ -707,7 +750,13 @@
                                         type="checkbox"
                                         class="form-checkbox text-save-primary"
                                         bind:checked={data.Demanda_educacional}
-                                        on:change={autosave}
+                                        on:change={() => {
+                                            if (!data.Demanda_educacional) {
+                                                data.Desc_demanda_educacional =
+                                                    "";
+                                            }
+                                            autosave();
+                                        }}
                                     />
                                     <span
                                         class="ml-2 font-semibold text-gray-700"
@@ -737,7 +786,13 @@
                                         type="checkbox"
                                         class="form-checkbox text-save-primary"
                                         bind:checked={data.Demanda_trabalhista}
-                                        on:change={autosave}
+                                        on:change={() => {
+                                            if (!data.Demanda_trabalhista) {
+                                                data.Desc_demanda_trabalhista =
+                                                    "";
+                                            }
+                                            autosave();
+                                        }}
                                     />
                                     <span
                                         class="ml-2 font-semibold text-gray-700"

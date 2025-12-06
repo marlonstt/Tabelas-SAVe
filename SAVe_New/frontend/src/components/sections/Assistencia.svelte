@@ -116,8 +116,11 @@
                 await api.put(`/cases/${caseId}/assistencia`, data);
                 // await new Promise((r) => setTimeout(r, 500));
                 lastSavedData = currentData;
+                saveStatus = "Salvo! ✅";
+                setTimeout(() => (saveStatus = ""), 2000);
             } catch (err) {
                 console.error("Error autosaving", err);
+                saveStatus = "Erro ao salvar ❌";
             } finally {
                 saving = false;
             }
@@ -265,6 +268,22 @@
     }
 
     $: if (data) autosave();
+
+    // Fix: Clear Status_cad_unico when Cad_unico is not "Sim"
+    $: if (data.Cad_unico !== "Sim") {
+        data.Status_cad_unico = "";
+    }
+
+    // Fix: Clear dependent "Especifique" fields when "Informe" is not "Outros"
+    $: if (data.BSA_transf_renda_inf !== "Outros")
+        data.BSA_transf_renda_esp = "";
+    $: if (data.BSA_Ben_trab_inf !== "Outros") data.BSA_Ben_trab_esp = "";
+    $: if (data.BSA_Ben_hab_inf !== "Outros") data.BSA_Ben_hab_esp = "";
+    $: if (data.BSA_Ben_as_inf !== "Outros") data.BSA_Ben_as_esp = "";
+    $: if (data.BSA_Ben_educ_inf !== "Outros") data.BSA_Ben_educ_esp = "";
+    $: if (data.BSA_Ben_atr_inf !== "Outros") data.BSA_Ben_atr_esp = "";
+    $: if (data.BSA_Ben_pdi_inf !== "Outros") data.BSA_Ben_pdi_esp = "";
+    $: if (data.BSA_Ben_emer_inf !== "Outros") data.BSA_Ben_emer_esp = "";
 </script>
 
 <div class="bg-white rounded shadow p-10 relative">
@@ -281,12 +300,12 @@
     </div>
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving || loading}
-        class:opacity-100={!saving && !loading}
+        class:opacity-0={saving || loading || !saveStatus}
+        class:opacity-100={!saving && !loading && saveStatus}
     >
         <span class="text-green-600 flex items-center">
             <span class="material-icons text-sm mr-1">check</span>
-            Salvo
+            {saveStatus}
         </span>
     </div>
 
@@ -351,6 +370,18 @@
                         <select
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.SPSB_Acesso_cras}
+                            on:change={() => {
+                                if (data.SPSB_Acesso_cras !== "Sim") {
+                                    data.SPSB_Servicos_acessados = "";
+                                    data.SPSB_Servicos_acessados_esp = "";
+                                    data.SPSB_Contato_cras_nome = "";
+                                    data.SPSB_Contato_cras_tel = "";
+                                    data.SPSB_Contato_cras_email = "";
+                                    data.SPSB_Nome_servico = "";
+                                    data.SPSB_Endereco_servico = "";
+                                }
+                                autosave();
+                            }}
                         >
                             <option value="">Selecione...</option>
                             <option value="Sim">Sim</option>
@@ -603,6 +634,18 @@
                         <select
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.SPSEMC_Acesso_creas}
+                            on:change={() => {
+                                if (data.SPSEMC_Acesso_creas !== "Sim") {
+                                    data.SPSEMC_Servicos_acessados = "";
+                                    data.SPSEMC_Servicos_acessados_esp = "";
+                                    data.SPSEMC_Contato_creas_nome = "";
+                                    data.SPSEMC_Contato_creas_tel = "";
+                                    data.SPSEMC_Contato_creas_email = "";
+                                    data.SPSEMC_Nome_servico = "";
+                                    data.SPSEMC_Endereco_servico = "";
+                                }
+                                autosave();
+                            }}
                         >
                             <option value="">Selecione...</option>
                             <option value="Sim">Sim</option>
@@ -892,7 +935,16 @@
                         <select
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.SPSEAC_Inserido_acolhimentoInst}
-                            on:change={handleSPSEACChange}
+                            on:change={() => {
+                                handleSPSEACChange();
+                                if (
+                                    data.SPSEAC_Inserido_acolhimentoInst !==
+                                    "Sim"
+                                ) {
+                                    data.SPSEAC_Modalidade_acolhimentoInst = "";
+                                }
+                                autosave();
+                            }}
                         >
                             <option value="">Selecione...</option>
                             <option value="Sim">Sim</option>
@@ -937,6 +989,15 @@
                         <select
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.SPSEAC_Inserido_acolhimentorep}
+                            on:change={() => {
+                                if (
+                                    data.SPSEAC_Inserido_acolhimentorep !==
+                                    "Sim"
+                                ) {
+                                    data.SPSEAC_acolhimentorep_desc = "";
+                                }
+                                autosave();
+                            }}
                         >
                             <option value="">Selecione...</option>
                             <option value="Sim">Sim</option>
@@ -964,6 +1025,12 @@
                         <select
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.SPSEAC_Inserido_familia}
+                            on:change={() => {
+                                if (data.SPSEAC_Inserido_familia !== "Sim") {
+                                    data.SPSEAC_nome_familia = "";
+                                }
+                                autosave();
+                            }}
                         >
                             <option value="">Selecione...</option>
                             <option value="Sim">Sim</option>
@@ -991,6 +1058,12 @@
                         <select
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.SPSEAC_Inserido_calamidade}
+                            on:change={() => {
+                                if (data.SPSEAC_Inserido_calamidade !== "Sim") {
+                                    data.SPSEAC_desc_calamidade = "";
+                                }
+                                autosave();
+                            }}
                         >
                             <option value="">Selecione...</option>
                             <option value="Sim">Sim</option>
@@ -1075,6 +1148,37 @@
                         <select
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                             bind:value={data.BSA_recebe_beneficios}
+                            on:change={() => {
+                                if (data.BSA_recebe_beneficios !== "Sim") {
+                                    data.BSA_Tipo_beneficio = "";
+                                    data.BSA_transf_renda_inf = "";
+                                    data.BSA_Ben_trab_inf = "";
+                                    data.BSA_Ben_hab_inf = "";
+                                    data.BSA_Ben_as_inf = "";
+                                    data.BSA_Ben_educ_inf = "";
+                                    data.BSA_Ben_atr_inf = "";
+                                    data.BSA_Ben_pdi_inf = "";
+                                    data.BSA_Ben_emer_inf = "";
+                                    data.BSA_transf_renda_esp = "";
+                                    data.BSA_Ben_trab_esp = "";
+                                    data.BSA_Ben_hab_esp = "";
+                                    data.BSA_Ben_as_esp = "";
+                                    data.BSA_Ben_educ_esp = "";
+                                    data.BSA_Ben_atr_esp = "";
+                                    data.BSA_Ben_pdi_esp = "";
+                                    data.BSA_Ben_emer_esp = "";
+                                    data.BSA_outras_formas = "";
+                                    data.BSA_direito_beneficios = "";
+                                    data.BSA_direito_beneficios_esp = "";
+                                    data.BSA_demandas_assist = "";
+                                    data.BSA_demandas_assist_desc = "";
+                                    data.BSA_tec_ref_nome = "";
+                                    data.BSA_tec_ref_tel = "";
+                                    data.BSA_tec_ref_email = "";
+                                    data.BSA_seg_alimentar = "";
+                                }
+                                autosave();
+                            }}
                         >
                             <option value="">Selecione...</option>
                             <option value="Sim">Sim</option>

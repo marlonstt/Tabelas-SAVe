@@ -233,12 +233,12 @@
     </div>
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving || loading}
-        class:opacity-100={!saving && !loading}
+        class:opacity-0={saving || loading || !saveStatus}
+        class:opacity-100={!saving && !loading && saveStatus}
     >
         <span class="text-green-600 flex items-center">
             <span class="material-icons text-sm mr-1">check</span>
-            Salvo
+            {saveStatus}
         </span>
     </div>
 
@@ -263,7 +263,12 @@
                             <input
                                 type="checkbox"
                                 bind:checked={data.Moradia_regular}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (!data.Moradia_regular) {
+                                        data.Moradia_regular_esp = "";
+                                    }
+                                    autosave();
+                                }}
                                 class="form-checkbox h-5 w-5 text-blue-600 rounded"
                             />
                             <span class="text-gray-700 font-medium"
@@ -300,7 +305,12 @@
                             <input
                                 type="checkbox"
                                 bind:checked={data.Moradia_Irregular}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (!data.Moradia_Irregular) {
+                                        data.Moradia_Irregular_esp = "";
+                                    }
+                                    autosave();
+                                }}
                                 class="form-checkbox h-5 w-5 text-blue-600 rounded"
                             />
                             <span class="text-gray-700 font-medium"
@@ -334,7 +344,12 @@
                             <input
                                 type="checkbox"
                                 bind:checked={data.Moradia_Emergencial}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (!data.Moradia_Emergencial) {
+                                        data.Moradia_Emergencial_esp = "";
+                                    }
+                                    autosave();
+                                }}
                                 class="form-checkbox h-5 w-5 text-blue-600 rounded"
                             />
                             <span class="text-gray-700 font-medium"
@@ -413,7 +428,21 @@
                             <input
                                 type="checkbox"
                                 bind:checked={territorioTradicional}
-                                on:change={handleCheckboxChange}
+                                on:change={() => {
+                                    if (!territorioTradicional) {
+                                        comunidadeIndigena = false;
+                                        comunidadeQuilombola = false;
+                                        comunidadeRibeirinho = false;
+                                        comunidadeCigano = false;
+                                        comunidadeOutro = false;
+                                        data.Reconhecido_funai = "";
+                                        data.Reconhecido_fund_palmares = "";
+                                        data.Reconhecido_orgao_publico = "";
+                                        data.Comunidade_tradicional_esp = "";
+                                        data.titulado_incra = "";
+                                    }
+                                    handleCheckboxChange();
+                                }}
                                 class="form-checkbox h-5 w-5 text-blue-600 rounded"
                             />
                             <span class="text-gray-700 font-medium"
@@ -439,7 +468,12 @@
                                         <input
                                             type="checkbox"
                                             bind:checked={comunidadeIndigena}
-                                            on:change={handleCheckboxChange}
+                                            on:change={() => {
+                                                if (!comunidadeIndigena) {
+                                                    data.Reconhecido_funai = "";
+                                                }
+                                                handleCheckboxChange();
+                                            }}
                                             class="form-checkbox h-5 w-5 text-blue-600 rounded"
                                         />
                                         <span class="text-gray-700"
@@ -509,7 +543,13 @@
                                         <input
                                             type="checkbox"
                                             bind:checked={comunidadeQuilombola}
-                                            on:change={handleCheckboxChange}
+                                            on:change={() => {
+                                                if (!comunidadeQuilombola) {
+                                                    data.Reconhecido_fund_palmares =
+                                                        "";
+                                                }
+                                                handleCheckboxChange();
+                                            }}
                                             class="form-checkbox h-5 w-5 text-blue-600 rounded"
                                         />
                                         <span class="text-gray-700"
@@ -606,7 +646,15 @@
                                         <input
                                             type="checkbox"
                                             bind:checked={comunidadeOutro}
-                                            on:change={handleCheckboxChange}
+                                            on:change={() => {
+                                                if (!comunidadeOutro) {
+                                                    data.Reconhecido_orgao_publico =
+                                                        "";
+                                                    data.Comunidade_tradicional_esp =
+                                                        "";
+                                                }
+                                                handleCheckboxChange();
+                                            }}
                                             class="form-checkbox h-5 w-5 text-blue-600 rounded"
                                         />
                                         <span class="text-gray-700"
@@ -753,7 +801,12 @@
                     </span>
                     <select
                         bind:value={data.Estrutura_Mat_predominante}
-                        on:change={autosave}
+                        on:change={() => {
+                            if (data.Estrutura_Mat_predominante !== "Outro") {
+                                data.Estrutura_Mat_predominante_esp = "";
+                            }
+                            autosave();
+                        }}
                         class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     >
                         <option value="">Selecione...</option>
@@ -787,7 +840,16 @@
                     </span>
                     <select
                         bind:value={data.Estrutura_Insta_eletricas_hidraulica}
-                        on:change={autosave}
+                        on:change={() => {
+                            if (
+                                data.Estrutura_Insta_eletricas_hidraulica !==
+                                "Sim"
+                            ) {
+                                data.Estrutura_Insta_eletricas_hidraulica_esp =
+                                    "";
+                            }
+                            autosave();
+                        }}
                         class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     >
                         <option value="">Selecione...</option>
@@ -836,7 +898,12 @@
                     </span>
                     <select
                         bind:value={data.Estrutura_Acesso_internet}
-                        on:change={autosave}
+                        on:change={() => {
+                            if (data.Estrutura_Acesso_internet !== "Sim") {
+                                data.Estrutura_Acesso_internet_esp = "";
+                            }
+                            autosave();
+                        }}
                         class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     >
                         <option value="">Selecione...</option>
@@ -866,7 +933,14 @@
                     </span>
                     <select
                         bind:value={data.Estrutura_danos_eventos_naturais}
-                        on:change={autosave}
+                        on:change={() => {
+                            if (
+                                data.Estrutura_danos_eventos_naturais !== "Sim"
+                            ) {
+                                data.Estrutura_danos_eventos_naturais_esp = "";
+                            }
+                            autosave();
+                        }}
                         class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     >
                         <option value="">Selecione...</option>
@@ -898,7 +972,12 @@
                     </span>
                     <select
                         bind:value={data.Estrutura_Risco_geologico}
-                        on:change={autosave}
+                        on:change={() => {
+                            if (data.Estrutura_Risco_geologico !== "Sim") {
+                                data.Estrutura_Risco_geologico_esp = "";
+                            }
+                            autosave();
+                        }}
                         class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     >
                         <option value="">Selecione...</option>
@@ -1172,6 +1251,7 @@
                                 class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                                 on:click={() => {
                                     data.RV_Mudanca_domicilio = "";
+                                    data.RV_Mudanca_domicilio_esp = "";
                                     autosave();
                                 }}
                                 title="Limpar seleção"
@@ -1201,7 +1281,6 @@
                 </div>
             </div>
         </div>
-        <!-- Manual Save Button -->
         <!-- Manual Save Button -->
         <div class="md:col-span-2 flex justify-end mt-4">
             <div class="flex flex-col items-center">

@@ -104,190 +104,145 @@
         SJ2_Demanda_Tratamento_Digno_OutraForma: "",
     };
 
-    let processos: any[] = [];
-
     let loading = true;
     let saving = false;
     let saveStatus = "";
+    let lastSavedData = "";
     let saveTimeout: any;
-
-    const dateFields = [
-        "SJ_Data_Fatos",
-        "SJ_Data_Autuacao_IP",
-        "SJ_Data_Conclusao_IP",
-        "SJ_Data_Denuncia_Repres",
-        "SJ_Data_Audiencia",
-        "SJ_Data_Sentenca",
-        "SJ_Data_Transito_Julgado",
-    ];
-
-    $: judicialLabel =
-        data.SJ_Autor_Maior_18 === "Sim"
-            ? "Judicial - Criminal"
-            : "Judicial - Infracional";
-
-    $: judicialOptions =
-        data.SJ_Autor_Maior_18 === "Sim"
-            ? [
-                  "Sem denúncia",
-                  "Com Denúncia",
-                  "AIJ realizada",
-                  "Com sentença",
-                  "Transitada em julgada",
-              ]
-            : [
-                  "Sem representação",
-                  "Com representação",
-                  "Audiência de apresentação",
-                  "Aplicação de medidas socioeducativas",
-                  "Em cumprimento de Medidas Socioeducativas",
-              ];
-
-    // Labels for Current Legal Status based on age
-    $: labelPrisaoAdvertencia =
-        data.SJ_Autor_Maior_18 === "Sim" ? "Prisão Cautelar" : "Advertência";
-    $: labelPresoObrigacao =
-        data.SJ_Autor_Maior_18 === "Sim"
-            ? "Preso em razão de outro fato"
-            : "Obrigação de Reparar o Dano";
-    $: labelLiberdadePrestacao =
-        data.SJ_Autor_Maior_18 === "Sim"
-            ? "Liberdade Provisória"
-            : "Prestação de Serviços à Comunidade";
-    $: labelCumprimentoLiberdade =
-        data.SJ_Autor_Maior_18 === "Sim"
-            ? "Em cumprimento de pena"
-            : "Liberdade Assistida";
-    $: labelMortoSemiliberdade =
-        data.SJ_Autor_Maior_18 === "Sim" ? "Morto" : "Semiliberdade";
-
-    // Labels for Judgment Result based on age
-    $: labelMedidaSeguranca =
-        data.SJ_Autor_Maior_18 === "Sim"
-            ? "Medida de Segurança (absolvição imprópria)"
-            : "Medida";
-    $: labelPrescricaoImprocedencia =
-        data.SJ_Autor_Maior_18 === "Sim" ? "Prescrição" : "Improcedência";
-    $: labelCondenacaoArquivamento =
-        data.SJ_Autor_Maior_18 === "Sim"
-            ? "Condenação"
-            : "Arquivamento do processo";
-
-    $: labelTempoPena =
-        data.SJ_Autor_Maior_18 === "Sim"
-            ? "Tempo da pena:"
-            : "Tempo da medida:";
-    $: labelInicioCumprimento =
-        data.SJ_Autor_Maior_18 === "Sim"
-            ? "Inicio do cumprimento:"
-            : "Data de inicio medida:";
-    $: labelRegime =
-        data.SJ_Autor_Maior_18 === "Sim" ? "Regime:" : "Tipo de medida:";
-
-    $: regimeOptions =
-        data.SJ_Autor_Maior_18 === "Sim"
-            ? ["Fechado", "Semiaberto", "Aberto"]
-            : [
-                  "Advertência",
-                  "Obrigação de Reparar o Dano",
-                  "Prestação de Serviços à Comunidade",
-                  "Liberdade Assistida",
-                  "Semiliberdade",
-                  "Internação",
-              ];
-
-    // Reset especific field if main phase changes or isn't judicial
-    function handlePhaseChange() {
-        if (!data.SJ_Fase_Persecucao_Penal.startsWith("Judicial")) {
-            data.SJ_Fase_Judicial_Especif = "";
-        }
-        autosave();
-    }
+    let processos: any[] = [];
 
     onMount(async () => {
         await loadData();
     });
 
-    async function manualSave() {
-        if (saving) return;
-        saving = true;
-        saveStatus = "Salvando...";
-
-        try {
-            const payload = {
-                ...data,
-                situacaoJuridica2: situacaoJuridica2,
-                processos: processos,
-            };
-            await api.put(`/cases/${caseId}/situacao-juridica`, payload);
-            saveStatus = "Salvo com sucesso! ✅";
-            setTimeout(() => (saveStatus = ""), 3000);
-        } catch (error) {
-            console.error("Error saving data:", error);
-            saveStatus = "Erro ao salvar ❌";
-        } finally {
-            saving = false;
-        }
-    }
-
     async function loadData() {
         try {
             loading = true;
-            const response = await api.get(`/cases/${caseId}`);
-            const apiData = response.data;
 
-            if (apiData.situacaoJuridica && apiData.situacaoJuridica.ID_Caso) {
-                data = { ...data, ...apiData.situacaoJuridica };
-
-                // Format date fields
-                dateFields.forEach((field) => {
-                    if (data[field]) {
-                        data[field] = data[field].split("T")[0];
+            // Load situacao-juridica (and processos)
+            try {
+                const res1 = await api.get(
+                    `/cases/${caseId}/situacao-juridica`,
+                );
+                if (res1.data) {
+                    data = { ...data, ...res1.data.SAVe_Situacao_Juridica };
+                    if (res1.data.processos) {
+                        processos = res1.data.processos;
                     }
-                });
-            }
-            if (
-                apiData.situacaoJuridica2 &&
-                apiData.situacaoJuridica2.ID_Caso
-            ) {
-                situacaoJuridica2 = {
-                    ...situacaoJuridica2,
-                    ...apiData.situacaoJuridica2,
-                };
-                // Format SJ2_Inicio_Cumprimento date
-                if (situacaoJuridica2.SJ2_Inicio_Cumprimento) {
-                    situacaoJuridica2.SJ2_Inicio_Cumprimento =
-                        situacaoJuridica2.SJ2_Inicio_Cumprimento.split("T")[0];
+                }
+            } catch (error: any) {
+                if (error.response && error.response.status === 404) {
+                    console.log(
+                        "Situacao Juridica not found (404), assuming new record.",
+                    );
+                } else {
+                    console.error("Error loading situacao-juridica:", error);
                 }
             }
-            if (apiData.processos) {
-                processos = apiData.processos;
+
+            // Load situacao-juridica-2
+            try {
+                const res2 = await api.get(
+                    `/cases/${caseId}/situacao-juridica-2`,
+                );
+                if (res2.data) {
+                    situacaoJuridica2 = { ...situacaoJuridica2, ...res2.data };
+                }
+            } catch (error: any) {
+                if (error.response && error.response.status === 404) {
+                    console.log(
+                        "Situacao Juridica 2 not found (404), assuming new record.",
+                    );
+                } else {
+                    console.error("Error loading situacao-juridica-2:", error);
+                }
             }
-        } catch (error) {
-            console.error("Error loading data:", error);
+
+            lastSavedData = JSON.stringify({
+                data,
+                situacaoJuridica2,
+                processos,
+            });
         } finally {
             loading = false;
         }
     }
 
     function autosave() {
-        if (saveTimeout) clearTimeout(saveTimeout);
+        if (loading || saving) return;
+
+        const currentData = JSON.stringify({
+            data,
+            situacaoJuridica2,
+            processos,
+        });
+        if (currentData === lastSavedData) return;
+
+        clearTimeout(saveTimeout);
         saving = true;
+        saveStatus = "";
+
         saveTimeout = setTimeout(async () => {
             try {
-                const payload = {
-                    ...data,
-                    situacaoJuridica2: situacaoJuridica2,
-                    processos: processos,
-                };
-                await api.put(`/cases/${caseId}/situacao-juridica`, payload);
-                saving = false;
+                await Promise.all([
+                    api.put(`/cases/${caseId}/situacao-juridica`, {
+                        ...data,
+                        processos: processos,
+                    }),
+                    api.put(
+                        `/cases/${caseId}/situacao-juridica-2`,
+                        situacaoJuridica2,
+                    ),
+                ]);
+
+                lastSavedData = currentData;
+                saveStatus = "Salvo! ✅";
+                setTimeout(() => (saveStatus = ""), 2000);
+                console.log("Autosaved SituacaoJuridica");
             } catch (error) {
-                console.error("Error saving data:", error);
+                console.error("Error autosaving:", error);
+                saveStatus = "Erro ao salvar ❌";
+            } finally {
                 saving = false;
             }
-        }, 1000);
+        }, 2000);
     }
+
+    function manualSave() {
+        if (loading || saving) return;
+        autosave();
+    }
+
+    function handlePhaseChange() {
+        if (data.SJ_Fase_Persecucao_Penal !== judicialLabel) {
+            data.SJ_Fase_Judicial_Especif = "";
+        }
+        autosave();
+    }
+
+    const judicialLabel = "Fase Judicial (Processo)";
+    const judicialOptions = [
+        "Ação Penal Privada",
+        "Ação Penal Pública Condicionada",
+        "Ação Penal Pública Incondicionada",
+    ];
+
+    const labelPrisaoAdvertencia = "Prisão domiciliar";
+    const labelPresoObrigacao = "Preso (provisório ou condenado)";
+    const labelLiberdadePrestacao = "Liberdade provisória (com ou sem fiança)";
+    const labelCumprimentoLiberdade =
+        "Cumprimento de pena em liberdade (aberto, livramento condicional)";
+    const labelMortoSemiliberdade = "Morto (extinção da punibilidade)";
+
+    const labelMedidaSeguranca = "Medida de Segurança";
+    const labelPrescricaoImprocedencia = "Prescrição/Decadência";
+    const labelCondenacaoArquivamento = "Condenação";
+
+    const labelTempoPena = "Tempo de pena:";
+    const labelInicioCumprimento = "Início do cumprimento:";
+    const labelRegime = "Regime:";
+
+    const regimeOptions = ["Fechado", "Semiaberto", "Aberto"];
 
     function addProcesso() {
         processos = [...processos, { SJIP_Numero: "", SJIP_Classe_Tipo: "" }];
@@ -416,12 +371,20 @@
     </div>
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving || loading}
-        class:opacity-100={!saving && !loading}
+        class:opacity-0={saving || loading || !saveStatus}
+        class:opacity-100={!saving && !loading && saveStatus}
     >
-        <span class="text-green-600 flex items-center">
-            <span class="material-icons text-sm mr-1">check</span>
-            Salvo
+        <span
+            class="flex items-center {saveStatus.includes('Erro')
+                ? 'text-red-600'
+                : 'text-green-600'}"
+        >
+            {#if saveStatus.includes("Erro")}
+                <span class="material-icons text-sm mr-1">error</span>
+            {:else if saveStatus.includes("Salvo")}
+                <span class="material-icons text-sm mr-1">check</span>
+            {/if}
+            {saveStatus}
         </span>
     </div>
 
@@ -676,7 +639,12 @@
                                             data.SJ_Medidas_Prot_Cautelar
                                         }
                                         value="Não"
-                                        on:change={autosave}
+                                        on:change={() => {
+                                            data.SJ_Relato_Descumprimento =
+                                                "Não";
+                                            data.SJ_Descumprimento_Especif = "";
+                                            autosave();
+                                        }}
                                         class="form-radio text-save-primary"
                                     />
                                     <span class="ml-2">Não</span>
@@ -696,34 +664,19 @@
                                 </button>
                             </div>
                         </div>
-                        {#if data.SJ_Medidas_Prot_Cautelar === "Sim"}
-                            <div>
-                                <label
-                                    class="block text-sm font-semibold text-gray-800 mb-1"
-                                    >Nº do Processo:</label
-                                >
-                                <input
-                                    type="text"
-                                    bind:value={data.SJ_Num_Processo}
-                                    on:blur={autosave}
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                />
-                            </div>
-                        {/if}
-                    </div>
 
-                    {#if data.SJ_Medidas_Prot_Cautelar === "Sim"}
-                        <!-- Compartilhado com Rede -->
                         <div>
                             <label
                                 class="block text-sm font-semibold text-gray-800 mb-2"
-                                >Foi compartilhado com a rede?</label
+                                >Há relato de descumprimento?</label
                             >
                             <div class="flex space-x-4">
                                 <label class="inline-flex items-center">
                                     <input
                                         type="radio"
-                                        bind:group={data.SJ_Compartilhado_Rede}
+                                        bind:group={
+                                            data.SJ_Relato_Descumprimento
+                                        }
                                         value="Sim"
                                         on:change={autosave}
                                         class="form-radio text-save-primary"
@@ -733,9 +686,14 @@
                                 <label class="inline-flex items-center">
                                     <input
                                         type="radio"
-                                        bind:group={data.SJ_Compartilhado_Rede}
+                                        bind:group={
+                                            data.SJ_Relato_Descumprimento
+                                        }
                                         value="Não"
-                                        on:change={autosave}
+                                        on:change={() => {
+                                            data.SJ_Descumprimento_Especif = "";
+                                            autosave();
+                                        }}
                                         class="form-radio text-save-primary"
                                     />
                                     <span class="ml-2">Não</span>
@@ -744,7 +702,8 @@
                                     type="button"
                                     class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                                     on:click={() => {
-                                        data.SJ_Compartilhado_Rede = "";
+                                        data.SJ_Relato_Descumprimento = "";
+                                        data.SJ_Descumprimento_Especif = "";
                                         autosave();
                                     }}
                                     title="Limpar seleção"
@@ -754,57 +713,8 @@
                                     >
                                 </button>
                             </div>
-                        </div>
-
-                        <!-- Relato de Descumprimento -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label
-                                    class="block text-sm font-semibold text-gray-800 mb-2"
-                                    >Há relato de descumprimento?</label
-                                >
-                                <div class="flex space-x-4">
-                                    <label class="inline-flex items-center">
-                                        <input
-                                            type="radio"
-                                            bind:group={
-                                                data.SJ_Relato_Descumprimento
-                                            }
-                                            value="Sim"
-                                            on:change={autosave}
-                                            class="form-radio text-save-primary"
-                                        />
-                                        <span class="ml-2">Sim</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input
-                                            type="radio"
-                                            bind:group={
-                                                data.SJ_Relato_Descumprimento
-                                            }
-                                            value="Não"
-                                            on:change={autosave}
-                                            class="form-radio text-save-primary"
-                                        />
-                                        <span class="ml-2">Não</span>
-                                    </label>
-                                    <button
-                                        type="button"
-                                        class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
-                                        on:click={() => {
-                                            data.SJ_Relato_Descumprimento = "";
-                                            autosave();
-                                        }}
-                                        title="Limpar seleção"
-                                    >
-                                        <span class="material-icons text-sm"
-                                            >close</span
-                                        >
-                                    </button>
-                                </div>
-                            </div>
                             {#if data.SJ_Relato_Descumprimento === "Sim"}
-                                <div>
+                                <div class="mt-2">
                                     <label
                                         class="block text-sm font-semibold text-gray-800 mb-1"
                                         >Especifique:</label
@@ -820,93 +730,7 @@
                                 </div>
                             {/if}
                         </div>
-
-                        <!-- Vítima Intimada -->
-                        <div>
-                            <label
-                                class="block text-sm font-semibold text-gray-800 mb-2"
-                                >A vítima foi intimada?</label
-                            >
-                            <div class="flex space-x-4">
-                                <label class="inline-flex items-center">
-                                    <input
-                                        type="radio"
-                                        bind:group={data.SJ_Vitima_Intimada}
-                                        value="Sim"
-                                        on:change={autosave}
-                                        class="form-radio text-save-primary"
-                                    />
-                                    <span class="ml-2">Sim</span>
-                                </label>
-                                <label class="inline-flex items-center">
-                                    <input
-                                        type="radio"
-                                        bind:group={data.SJ_Vitima_Intimada}
-                                        value="Não"
-                                        on:change={autosave}
-                                        class="form-radio text-save-primary"
-                                    />
-                                    <span class="ml-2">Não</span>
-                                </label>
-                                <button
-                                    type="button"
-                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
-                                    on:click={() => {
-                                        data.SJ_Vitima_Intimada = "";
-                                        autosave();
-                                    }}
-                                    title="Limpar seleção"
-                                >
-                                    <span class="material-icons text-sm"
-                                        >close</span
-                                    >
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Agressor Intimado -->
-                        <div>
-                            <label
-                                class="block text-sm font-semibold text-gray-800 mb-2"
-                                >O agressor foi intimado?</label
-                            >
-                            <div class="flex space-x-4">
-                                <label class="inline-flex items-center">
-                                    <input
-                                        type="radio"
-                                        bind:group={data.SJ_Agressor_Intimado}
-                                        value="Sim"
-                                        on:change={autosave}
-                                        class="form-radio text-save-primary"
-                                    />
-                                    <span class="ml-2">Sim</span>
-                                </label>
-                                <label class="inline-flex items-center">
-                                    <input
-                                        type="radio"
-                                        bind:group={data.SJ_Agressor_Intimado}
-                                        value="Não"
-                                        on:change={autosave}
-                                        class="form-radio text-save-primary"
-                                    />
-                                    <span class="ml-2">Não</span>
-                                </label>
-                                <button
-                                    type="button"
-                                    class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
-                                    on:click={() => {
-                                        data.SJ_Agressor_Intimado = "";
-                                        autosave();
-                                    }}
-                                    title="Limpar seleção"
-                                >
-                                    <span class="material-icons text-sm"
-                                        >close</span
-                                    >
-                                </button>
-                            </div>
-                        </div>
-                    {/if}
+                    </div>
                 </div>
             </div>
         </div>
@@ -1728,7 +1552,11 @@
                                     situacaoJuridica2.SJ2_Apuracao_Investigacao
                                 }
                                 value="Não"
-                                on:change={autosave}
+                                on:change={() => {
+                                    situacaoJuridica2.SJ2_Apuracao_Invest_Especif =
+                                        "";
+                                    autosave();
+                                }}
                                 class="form-radio text-save-primary"
                             />
                             <span class="ml-2">Não</span>
@@ -1738,6 +1566,8 @@
                             class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                             on:click={() => {
                                 situacaoJuridica2.SJ2_Apuracao_Investigacao =
+                                    "";
+                                situacaoJuridica2.SJ2_Apuracao_Invest_Especif =
                                     "";
                                 autosave();
                             }}
@@ -1764,11 +1594,11 @@
                     {/if}
                 </div>
 
-                <!-- Pedido de Reparação na Denúncia -->
+                <!-- Pedido de Reparação -->
                 <div>
                     <label
                         class="block text-sm font-semibold text-gray-800 mb-2"
-                        >Houve pedido de reparação de danos na denúncia?</label
+                        >Houve pedido de reparação na denúncia?</label
                     >
                     <div class="flex space-x-4">
                         <label class="inline-flex items-center">
@@ -1790,7 +1620,12 @@
                                     situacaoJuridica2.SJ2_Pedido_Reparacao_Denuncia
                                 }
                                 value="Não"
-                                on:change={autosave}
+                                on:change={() => {
+                                    situacaoJuridica2.SJ2_Tipo_Danos = "";
+                                    situacaoJuridica2.SJ2_Tipo_Danos_Especif =
+                                        "";
+                                    autosave();
+                                }}
                                 class="form-radio text-save-primary"
                             />
                             <span class="ml-2">Não</span>
@@ -1801,6 +1636,8 @@
                             on:click={() => {
                                 situacaoJuridica2.SJ2_Pedido_Reparacao_Denuncia =
                                     "";
+                                situacaoJuridica2.SJ2_Tipo_Danos = "";
+                                situacaoJuridica2.SJ2_Tipo_Danos_Especif = "";
                                 autosave();
                             }}
                             title="Limpar seleção"
@@ -1809,33 +1646,20 @@
                         </button>
                     </div>
                     {#if situacaoJuridica2.SJ2_Pedido_Reparacao_Denuncia === "Sim"}
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label
                                     class="block text-sm font-semibold text-gray-800 mb-1"
-                                    >Quais tipos de danos?</label
+                                    >Tipo de danos:</label
                                 >
-                                <select
+                                <input
+                                    type="text"
                                     bind:value={
                                         situacaoJuridica2.SJ2_Tipo_Danos
                                     }
-                                    on:change={autosave}
+                                    on:blur={autosave}
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                >
-                                    <option value="">Selecione...</option>
-                                    <option value="Patrimoniais"
-                                        >Patrimoniais</option
-                                    >
-                                    <option value="Extrapatrimoniais"
-                                        >Extrapatrimoniais</option
-                                    >
-                                    <option value="In re ipsa"
-                                        >In re ipsa</option
-                                    >
-                                    <option value="Mediante comprovação"
-                                        >Mediante comprovação</option
-                                    >
-                                </select>
+                                />
                             </div>
                             <div>
                                 <label
@@ -1855,11 +1679,11 @@
                     {/if}
                 </div>
 
-                <!-- Condenação à Reparação -->
+                <!-- Condenação em Reparação -->
                 <div>
                     <label
                         class="block text-sm font-semibold text-gray-800 mb-2"
-                        >Houve condenação à reparação de danos?</label
+                        >Houve condenação em reparação de danos?</label
                     >
                     <div class="flex space-x-4">
                         <label class="inline-flex items-center">
@@ -1881,7 +1705,11 @@
                                     situacaoJuridica2.SJ2_Condenacao_Reparacao
                                 }
                                 value="Não"
-                                on:change={autosave}
+                                on:change={() => {
+                                    situacaoJuridica2.SJ2_Condenacao_Repar_Especif =
+                                        "";
+                                    autosave();
+                                }}
                                 class="form-radio text-save-primary"
                             />
                             <span class="ml-2">Não</span>
@@ -1891,6 +1719,8 @@
                             class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                             on:click={() => {
                                 situacaoJuridica2.SJ2_Condenacao_Reparacao = "";
+                                situacaoJuridica2.SJ2_Condenacao_Repar_Especif =
+                                    "";
                                 autosave();
                             }}
                             title="Limpar seleção"
@@ -1933,7 +1763,17 @@
                                 bind:checked={
                                     situacaoJuridica2.SJ2_Demanda_Info_Participacao
                                 }
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        !situacaoJuridica2.SJ2_Demanda_Info_Participacao
+                                    ) {
+                                        situacaoJuridica2.SJ2_Demanda_Info_Participacao_Especif =
+                                            "";
+                                        situacaoJuridica2.SJ2_Demanda_Info_Participacao_Especif2 =
+                                            "";
+                                    }
+                                    autosave();
+                                }}
                                 class="form-checkbox text-save-primary rounded"
                             />
                             <span
@@ -2012,7 +1852,17 @@
                                 bind:checked={
                                     situacaoJuridica2.SJ2_Demanda_Memoria_Verdade
                                 }
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        !situacaoJuridica2.SJ2_Demanda_Memoria_Verdade
+                                    ) {
+                                        situacaoJuridica2.SJ2_Demanda_Memoria_Verdade_Especif =
+                                            "";
+                                        situacaoJuridica2.SJ2_Demanda_Memoria_Verdade_Especif2 =
+                                            "";
+                                    }
+                                    autosave();
+                                }}
                                 class="form-checkbox text-save-primary rounded"
                             />
                             <span
@@ -2073,7 +1923,17 @@
                                 bind:checked={
                                     situacaoJuridica2.SJ2_Demanda_Justica_Diligencia
                                 }
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        !situacaoJuridica2.SJ2_Demanda_Justica_Diligencia
+                                    ) {
+                                        situacaoJuridica2.SJ2_Demanda_Justica_Diligencia_Especif =
+                                            "";
+                                        situacaoJuridica2.SJ2_Demanda_Justica_Diligencia_Especif2 =
+                                            "";
+                                    }
+                                    autosave();
+                                }}
                                 class="form-checkbox text-save-primary rounded"
                             />
                             <span
@@ -2152,7 +2012,17 @@
                                 bind:checked={
                                     situacaoJuridica2.SJ2_Demanda_Apoio_Assistencia
                                 }
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        !situacaoJuridica2.SJ2_Demanda_Apoio_Assistencia
+                                    ) {
+                                        situacaoJuridica2.SJ2_Demanda_Apoio_Assistencia_Especif =
+                                            "";
+                                        situacaoJuridica2.SJ2_Demanda_Apoio_Assistencia_Especif2 =
+                                            "";
+                                    }
+                                    autosave();
+                                }}
                                 class="form-checkbox text-save-primary rounded"
                             />
                             <span
@@ -2223,7 +2093,17 @@
                                 bind:checked={
                                     situacaoJuridica2.SJ2_Demanda_Seguranca
                                 }
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        !situacaoJuridica2.SJ2_Demanda_Seguranca
+                                    ) {
+                                        situacaoJuridica2.SJ2_Demanda_Seguranca_Especif =
+                                            "";
+                                        situacaoJuridica2.SJ2_Demanda_Seguranca_Especif2 =
+                                            "";
+                                    }
+                                    autosave();
+                                }}
                                 class="form-checkbox text-save-primary rounded"
                             />
                             <span
@@ -2299,7 +2179,21 @@
                                 bind:checked={
                                     situacaoJuridica2.SJ2_Demanda_Protecao_Nao_Revitimizacao
                                 }
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        !situacaoJuridica2.SJ2_Demanda_Protecao_Nao_Revitimizacao
+                                    ) {
+                                        situacaoJuridica2.SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif =
+                                            "";
+                                        situacaoJuridica2.SJ2_Demanda_Protecao_Nao_Revitimizacao_Especif2 =
+                                            "";
+                                        situacaoJuridica2.SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif =
+                                            "";
+                                        situacaoJuridica2.SJ2_Demanda_Protecao_Nao_Revitimizacao_MedidasCautelares_Especif2 =
+                                            "";
+                                    }
+                                    autosave();
+                                }}
                                 class="form-checkbox text-save-primary rounded"
                             />
                             <span
@@ -2443,7 +2337,17 @@
                                 bind:checked={
                                     situacaoJuridica2.SJ2_Demanda_Protecao_Psicologica
                                 }
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        !situacaoJuridica2.SJ2_Demanda_Protecao_Psicologica
+                                    ) {
+                                        situacaoJuridica2.SJ2_Demanda_Protecao_Psicologica_Especif =
+                                            "";
+                                        situacaoJuridica2.SJ2_Demanda_Protecao_Psicologica_Especif2 =
+                                            "";
+                                    }
+                                    autosave();
+                                }}
                                 class="form-checkbox text-save-primary rounded"
                             />
                             <span
@@ -2506,7 +2410,17 @@
                                 bind:checked={
                                     situacaoJuridica2.SJ2_Demanda_Protecao_Documental
                                 }
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        !situacaoJuridica2.SJ2_Demanda_Protecao_Documental
+                                    ) {
+                                        situacaoJuridica2.SJ2_Demanda_Protecao_Documental_Especif =
+                                            "";
+                                        situacaoJuridica2.SJ2_Demanda_Protecao_Documental_Especif2 =
+                                            "";
+                                    }
+                                    autosave();
+                                }}
                                 class="form-checkbox text-save-primary rounded"
                             />
                             <span

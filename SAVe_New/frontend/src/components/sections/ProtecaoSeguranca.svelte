@@ -73,8 +73,11 @@
                 });
                 console.log("Autosaving ProtecaoSeguranca...", data);
                 lastSavedData = currentData;
+                saveStatus = "Salvo! ✅";
+                setTimeout(() => (saveStatus = ""), 2000);
             } catch (err) {
                 console.error("Error autosaving", err);
+                saveStatus = "Erro ao salvar ❌";
             } finally {
                 saving = false;
             }
@@ -86,6 +89,7 @@
         if (value === "Não") {
             clearFields();
         }
+        autosave();
     }
 
     function clearFields() {
@@ -179,8 +183,8 @@
     </div>
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving || loading}
-        class:opacity-100={!saving && !loading}
+        class:opacity-0={saving || loading || !saveStatus}
+        class:opacity-100={!saving && !loading && saveStatus}
     >
         <span
             class="flex items-center {saveStatus.includes('Erro')
@@ -192,7 +196,7 @@
             {:else if saveStatus.includes("Salvo")}
                 <span class="material-icons text-sm mr-1">check</span>
             {/if}
-            {saveStatus || "Salvo"}
+            {saveStatus}
         </span>
     </div>
     <!--<div class="flex justify-between items-center mb-4">
@@ -235,7 +239,12 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Natureza_Ameaca}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (data.PS_Natureza_Ameaca !== "Outras") {
+                                        data.PS_Natureza_Ameaca_Especif = "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Ameaça à vida"
@@ -409,10 +418,11 @@
                                 <label class="inline-flex items-center">
                                     <input
                                         type="radio"
-                                        name="mais_autor"
-                                        value="Não"
                                         bind:group={data.PS_Ameaca_Mais_Autor}
-                                        on:change={autosave}
+                                        on:change={() => {
+                                            ameacadores = [];
+                                            autosave();
+                                        }}
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
@@ -421,6 +431,7 @@
                                     class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                                     on:click={() => {
                                         data.PS_Ameaca_Mais_Autor = "";
+                                        ameacadores = [];
                                         autosave();
                                     }}
                                     title="Limpar seleção"
@@ -499,7 +510,12 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Tipo_Relacao}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (data.PS_Tipo_Relacao !== "Outro") {
+                                        data.PS_Tipo_Relacao_Especif = "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Desconhecido/a"
@@ -618,10 +634,11 @@
                                 <label class="inline-flex items-center">
                                     <input
                                         type="radio"
-                                        name="relacao_poder"
-                                        value="Não"
                                         bind:group={data.PS_Relacao_Poder}
-                                        on:change={autosave}
+                                        on:change={() => {
+                                            data.PS_Relacao_Poder_Especif = "";
+                                            autosave();
+                                        }}
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
@@ -630,6 +647,7 @@
                                     class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                                     on:click={() => {
                                         data.PS_Relacao_Poder = "";
+                                        data.PS_Relacao_Poder_Especif = "";
                                         autosave();
                                     }}
                                     title="Limpar seleção"
@@ -676,10 +694,12 @@
                                 <label class="inline-flex items-center">
                                     <input
                                         type="radio"
-                                        name="ameacas_anteriores"
-                                        value="Não"
                                         bind:group={data.PS_Ameacas_Anteriores}
-                                        on:change={autosave}
+                                        on:change={() => {
+                                            data.PS_Ameacas_Anteriores_Especif =
+                                                "";
+                                            autosave();
+                                        }}
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
@@ -688,6 +708,7 @@
                                     class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                                     on:click={() => {
                                         data.PS_Ameacas_Anteriores = "";
+                                        data.PS_Ameacas_Anteriores_Especif = "";
                                         autosave();
                                     }}
                                     title="Limpar seleção"
@@ -750,7 +771,16 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Ameaca_Agente_Instituicao}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        data.PS_Ameaca_Agente_Instituicao !==
+                                        "Outro"
+                                    ) {
+                                        data.PS_Ameaca_Agente_Instituicao_Especif =
+                                            "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Não sabe">Não sabe</option>
@@ -787,74 +817,21 @@
                         {/if}
 
                         <!-- A ameaça é realizada por agente do crime organizado ou organização criminosa? -->
-                        <label class="block">
-                            <span class="text-gray-700"
+                        <!-- A ameaça é realizada por agente do crime organizado ou organização criminosa? -->
+                        <div class="block">
+                            <span class="text-gray-700 font-semibold"
                                 >A ameaça é realizada por agente do crime
                                 organizado ou organização criminosa?</span
                             >
-                            <select
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={data.PS_Ameaca_Org_Criminosa}
-                                on:change={autosave}
-                            >
-                                <option value="">Selecione...</option>
-                                <option value="Sim">Sim</option>
-                                <option value="Não">Não</option>
-                                <option value="Não sabe">Não sabe</option>
-                            </select>
-                        </label>
-
-                        <!-- Especifique qual organização -->
-                        {#if data.PS_Ameaca_Org_Criminosa === "Sim"}
-                            <label class="block">
-                                <span class="text-gray-700"
-                                    >Especifique qual organização:</span
-                                >
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={
-                                        data.PS_Ameaca_Org_Criminosa_Especif
-                                    }
-                                    on:input={autosave}
-                                />
-                            </label>
-                        {/if}
-
-                        <!-- Qual a região de abrangência da ameaça? -->
-                        <label class="block">
-                            <span class="text-gray-700"
-                                >Qual a região de abrangência da ameaça?</span
-                            >
-                            <select
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={data.PS_Regiao_Abrangencia_Ameaca}
-                                on:change={autosave}
-                            >
-                                <option value="">Selecione...</option>
-                                <option value="Local">Local</option>
-                                <option value="Municipal">Municipal</option>
-                                <option value="Estadual">Estadual</option>
-                                <option value="Regional">Regional</option>
-                                <option value="Nacional">Nacional</option>
-                            </select>
-                        </label>
-
-                        <!-- O ameaçador possui meios de concretizar a ameaça? -->
-                        <label class="block">
-                            <span class="text-gray-700"
-                                >O ameaçador possui meios de concretizar a
-                                ameaça?</span
-                            >
-                            <div class="flex space-x-4 mt-1">
+                            <div class="mt-2 flex space-x-4">
                                 <label class="inline-flex items-center">
                                     <input
                                         type="radio"
-                                        name="meios_concretizar"
-                                        value="Sim"
+                                        class="form-radio text-save-primary"
                                         bind:group={
-                                            data.PS_Ameaca_Meios_Concretizar
+                                            data.PS_Ameaca_Org_Criminosa
                                         }
+                                        value="Sim"
                                         on:change={autosave}
                                     />
                                     <span class="ml-2">Sim</span>
@@ -862,11 +839,11 @@
                                 <label class="inline-flex items-center">
                                     <input
                                         type="radio"
-                                        name="meios_concretizar"
-                                        value="Não"
+                                        class="form-radio text-save-primary"
                                         bind:group={
-                                            data.PS_Ameaca_Meios_Concretizar
+                                            data.PS_Ameaca_Org_Criminosa
                                         }
+                                        value="Não"
                                         on:change={autosave}
                                     />
                                     <span class="ml-2">Não</span>
@@ -875,7 +852,7 @@
                                     type="button"
                                     class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                                     on:click={() => {
-                                        data.PS_Ameaca_Meios_Concretizar = "";
+                                        data.PS_Ameaca_Org_Criminosa = "";
                                         autosave();
                                     }}
                                     title="Limpar seleção"
@@ -885,174 +862,7 @@
                                     >
                                 </button>
                             </div>
-                        </label>
-
-                        <!-- Especifique quais meios o ameaçador possui -->
-                        {#if data.PS_Ameaca_Meios_Concretizar === "Sim"}
-                            <label class="block">
-                                <span class="text-gray-700"
-                                    >Especifique quais meios o ameaçador possui
-                                    de concretizar a ameaça:</span
-                                >
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={
-                                        data.PS_Ameaca_Meios_Concretizar_Especif
-                                    }
-                                    on:input={autosave}
-                                />
-                            </label>
-                        {/if}
-                    </div>
-                </div>
-
-                <!-- Severidade da Ameaça -->
-                <div class="border p-4 rounded bg-gray-50 space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-700">
-                        Severidade da Ameaça
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Está sendo perseguido/a ou stalkeado/a? -->
-                        <label class="block">
-                            <span class="text-gray-700"
-                                >Está sendo perseguido/a ou stalkeado/a?</span
-                            >
-                            <select
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={data.PS_Sendo_Perseguido}
-                                on:change={autosave}
-                            >
-                                <option value="">Selecione...</option>
-                                <option value="Sim">Sim</option>
-                                <option value="Não">Não</option>
-                                <option value="Não sabe">Não sabe</option>
-                            </select>
-                        </label>
-
-                        <!-- Descreva perseguição -->
-                        {#if data.PS_Sendo_Perseguido === "Sim"}
-                            <label class="block">
-                                <span class="text-gray-700">Descreva:</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={data.PS_Perseguido_Descr}
-                                    on:input={autosave}
-                                />
-                            </label>
-                        {/if}
-
-                        <!-- O autor possui ou tem acesso fácil à armas? -->
-                        <label class="block">
-                            <span class="text-gray-700"
-                                >O autor possui ou tem acesso fácil à armas?</span
-                            >
-                            <select
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={data.PS_Autor_Acesso_Armas}
-                                on:change={autosave}
-                            >
-                                <option value="">Selecione...</option>
-                                <option value="Sim">Sim</option>
-                                <option value="Não">Não</option>
-                                <option value="Não sabe">Não sabe</option>
-                            </select>
-                        </label>
-
-                        <!-- Descreva acesso a armas -->
-                        {#if data.PS_Autor_Acesso_Armas === "Sim"}
-                            <label class="block">
-                                <span class="text-gray-700">Descreva:</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={data.PS_Acesso_Armas_Descr}
-                                    on:input={autosave}
-                                />
-                            </label>
-                        {/if}
-
-                        <!-- Sofreu alguma violência ou tentativa de agressão após a ameaça? -->
-                        <label class="block">
-                            <span class="text-gray-700"
-                                >Sofreu alguma violência ou tentativa de
-                                agressão após a ameaça?</span
-                            >
-                            <select
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={data.PS_Violencia_Pos_Ameaca}
-                                on:change={autosave}
-                            >
-                                <option value="">Selecione...</option>
-                                <option value="Sim">Sim</option>
-                                <option value="Não">Não</option>
-                                <option value="Não sabe">Não sabe</option>
-                            </select>
-                        </label>
-
-                        <!-- Descreva violência pós ameaça -->
-                        {#if data.PS_Violencia_Pos_Ameaca === "Sim"}
-                            <label class="block">
-                                <span class="text-gray-700">Descreva:</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={
-                                        data.PS_Violencia_Pos_Ameaca_Descr
-                                    }
-                                    on:input={autosave}
-                                />
-                            </label>
-                        {/if}
-
-                        <!-- Ameaça teve repercussões sociais? -->
-                        <label class="block">
-                            <span class="text-gray-700"
-                                >Ameaça teve repercussões sociais?</span
-                            >
-                            <select
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={data.PS_Ameaca_Repercussoes_Soc}
-                                on:change={autosave}
-                            >
-                                <option value="">Selecione...</option>
-                                <option value="Sim">Sim</option>
-                                <option value="Não">Não</option>
-                                <option value="Não sabe">Não sabe</option>
-                            </select>
-                        </label>
-
-                        <!-- Descreva repercussões sociais -->
-                        {#if data.PS_Ameaca_Repercussoes_Soc === "Sim"}
-                            <label class="block">
-                                <span class="text-gray-700">Descreva:</span>
-                                <input
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                    bind:value={data.PS_Repercussoes_Soc_Descr}
-                                    on:input={autosave}
-                                />
-                            </label>
-                        {/if}
-
-                        <!-- A ameaça se estende à familiares ou outros afetos? -->
-                        <label class="block">
-                            <span class="text-gray-700"
-                                >A ameaça se estende à familiares ou outros
-                                afetos?</span
-                            >
-                            <select
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
-                                bind:value={data.PS_Ameaca_Extensao_Familia}
-                                on:change={autosave}
-                            >
-                                <option value="">Selecione...</option>
-                                <option value="Sim">Sim</option>
-                                <option value="Não">Não</option>
-                                <option value="Não sabe">Não sabe</option>
-                            </select>
-                        </label>
+                        </div>
 
                         <!-- Descreva extensão a familiares -->
                         {#if data.PS_Ameaca_Extensao_Familia === "Sim"}
@@ -1076,8 +886,6 @@
                                 <label class="inline-flex items-center">
                                     <input
                                         type="radio"
-                                        name="estende_crianca"
-                                        value="Sim"
                                         bind:group={
                                             data.PS_Ameaca_Crianca_Adolescente
                                         }
@@ -1088,12 +896,13 @@
                                 <label class="inline-flex items-center">
                                     <input
                                         type="radio"
-                                        name="estende_crianca"
-                                        value="Não"
                                         bind:group={
                                             data.PS_Ameaca_Crianca_Adolescente
                                         }
-                                        on:change={autosave}
+                                        on:change={() => {
+                                            adolescentes = [];
+                                            autosave();
+                                        }}
                                     />
                                     <span class="ml-2">Não</span>
                                 </label>
@@ -1102,6 +911,7 @@
                                     class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                                     on:click={() => {
                                         data.PS_Ameaca_Crianca_Adolescente = "";
+                                        adolescentes = [];
                                         autosave();
                                     }}
                                     title="Limpar seleção"
@@ -1190,7 +1000,12 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Liberdade_Limitada}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (data.PS_Liberdade_Limitada !== "Sim") {
+                                        data.PS_Liberdade_Limitada_Descr = "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Sim">Sim</option>
@@ -1223,7 +1038,16 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Impactos_Emocionais_Psic}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        data.PS_Impactos_Emocionais_Psic !==
+                                        "Sim"
+                                    ) {
+                                        data.PS_Impactos_Emocionais_Psic_Descr =
+                                            "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Sim">Sim</option>
@@ -1255,7 +1079,14 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Impactos_Financeiros}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        data.PS_Impactos_Financeiros !== "Sim"
+                                    ) {
+                                        data.PS_Impactos_Financeiros_Descr = "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Sim">Sim</option>
@@ -1289,7 +1120,15 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Nao_Sente_Segura_Mudar}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        data.PS_Nao_Sente_Segura_Mudar !== "Sim"
+                                    ) {
+                                        data.PS_Nao_Sente_Segura_Mudar_Descr =
+                                            "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Sim">Sim</option>
@@ -1330,7 +1169,14 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Possui_Rede_Apoio_Fam}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        data.PS_Possui_Rede_Apoio_Fam !== "Sim"
+                                    ) {
+                                        data.PS_Rede_Apoio_Fam_Descr = "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Sim">Sim</option>
@@ -1359,7 +1205,15 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Possui_Rede_Comunitaria}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        data.PS_Possui_Rede_Comunitaria !==
+                                        "Sim"
+                                    ) {
+                                        data.PS_Rede_Comunitaria_Descr = "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Sim">Sim</option>
@@ -1388,7 +1242,14 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Possui_Equip_Seguranca}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        data.PS_Possui_Equip_Seguranca !== "Sim"
+                                    ) {
+                                        data.PS_Equip_Seguranca_Descr = "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Sim">Sim</option>
@@ -1420,7 +1281,15 @@
                                 bind:value={
                                     data.PS_Possivel_Deslocamento_Seguro
                                 }
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        data.PS_Possivel_Deslocamento_Seguro !==
+                                        "Sim"
+                                    ) {
+                                        data.PS_Deslocamento_Seguro_Descr = "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Sim">Sim</option>
@@ -1459,7 +1328,15 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Servicos_Prot_Social}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        data.PS_Servicos_Prot_Social !== "Sim"
+                                    ) {
+                                        data.PS_Servicos_Prot_Social_Especif =
+                                            "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Sim">Sim</option>
@@ -1494,7 +1371,16 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Servicos_Acolhimento_Emerg}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (
+                                        data.PS_Servicos_Acolhimento_Emerg !==
+                                        "Sim"
+                                    ) {
+                                        data.PS_Servicos_Acolhimento_Especif =
+                                            "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Sim">Sim</option>
@@ -1527,7 +1413,12 @@
                             <select
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={data.PS_Programas_Protecao}
-                                on:change={autosave}
+                                on:change={() => {
+                                    if (data.PS_Programas_Protecao !== "Sim") {
+                                        data.PS_Programas_Protecao_Especif = "";
+                                    }
+                                    autosave();
+                                }}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Sim">Sim</option>

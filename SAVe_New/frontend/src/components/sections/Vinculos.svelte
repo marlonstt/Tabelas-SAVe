@@ -147,8 +147,8 @@
     </div>
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving || loading}
-        class:opacity-100={!saving && !loading}
+        class:opacity-0={saving || loading || !saveStatus}
+        class:opacity-100={!saving && !loading && saveStatus}
     >
         <span
             class="flex items-center {saveStatus.includes('Erro')
@@ -160,7 +160,7 @@
             {:else if saveStatus.includes("Salvo")}
                 <span class="material-icons text-sm mr-1">check</span>
             {/if}
-            {saveStatus || "Salvo"}
+            {saveStatus}
         </span>
     </div>
 
@@ -534,6 +534,7 @@
                             class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                             on:click={() => {
                                 data.Alt_Fam_Com_Vitim = "";
+                                data.Alt_Fam_Com_Vitim_Descr = "";
                                 autosave();
                             }}
                             title="Limpar seleção"
@@ -590,6 +591,7 @@
                             class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                             on:click={() => {
                                 data.Vulnerab_Vinculos_Fam = "";
+                                data.Vulnerab_Vinculos_Fam_Descr = "";
                                 autosave();
                             }}
                             title="Limpar seleção"
@@ -650,6 +652,8 @@
                             class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
                             on:click={() => {
                                 data.Vulnerab_Vitim_Sec_Ter = "";
+                                data.Tipo_Vitim = "";
+                                data.Tipo_Vitim_Descr = "";
                                 autosave();
                             }}
                             title="Limpar seleção"

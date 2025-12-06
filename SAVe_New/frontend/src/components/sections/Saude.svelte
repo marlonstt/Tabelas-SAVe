@@ -206,12 +206,12 @@
     </div>
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving}
-        class:opacity-100={!saving}
+        class:opacity-0={saving || !saveMessage}
+        class:opacity-100={!saving && saveMessage}
     >
         <span class="text-green-600 flex items-center">
             <span class="material-icons text-sm mr-1">check</span>
-            {saveMessage || "Salvo"}
+            {saveMessage}
         </span>
     </div>
 
@@ -398,11 +398,11 @@
                                 <button
                                     type="button"
                                     class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
-                                    on:click={() => {
-                                        data.HS_Condicao_saude_acompanhamento =
-                                            "";
-                                        autosave();
-                                    }}
+                                    on:click={() =>
+                                        handleRadioChange(
+                                            "HS_Condicao_saude_acompanhamento",
+                                            "",
+                                        )}
                                     title="Limpar seleção"
                                 >
                                     <span class="material-icons text-sm"
@@ -519,11 +519,11 @@
                                     <button
                                         type="button"
                                         class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
-                                        on:click={() => {
-                                            data.HS_Cond_saude_nao_perma_acomp =
-                                                "";
-                                            autosave();
-                                        }}
+                                        on:click={() =>
+                                            handleRadioChange(
+                                                "HS_Cond_saude_nao_perma_acomp",
+                                                "",
+                                            )}
                                         title="Limpar seleção"
                                     >
                                         <span class="material-icons text-sm"
@@ -632,10 +632,11 @@
                                     <button
                                         type="button"
                                         class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
-                                        on:click={() => {
-                                            data.HS_Aux_saude_acomp = "";
-                                            autosave();
-                                        }}
+                                        on:click={() =>
+                                            handleRadioChange(
+                                                "HS_Aux_saude_acomp",
+                                                "",
+                                            )}
                                         title="Limpar seleção"
                                     >
                                         <span class="material-icons text-sm"
@@ -748,10 +749,11 @@
                                     <button
                                         type="button"
                                         class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
-                                        on:click={() => {
-                                            data.HS_Vitim_sexual_acomp = "";
-                                            autosave();
-                                        }}
+                                        on:click={() =>
+                                            handleRadioChange(
+                                                "HS_Vitim_sexual_acomp",
+                                                "",
+                                            )}
                                         title="Limpar seleção"
                                     >
                                         <span class="material-icons text-sm"

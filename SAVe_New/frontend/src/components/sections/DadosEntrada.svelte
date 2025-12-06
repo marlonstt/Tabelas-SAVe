@@ -14,6 +14,7 @@
     let saveStatus = "";
     let saveTimeout: any;
     let lastSavedData: string = "";
+    let hasSaved = false;
 
     // Reset data when caseId changes
     $: if (caseId) {
@@ -127,6 +128,7 @@
                 await api.put(`/cases/${caseId}/dados-entrada`, payload);
                 console.log("Autosaving...", payload);
                 lastSavedData = currentData;
+                hasSaved = true;
             } catch (err) {
                 console.error("Error autosaving", err);
             } finally {
@@ -152,14 +154,54 @@
     function toggleCrimeCategory(category: string) {
         if (data.crimes.includes(category)) {
             data.crimes = data.crimes.filter((c: string) => c !== category);
-            // Also remove specific crimes belonging to this category?
-            // For simplicity, we keep them or we could define a map of category -> specific crimes to clear them.
-            // Given the PowerApps logic, unchecking a category might imply clearing its specific crimes.
-            // But let's stick to simple toggle for now unless specified.
-            // Actually, looking at PowerApps snippet:
-            // OnUncheck of category: it removes the category from varCrimesTotais.
-            // It doesn't seem to explicitly clear specific crimes in the snippet provided for OnUncheck,
-            // but the UI would hide them.
+
+            // Fix: Clear specific crimes when category is unchecked
+            const crimeMapping: { [key: string]: string[] } = {
+                "Crimes contra a vida": [
+                    "Homicídio simples",
+                    "Homicídio qualificado",
+                    "Feminicídio",
+                    "Induzimento, instigação ou auxílio a suicídio ou a automutilação",
+                    "Infanticídio",
+                    "Aborto provocado por terceiro",
+                ],
+                "Crimes contra a dignidade sexual": [
+                    "Estupro",
+                    "Estupro de vulnerável",
+                    "Estupro coletivo",
+                    "Estupro corretivo",
+                    "Violação sexual mediante fraude",
+                    "Importunação sexual",
+                    "Assédio sexual",
+                    "Registro não autorizado da intimidade sexual",
+                    "Corrupção de menores",
+                    "Satisfação de lascívia mediante presença de criança ou adolescente",
+                    "Favorecimento da prostituição ou de outra forma de exploração sexual de criança ou adolescente ou de vulnerável",
+                    "Divulgação de cena de estupro ou de cena de estupro de vulnerável, de cena de sexo ou de pornografia",
+                    "Outro",
+                ],
+                "Crimes de ódio": [
+                    "Racismo",
+                    "Homofobia",
+                    "Lesbofobia",
+                    "Transfobia",
+                    "Bifobia",
+                    "Xenofobia",
+                    "Racismo religioso",
+                ],
+                Outros: [
+                    "Patrimonial",
+                    "Violência Doméstica",
+                    "Integridade física",
+                    "Outros",
+                ],
+            };
+
+            if (crimeMapping[category]) {
+                data.specificCrimes = data.specificCrimes.filter(
+                    (sc: string) => !crimeMapping[category].includes(sc),
+                );
+            }
         } else {
             data.crimes = [...data.crimes, category];
         }
@@ -193,6 +235,7 @@
             await api.put(`/cases/${caseId}/dados-entrada`, data);
             lastSavedData = JSON.stringify(data);
             saveStatus = "Salvo com sucesso! ✅";
+            hasSaved = true;
             setTimeout(() => (saveStatus = ""), 3000);
         } catch (err) {
             console.error("Error saving", err);
@@ -217,17 +260,20 @@
     </div>
     <div
         class="absolute top-4 right-4 text-sm font-medium transition-opacity duration-300"
-        class:opacity-0={saving || loading}
-        class:opacity-100={!saving && !loading}
+        class:opacity-0={saving || loading || !saveStatus}
+        class:opacity-100={!saving && !loading && saveStatus}
     >
         <span
-            class="flex items-center {lastSavedData &&
-            JSON.parse(lastSavedData).error
+            class="flex items-center {saveStatus.includes('Erro')
                 ? 'text-red-600'
                 : 'text-green-600'}"
         >
-            <span class="material-icons text-sm mr-1">check</span>
-            Salvo
+            {#if saveStatus.includes("Erro")}
+                <span class="material-icons text-sm mr-1">error</span>
+            {:else if saveStatus.includes("Salvo")}
+                <span class="material-icons text-sm mr-1">check</span>
+            {/if}
+            {saveStatus}
         </span>
     </div>
 
@@ -249,6 +295,10 @@
                                 name="relacionado"
                                 value="Não"
                                 bind:group={data.Possui_Relacionado}
+                                on:change={() => {
+                                    data.casosRelacionados = [];
+                                    autosave();
+                                }}
                             />
                             <span class="ml-2 text-sm">Não</span>
                         </label>
@@ -266,7 +316,11 @@
                     <button
                         type="button"
                         class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
-                        on:click={() => (data.Possui_Relacionado = "")}
+                        on:click={() => {
+                            data.Possui_Relacionado = "";
+                            data.casosRelacionados = [];
+                            autosave();
+                        }}
                         title="Limpar seleção"
                     >
                         <span class="material-icons text-sm">close</span>
@@ -385,6 +439,10 @@
                                         bind:group={
                                             data.Precisa_Atendimento_Esp
                                         }
+                                        on:change={() => {
+                                            data.Atendimento_Especial = "";
+                                            autosave();
+                                        }}
                                     />
                                     <span class="ml-2 text-[15px]">Não</span>
                                 </label>
@@ -403,8 +461,11 @@
                                 <button
                                     type="button"
                                     class="ml-2 text-gray-400 hover:text-red-500 transition-colors"
-                                    on:click={() =>
-                                        (data.Precisa_Atendimento_Esp = "")}
+                                    on:click={() => {
+                                        data.Precisa_Atendimento_Esp = "";
+                                        data.Atendimento_Especial = "";
+                                        autosave();
+                                    }}
                                     title="Limpar seleção"
                                 >
                                     <span class="material-icons text-sm"
@@ -755,6 +816,14 @@
                                     <select
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm"
                                         bind:value={data.Vitimizacao}
+                                        on:change={() => {
+                                            if (
+                                                data.Vitimizacao !== "Terciária"
+                                            ) {
+                                                data.Vit_Terciaria_Origem = "";
+                                            }
+                                            autosave();
+                                        }}
                                     >
                                         <option value="">Selecione...</option>
                                         <option value="Primária"
