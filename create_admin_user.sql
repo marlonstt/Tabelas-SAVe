@@ -14,7 +14,7 @@ ALTER TABLE "save_usuarios" ADD COLUMN IF NOT EXISTS "updated_at" TIMESTAMP DEFA
 INSERT INTO "save_usuarios" ("email", "password", "cargo", "usuario", "role", "must_change_password", "created_at", "updated_at")
 VALUES (
   'msgsilva.estagio@mpmg.mp.br',
-  '$2b$10$MFDDYF.xgEEsTdwr1KSQ3e6NO/aoCPyvwqaaanA03u9n7tunFf9QPe',
+  '$2a$10$KaiQxkBMn1LChHxoFAmdlOp874PoS9HEl/QQ4N2yTUldfv3HlzGLK',
   'Administrador',
   'Maria Silva',
   'Admin',

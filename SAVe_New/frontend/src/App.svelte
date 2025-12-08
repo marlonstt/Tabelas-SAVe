@@ -8,6 +8,7 @@
   import TelaDashboards from "./routes/TelaDashboards.svelte";
   import Sidebar from "./components/Sidebar.svelte";
   import Responsaveis from "./components/Responsaveis.svelte";
+  import CaseReport from "./routes/CaseReport.svelte";
 
   let currentPath = window.location.pathname;
   // Initialize synchronously to avoid flash of login screen
@@ -45,9 +46,13 @@
 
   // Extract case ID from path
   $: {
-    const match = currentPath.match(/^\/case\/(\d+)$/);
-    if (match) {
-      caseId = match[1];
+    const detailMatch = currentPath.match(/^\/case\/(\d+)$/);
+    const reportMatch = currentPath.match(/^\/case\/(\d+)\/report$/);
+
+    if (detailMatch) {
+      caseId = detailMatch[1];
+    } else if (reportMatch) {
+      caseId = reportMatch[1];
     }
   }
 </script>
@@ -88,7 +93,9 @@
           <Dashboard />
         {:else if currentPath === "/dashboards"}
           <TelaDashboards />
-        {:else if caseId}
+        {:else if currentPath.match(/^\/case\/\d+\/report$/)}
+          <CaseReport id={caseId} />
+        {:else if caseId && currentPath.match(/^\/case\/\d+$/)}
           <CaseDetail id={caseId} />
         {:else}
           <Dashboard />
@@ -104,5 +111,42 @@
     margin: 0;
     padding: 0;
     background-color: #f8fafc; /* save-surface */
+  }
+
+  /* Critical: Override viewport constraints for printing */
+  @media print {
+    :global(.flex.h-screen) {
+      height: auto !important;
+      min-height: auto !important;
+      overflow: visible !important;
+    }
+
+    :global(.overflow-hidden) {
+      overflow: visible !important;
+    }
+
+    :global(.overflow-auto) {
+      overflow: visible !important;
+    }
+
+    :global(main) {
+      overflow: visible !important;
+      height: auto !important;
+    }
+
+    /* Hide background images/graphics */
+    :global(img.opacity-40),
+    :global(img[alt*="Vinheta"]),
+    :global(.pointer-events-none),
+    :global(img.absolute),
+    :global(img[class*="opacity"]) {
+      display: none !important;
+      visibility: hidden !important;
+    }
+
+    /* Remove all background images */
+    :global(*) {
+      background-image: none !important;
+    }
   }
 </style>

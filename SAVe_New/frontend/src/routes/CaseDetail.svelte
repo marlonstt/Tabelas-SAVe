@@ -202,6 +202,10 @@
       alert("Erro ao reabrir caso");
     }
   }
+
+  function generateReport() {
+    window.location.href = `/case/${id}/report`;
+  }
 </script>
 
 {#if loading}
@@ -235,7 +239,7 @@
       <div>
         <h2 class="text-2xl font-bold tracking-tight flex items-center">
           <span class="material-icons mr-3 bg-white/20 p-2 rounded-full"
-            >folder_shared</span
+            >article</span
           >
           {caseData.geral?.Nome || "Caso #" + id}
         </h2>
@@ -266,27 +270,38 @@
           </button>
         {/if}
 
-        <div
-          class="flex items-center bg-white/10 backdrop-blur-sm p-1 rounded-lg border border-white/20"
-        >
+        <div class="flex flex-col items-end gap-1.5">
           <button
-            on:click={() => setFormType("breve")}
-            class="px-4 py-1.5 text-sm rounded-md transition-all duration-200 {formType ===
-            'breve'
-              ? 'bg-white text-save-primary font-bold shadow-sm'
-              : 'text-blue-100 hover:bg-white/10'}"
+            on:click={generateReport}
+            class="px-3 py-1 text-xs font-bold rounded bg-white/100 hover:bg-white/50 text-save-primary transition-all duration-200 shadow-sm flex items-center justify-center gap-1 w-full"
+            style="min-width: 140px;"
           >
-            Versão Breve
+            <span class="material-icons text-sm">assignment_turned_in</span>
+            Gerar Relatório
           </button>
-          <button
-            on:click={() => setFormType("completo")}
-            class="px-4 py-1.5 text-sm rounded-md transition-all duration-200 {formType ===
-            'completo'
-              ? 'bg-white text-save-primary font-bold shadow-sm'
-              : 'text-blue-100 hover:bg-white/10'}"
+
+          <div
+            class="flex items-center bg-white/10 backdrop-blur-sm p-0.5 rounded-lg border border-white/20"
           >
-            Versão Completa
-          </button>
+            <button
+              on:click={() => setFormType("breve")}
+              class="px-3 py-1 text-xs rounded-md transition-all duration-200 {formType ===
+              'breve'
+                ? 'bg-white text-save-primary font-bold shadow-sm'
+                : 'text-blue-100 hover:bg-white/10'}"
+            >
+              Versão Breve
+            </button>
+            <button
+              on:click={() => setFormType("completo")}
+              class="px-3 py-1 text-xs rounded-md transition-all duration-200 {formType ===
+              'completo'
+                ? 'bg-white text-save-primary font-bold shadow-sm'
+                : 'text-blue-100 hover:bg-white/10'}"
+            >
+              Versão Completa
+            </button>
+          </div>
         </div>
       </div>
     </div>
