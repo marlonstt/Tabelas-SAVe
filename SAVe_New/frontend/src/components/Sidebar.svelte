@@ -62,7 +62,7 @@
 {/if}
 
 <div
-    class="flex flex-col h-full text-white relative transition-all duration-300 ease-in-out"
+    class="sidebar-root flex flex-col h-full text-white relative transition-all duration-300 ease-in-out"
     style="background-color: #464775; width: {isHovered ? '120px' : '70px'};"
     on:mouseenter={() => (isHovered = true)}
     on:mouseleave={() => (isHovered = false)}
@@ -316,3 +316,11 @@
         </button>
     </div>
 </div>
+
+<style>
+    @media print {
+        .sidebar-root {
+            display: none !important;
+        }
+    }
+</style>

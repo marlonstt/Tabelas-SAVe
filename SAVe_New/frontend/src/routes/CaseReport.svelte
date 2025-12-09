@@ -131,6 +131,16 @@
             (addr: any) => addr.ID_Perfil_Agressor === agressorId,
         );
     }
+
+    function stripHtml(html: string) {
+        if (!html) return "";
+        // Create a temporary element to use browser's parsing
+        const tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        let text = tmp.textContent || tmp.innerText || "";
+        // Remove extra whitespace
+        return text.replace(/\s+/g, " ").trim();
+    }
 </script>
 
 {#if loading}
@@ -795,12 +805,31 @@
                                             <div
                                                 class="bg-white p-2 border rounded mt-1 whitespace-pre-wrap"
                                             >
-                                                {getValue(
-                                                    acomp.Sintese,
-                                                    "Nenhuma síntese registrada.",
+                                                {stripHtml(
+                                                    getValue(
+                                                        acomp.Sintese,
+                                                        "Nenhuma síntese registrada.",
+                                                    ),
                                                 )}
                                             </div>
                                         </div>
+
+                                        <div class="mt-2">
+                                            <strong
+                                                >Encaminhamento/Observações:</strong
+                                            >
+                                            <div
+                                                class="bg-white p-2 border rounded mt-1 whitespace-pre-wrap"
+                                            >
+                                                {stripHtml(
+                                                    getValue(
+                                                        acomp.Encaminhamento,
+                                                        "Nenhum encaminhamento registrado.",
+                                                    ),
+                                                )}
+                                            </div>
+                                        </div>
+
                                         <p class="mt-2">
                                             <strong>Encaminhamento Rede:</strong
                                             >
@@ -814,17 +843,6 @@
                                                 {acomp.Especifique_Encaminhamento}
                                             </p>
                                         {/if}
-                                        <div class="mt-2">
-                                            <strong>Encaminhamento:</strong>
-                                            <div
-                                                class="bg-white p-2 border rounded mt-1 whitespace-pre-wrap"
-                                            >
-                                                {getValue(
-                                                    acomp.Encaminhamento,
-                                                    "Nenhum encaminhamento registrado.",
-                                                )}
-                                            </div>
-                                        </div>
                                     </div>
                                 {/each}
                             {/if}
@@ -1229,9 +1247,10 @@
         }
 
         /* Critical: Reset all container heights to allow natural flow */
-        html,
-        body,
-        #app,
+        /* Critical: Reset all container heights to allow natural flow */
+        :global(html),
+        :global(body),
+        :global(#app),
         .report-container {
             height: auto !important;
             min-height: auto !important;
@@ -1243,8 +1262,8 @@
         /* Hide navigation and controls */
         .no-print,
         button,
-        nav,
-        header:not(.report-container header) {
+        :global(nav),
+        :global(header:not(.report-container header)) {
             display: none !important;
         }
 
