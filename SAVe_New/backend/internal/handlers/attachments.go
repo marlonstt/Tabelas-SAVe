@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -62,6 +63,10 @@ func UploadAttachment(c *gin.Context) {
 		return
 	}
 
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "UPLOAD_ATTACHMENT", fmt.Sprintf("Anexou arquivo '%s' no caso ID %d", header.Filename, caseID))
+
 	c.JSON(http.StatusCreated, gin.H{"message": "File uploaded successfully", "id": attachment.ID})
 }
 
@@ -117,10 +122,18 @@ func DeleteAttachment(c *gin.Context) {
 		return
 	}
 
+	// Fetch to log details
+	var attachment models.SAVe_Anexos
+	database.DB.First(&attachment, attID)
+
 	if result := database.DB.Delete(&models.SAVe_Anexos{}, attID); result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete attachment"})
 		return
 	}
+
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "DELETE_ATTACHMENT", fmt.Sprintf("Excluiu anexo '%s' (ID %d)", attachment.Nome_Arquivo, attID))
 
 	c.JSON(http.StatusOK, gin.H{"message": "Attachment deleted"})
 }

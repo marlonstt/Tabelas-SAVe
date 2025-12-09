@@ -29,7 +29,56 @@ func init() {
 	mockUsers[1].Password = string(hash)
 }
 
+// LogUserActivity records user actions
+func LogUserActivity(userID int, usuario, acao, detalhes string) {
+	if !database.Connected {
+		return
+	}
+	logEntry := models.SAVe_Logs{
+		Usuario_ID: userID,
+		Usuario:    usuario,
+		Acao:       acao,
+		Detalhes:   detalhes,
+		Data:       time.Now(),
+	}
+	// Use a goroutine to not block the request
+	go func() {
+		if err := database.DB.Create(&logEntry).Error; err != nil {
+			fmt.Printf("ERROR: Failed to create log entry: %v\n", err)
+		}
+	}()
+}
+
+// CleanupOldLogs deletes logs older than 30 days
+func CleanupOldLogs() {
+	if !database.Connected {
+		return
+	}
+	// Run cleanup every 24 hours
+	go func() {
+		for {
+			cutoff := time.Now().AddDate(0, 0, -30)
+			if err := database.DB.Where("Data < ?", cutoff).Delete(&models.SAVe_Logs{}).Error; err != nil {
+				fmt.Printf("ERROR: Failed to clean old logs: %v\n", err)
+			} else {
+				fmt.Printf("CLEANUP: Deleted logs older than %v\n", cutoff)
+			}
+			time.Sleep(24 * time.Hour)
+		}
+	}()
+}
+
+// Start cleanup on init (or main) - here we just trigger it once strictly for simplicity in handler init,
+// but ideally called from main. We'll call it first time Login is hit to avoid modifying main.go too much right now,
+// or we can add a sync.Once.
+var cleanupOnce bool
+
 func Login(c *gin.Context) {
+	if !cleanupOnce {
+		CleanupOldLogs()
+		cleanupOnce = true
+	}
+
 	fmt.Fprintf(os.Stderr, "LOGIN HANDLER CALLED\n")
 	var input struct {
 		Email    string `json:"email"`
@@ -86,6 +135,9 @@ func Login(c *gin.Context) {
 		fmt.Fprintf(os.Stderr, "DEBUG_HIT: REAL MODE: Password match successful\n")
 	}
 
+	// LOG ACTIVITY
+	LogUserActivity(user.ID, user.Usuario, "LOGIN", fmt.Sprintf("Usuário %s logou no sistema", user.Email))
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID,
 		"email":   user.Email,
@@ -112,6 +164,30 @@ func Login(c *gin.Context) {
 			"profile_image":        user.ProfileImage,
 		},
 	})
+}
+
+// Helper to extract user info
+func GetUserFromContext(c *gin.Context) (int, string) {
+	idVal, exists := c.Get("userID")
+	if !exists {
+		return 0, "System/Unknown"
+	}
+	emailVal, _ := c.Get("userEmail")
+	email := ""
+	if s, ok := emailVal.(string); ok {
+		email = s
+	}
+
+	var id int
+	switch v := idVal.(type) {
+	case float64:
+		id = int(v)
+	case int:
+		id = v
+	case uint:
+		id = int(v)
+	}
+	return id, email
 }
 
 func Register(c *gin.Context) {
@@ -167,6 +243,10 @@ func Register(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
 	}
+
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "CREATE_USER", fmt.Sprintf("Criou usuário %s (%s)", newUser.Usuario, newUser.Email))
 
 	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully", "id": newUser.ID})
 }
@@ -242,6 +322,10 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "UPDATE_USER", fmt.Sprintf("Atualizou usuário ID %d (%s)", user.ID, user.Email))
+
 	c.JSON(http.StatusOK, user)
 }
 
@@ -308,6 +392,10 @@ func ChangePassword(c *gin.Context) {
 		return
 	}
 
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "CHANGE_PASSWORD", "Alterou a própria senha")
+
 	c.JSON(http.StatusOK, gin.H{"message": "Senha alterada com sucesso"})
 }
 
@@ -358,6 +446,10 @@ func UpdateProfileImage(c *gin.Context) {
 		return
 	}
 
+	// LOG - Optional for profile image
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "UPDATE_PROFILE_IMAGE", "Atualizou foto de perfil")
+
 	c.JSON(http.StatusOK, gin.H{"message": "Foto de perfil atualizada com sucesso", "profile_image": user.ProfileImage})
 }
 
@@ -404,6 +496,10 @@ func DeleteUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete user"})
 		return
 	}
+
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "DELETE_USER", fmt.Sprintf("Excluiu usuário ID %d", id))
 
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }

@@ -125,6 +125,11 @@ func GetAllCases(c *gin.Context) {
 	}
 
 	fmt.Printf("GetAllCases: Found %d cases\n", len(cases))
+
+	// Optional: Log access to list? Might be spammy.
+	// actorID, actorEmail := GetUserFromContext(c)
+	// LogUserActivity(actorID, actorEmail, "LIST_CASES", fmt.Sprintf("Listou %d casos", len(cases)))
+
 	c.JSON(http.StatusOK, cases)
 }
 
@@ -141,6 +146,10 @@ func GetCaseById(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Case not found"})
 		return
 	}
+
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "ACCESS_CASE", fmt.Sprintf("Acessou caso ID %d (%s)", id, geral.Nome))
 
 	var dadosEntrada models.SAVe_DadosDeEntrada
 	database.DB.First(&dadosEntrada, id)
@@ -362,6 +371,10 @@ func CreateCase(c *gin.Context) {
 		return
 	}
 
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "CREATE_CASE", fmt.Sprintf("Criou caso ID %d", newID))
+
 	c.JSON(http.StatusCreated, gin.H{"id": newID, "message": "Case created"})
 }
 
@@ -531,6 +544,10 @@ func DeleteCase(c *gin.Context) {
 		return
 	}
 
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "DELETE_CASE", fmt.Sprintf("Excluiu caso ID %d", id))
+
 	c.JSON(http.StatusOK, gin.H{"message": "Case deleted successfully"})
 }
 
@@ -584,6 +601,10 @@ func ArchiveCase(c *gin.Context) {
 		return
 	}
 
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "ARCHIVE_CASE", fmt.Sprintf("Arquivou caso ID %d", id))
+
 	c.JSON(http.StatusOK, gin.H{"message": "Case archived successfully"})
 }
 
@@ -596,6 +617,10 @@ func UpdateCaseSection(c *gin.Context) {
 	}
 
 	section := c.Param("section")
+
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "UPDATE_SECTION", fmt.Sprintf("Atualizou seção '%s' do caso ID %d", section, id))
 
 	switch section {
 	case "dados-entrada":
@@ -1471,6 +1496,10 @@ func ReopenCase(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to reopen case"})
 		return
 	}
+
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "REOPEN_CASE", fmt.Sprintf("Reabriu caso ID %d", id))
 
 	c.JSON(http.StatusOK, gin.H{"message": "Case reopened successfully"})
 }

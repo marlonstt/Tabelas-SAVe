@@ -791,3 +791,16 @@ type SAVe_Anexos struct {
 func (SAVe_Anexos) TableName() string {
 	return "\"SAVe_Anexos\""
 }
+
+type SAVe_Logs struct {
+	ID         uint      `gorm:"primaryKey;column:\"ID\"" json:"ID"`
+	Usuario_ID int       `gorm:"column:\"Usuario_ID\"" json:"Usuario_ID"`
+	Usuario    string    `gorm:"column:\"Usuario\"" json:"Usuario"`
+	Acao       string    `gorm:"column:\"Acao\"" json:"Acao"` // Ex: "Logou no sistema"
+	Detalhes   string    `gorm:"column:\"Detalhes\"" json:"Detalhes"`
+	Data       time.Time `gorm:"column:\"Data\";default:now()" json:"Data"`
+}
+
+func (SAVe_Logs) TableName() string {
+	return "\"SAVe_Logs\""
+}
