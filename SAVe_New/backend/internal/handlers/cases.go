@@ -1367,13 +1367,10 @@ func UpdateCaseSection(c *gin.Context) {
 			return
 		}
 
-		// Preserve Nome if input doesn't have it
-		if input.Nome == "" {
-			input.Nome = existing.Nome
-		}
-
-		// Use Save to update
-		if err := tx.Save(&input).Error; err != nil {
+		// Use Updates to perform a partial update, modifying only non-zero fields.
+		// This prevents overwriting existing data (like Tipo_Form or Paginas_Visitadas) with empty values
+		// when they are not included in the request.
+		if err := tx.Model(&existing).Updates(&input).Error; err != nil {
 			tx.Rollback()
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral info: " + err.Error()})
 			return
