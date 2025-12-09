@@ -4,6 +4,7 @@
     import ConfirmModal from "../ConfirmModal.svelte";
 
     export let caseId: string;
+    export let isArchived: boolean = false;
 
     let data: any = {
         agressores: [],

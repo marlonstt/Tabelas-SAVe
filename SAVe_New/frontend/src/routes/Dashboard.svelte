@@ -50,6 +50,14 @@
       // If showArchived is true, show all. If false, show only NOT Encerrado (Encerrado !== "Sim")
       const isArchived = c.Encerrado === "Sim";
       const matchesStatus = showArchived ? true : !isArchived;
+
+      // Debug log for case 333
+      if (c.ID_Caso === 333) {
+        console.log(
+          `[FILTRO] Caso 333: Encerrado="${c.Encerrado}", isArchived=${isArchived}, showArchived=${showArchived}, matchesStatus=${matchesStatus}`,
+        );
+      }
+
       return matchesId && matchesStatus;
     })
     .sort((a, b) => {
@@ -365,9 +373,14 @@
           type="checkbox"
           class="form-checkbox text-save-primary h-5 w-5 rounded border-gray-300 focus:ring-save-primary"
           bind:checked={showArchived}
+          on:change={() => {
+            console.log(
+              `[FILTRO] Checkbox alterado: showArchived = ${showArchived}`,
+            );
+          }}
         />
         <span class="ml-2 text-gray-700 font-medium"
-          >Mostrar casos Arquivados</span
+          >Mostrar casos Arquivados ({showArchived ? "ATIVO" : "INATIVO"})</span
         >
       </label>
     </div>

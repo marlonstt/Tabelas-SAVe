@@ -3,6 +3,7 @@
     import api from "../../lib/api";
 
     export let caseId: string;
+    export let isArchived: boolean = false;
 
     // Data for the table
     let data: any[] = [];

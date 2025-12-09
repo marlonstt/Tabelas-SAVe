@@ -681,44 +681,11 @@ func UpdateCaseSection(c *gin.Context) {
 			}
 		}
 
-		// 4. Update SAVe_Geral fields only if they are not empty
-		// This prevents accidental clearing of fields during autosave
-		updates := map[string]interface{}{}
-
-		if input.SAVe_DadosDeEntrada.Data != "" {
-			updates["Data"] = input.SAVe_DadosDeEntrada.Data
-		}
-		if input.SAVe_DadosDeEntrada.Comarca_origem != "" {
-			updates["Comarca"] = input.SAVe_DadosDeEntrada.Comarca_origem
-		}
-		if input.TipoVitima != "" {
-			updates["Tipo_Vitima"] = input.TipoVitima
-		}
-		if input.SAVe_DadosDeEntrada.N_procedimento_MPE != "" {
-			updates["Num_Processo"] = input.SAVe_DadosDeEntrada.N_procedimento_MPE
-		}
-
-		// Update Tipo_Crime in SAVe_Geral only if we have crime data
-		tipoCrime := input.SAVe_DadosDeEntrada.Crime_relacionado_especifico
-		if tipoCrime == "" {
-			tipoCrime = input.SAVe_DadosDeEntrada.Crime_relacionado
-		}
-
-		if input.SAVe_DadosDeEntrada.Classificacao_crime != "" {
-			tipoCrime += " (" + input.SAVe_DadosDeEntrada.Classificacao_crime + ")"
-		}
-
-		if tipoCrime != "" {
-			updates["Tipo_Crime"] = tipoCrime
-		}
-
-		if len(updates) > 0 {
-			if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Updates(updates).Error; err != nil {
-				tx.Rollback()
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral info"})
-				return
-			}
-		}
+		// 4. REMOVED: Update SAVe_Geral fields
+		// CRITICAL FIX: Removed automatic updates to SAVe_Geral from dados-entrada endpoint
+		// to prevent accidental clearing of fields like Encerrado, Tipo_Form, etc.
+		// SAVe_Geral fields should ONLY be updated through specific, controlled endpoints.
+		// If needed in the future, create a dedicated endpoint for updating SAVe_Geral fields.
 
 		if err := tx.Commit().Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})

@@ -3,6 +3,7 @@
     import api from "../../lib/api";
 
     export let caseId: string;
+    export let isArchived: boolean = false;
 
     let data: any = {
         acompanhamentos: [],
@@ -193,6 +194,7 @@
                     <button
                         class="absolute top-2 right-2 text-red-500 hover:text-red-700"
                         on:click={() => removeAcompanhamento(i)}
+                        disabled={isArchived}
                     >
                         <span class="material-icons">delete</span>
                     </button>
@@ -205,6 +207,7 @@
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={acomp.Data}
                                 on:input={autosave}
+                                disabled={isArchived}
                             />
                         </label>
 
@@ -216,6 +219,7 @@
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30"
                                 bind:value={acomp.Tipo_Atendimento}
                                 on:change={autosave}
+                                disabled={isArchived}
                             >
                                 <option value="">Selecione...</option>
                                 <option value="Acolhimento emergencial"
@@ -260,6 +264,7 @@
                                     rows="3"
                                     bind:value={acomp.Sintese}
                                     on:input={autosave}
+                                    disabled={isArchived}
                                 ></textarea>
                             </label>
                         </div>
@@ -282,6 +287,7 @@
                                         }
                                         autosave();
                                     }}
+                                    disabled={isArchived}
                                 >
                                     <option value="">Selecione...</option>
                                     <option value="Rede de proteção à mulher"
@@ -322,6 +328,7 @@
                                             acomp.Especifique_Encaminhamento
                                         }
                                         on:input={autosave}
+                                        disabled={isArchived}
                                     />
                                 </label>
                             </div>
@@ -337,6 +344,7 @@
                                     rows="3"
                                     bind:value={acomp.Encaminhamento}
                                     on:input={autosave}
+                                    disabled={isArchived}
                                 ></textarea>
                             </label>
                         </div>
@@ -368,6 +376,7 @@
                                                         );
                                                     autosave();
                                                 }}
+                                                disabled={isArchived}
                                             >
                                                 ×
                                             </button>
@@ -400,6 +409,7 @@
                                         }
                                         e.currentTarget.value = ""; // Reset dropdown
                                     }}
+                                    disabled={isArchived}
                                 >
                                     <option value=""
                                         >+ Adicionar Responsável...</option
@@ -421,6 +431,7 @@
             <button
                 class="text-save-primary hover:underline font-medium"
                 on:click={addAcompanhamento}
+                disabled={isArchived}
             >
                 + Adicionar Acompanhamento
             </button>
@@ -431,7 +442,7 @@
                     <button
                         class="bg-save-primary text-white px-6 py-2 rounded shadow hover:bg-save-secondary transition-colors disabled:opacity-50"
                         on:click={manualSave}
-                        disabled={saving || loading}
+                        disabled={saving || loading || isArchived}
                     >
                         {saving ? "Salvando..." : "Salvar Dados"}
                     </button>

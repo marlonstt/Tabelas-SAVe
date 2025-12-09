@@ -93,6 +93,9 @@
   let canDelete = false;
   let showConfirmModal = false;
 
+  // Reactive variable to check if case is archived
+  $: isArchived = caseData?.geral?.Encerrado === "Sim";
+
   function deleteCase() {
     showConfirmModal = true;
   }
@@ -228,6 +231,26 @@
   </div>
 {:else if caseData}
   <div class="flex flex-col h-screen bg-save-surface font-sans">
+    <!-- Archived Case Warning Banner -->
+    {#if isArchived}
+      <div
+        class="bg-yellow-50 border-l-4 border-yellow-400 px-6 py-3 flex items-center justify-between"
+      >
+        <div class="flex items-center">
+          <span class="material-icons text-yellow-600 mr-3">lock</span>
+          <div>
+            <p class="text-yellow-800 font-semibold">
+              Caso Arquivado - Somente Leitura
+            </p>
+            <p class="text-yellow-700 text-sm">
+              Este caso foi encerrado e não pode ser editado. Um administrador
+              pode reabrir o caso se necessário.
+            </p>
+          </div>
+        </div>
+      </div>
+    {/if}
+
     <!-- Header with Gradient -->
     <div
       class="bg-gradient-to-r from-[#464775] to-save-secondary shadow-md px-6 py-4 flex justify-between items-center text-white"
@@ -338,6 +361,7 @@
                 this={section.component}
                 caseId={id}
                 {caseData}
+                {isArchived}
               />
             {/key}
           </div>

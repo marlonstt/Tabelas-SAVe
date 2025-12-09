@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
 
     export let caseId: string;
+    export let isArchived: boolean = false;
     export let caseData: any = null;
 
     let scores: Record<string, number> = {

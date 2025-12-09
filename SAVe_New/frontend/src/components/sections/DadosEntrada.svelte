@@ -3,6 +3,7 @@
     import api from "../../lib/api";
 
     export let caseId: string;
+    export let isArchived: boolean = false;
 
     let data: any = {
         casosRelacionados: [],
@@ -108,7 +109,7 @@
     });
 
     function autosave() {
-        if (loading || saving) return;
+        if (loading || saving || isArchived) return;
 
         // Update Crime_relacionado_especifico before saving
         data.Crime_relacionado_especifico = data.specificCrimes.join("; ");
@@ -220,7 +221,7 @@
     }
 
     async function manualSave() {
-        if (loading || saving) return;
+        if (loading || saving || isArchived) return;
 
         clearTimeout(saveTimeout);
         saving = true;

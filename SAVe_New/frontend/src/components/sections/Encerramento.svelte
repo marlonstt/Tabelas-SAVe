@@ -1,8 +1,10 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import api from "../../lib/api";
+    import ConfirmModal from "../ConfirmModal.svelte";
 
     export let caseId: string;
+    export let isArchived: boolean = false;
 
     let data: any = {};
     let loading = true;
@@ -10,6 +12,11 @@
     let saveTimeout: any;
     let lastSavedData: string = "";
     let saveStatus = "";
+
+    // Modal control
+    let showConfirmModal = false;
+    let confirmMessage = "";
+    let confirmAction: (() => void) | null = null;
 
     // Reset data when caseId changes
     $: if (caseId) {
@@ -108,16 +115,15 @@
 
     $: if (data) autosave();
 
-    async function finalizeCase() {
+    function openFinalizeCaseModal() {
         console.log("finalizeCase called");
-        if (
-            !confirm(
-                "Tem certeza que deseja encerrar este caso? Esta ação arquivará o caso.",
-            )
-        ) {
-            console.log("User cancelled finalization");
-            return;
-        }
+        confirmMessage =
+            "Tem certeza que deseja encerrar este caso? Esta ação arquivará o caso e ele não poderá mais ser editado.";
+        confirmAction = performFinalization;
+        showConfirmModal = true;
+    }
+
+    async function performFinalization() {
         console.log("User confirmed, proceeding with finalization");
 
         // Set date if empty
@@ -287,7 +293,7 @@
         <div class="mt-6 flex justify-end">
             <button
                 class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition shadow flex items-center"
-                on:click={finalizeCase}
+                on:click={openFinalizeCaseModal}
                 disabled={saving || loading}
             >
                 <span class="material-icons mr-2">lock</span> Encerrar Caso
@@ -295,3 +301,20 @@
         </div>
     {/if}
 </div>
+
+<!-- Confirm Modal -->
+<ConfirmModal
+    isOpen={showConfirmModal}
+    title="Confirmar Encerramento"
+    message={confirmMessage}
+    confirmText="Encerrar Caso"
+    cancelText="Cancelar"
+    confirmColor="bg-red-600 hover:bg-red-700"
+    on:confirm={() => {
+        showConfirmModal = false;
+        if (confirmAction) confirmAction();
+    }}
+    on:close={() => {
+        showConfirmModal = false;
+    }}
+/>
