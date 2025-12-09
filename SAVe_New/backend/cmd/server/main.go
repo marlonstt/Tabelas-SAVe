@@ -79,7 +79,14 @@ func main() {
 				cases.PUT("/:id/reopen", handlers.ReopenCase)
 				cases.GET("/:id/:section", handlers.GetCaseSection)
 				cases.PUT("/:id/:section", handlers.UpdateCaseSection)
+				// Attachment routes
+				cases.POST("/:id/attachments", handlers.UploadAttachment)
+				cases.GET("/:id/attachments", handlers.ListAttachments)
 			}
+
+			// Generic attachment routes
+			auth.GET("/attachments/:id/download", handlers.DownloadAttachment)
+			auth.DELETE("/attachments/:id", handlers.DeleteAttachment)
 		}
 	}
 

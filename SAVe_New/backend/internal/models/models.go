@@ -777,3 +777,17 @@ type SAVe_Responsaveis struct {
 func (SAVe_Responsaveis) TableName() string {
 	return "\"SAVe_Responsaveis\""
 }
+
+type SAVe_Anexos struct {
+	ID           uint      `gorm:"primaryKey;column:\"ID\"" json:"ID"`
+	ID_Caso      int       `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
+	Tela         string    `gorm:"column:\"Tela\"" json:"Tela"`
+	Nome_Arquivo string    `gorm:"column:\"Nome_Arquivo\"" json:"Nome_Arquivo"`
+	Tipo_Arquivo string    `gorm:"column:\"Tipo_Arquivo\"" json:"Tipo_Arquivo"`
+	Conteudo     []byte    `gorm:"column:\"Conteudo\";type:bytea" json:"-"` // Don't expose content in JSON lists by default
+	Criado_Em    time.Time `gorm:"column:\"Criado_Em\";default:now()" json:"Criado_Em"`
+}
+
+func (SAVe_Anexos) TableName() string {
+	return "\"SAVe_Anexos\""
+}

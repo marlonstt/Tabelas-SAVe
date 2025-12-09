@@ -693,3 +693,15 @@ CREATE TABLE "SAVe_Responsaveis" (
     "Cargo" TEXT,
     "Area" TEXT
 );
+
+-- Table: SAVe_Anexos
+CREATE TABLE "SAVe_Anexos" (
+    "ID" SERIAL PRIMARY KEY,
+    "ID_Caso" INTEGER,
+    "Tela" TEXT, -- To distinguish which section/screen the attachment belongs to
+    "Nome_Arquivo" TEXT,
+    "Tipo_Arquivo" TEXT,
+    "Conteudo" BYTEA, -- Storing file content directly
+    "Criado_Em" TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY ("ID_Caso") REFERENCES "SAVe_Geral"("ID_Caso") ON DELETE CASCADE
+);

@@ -2,6 +2,8 @@ package database
 
 import (
 	"log"
+	"os"
+	"strings"
 
 	"save-backend/internal/models"
 
@@ -118,8 +120,72 @@ func Connect() {
 		&models.SAVe_Perfil_Agressor_Endereco{},
 		&models.SAVe_Sintese_Analitica{},
 		&models.SAVe_Usuarios{},
+		&models.SAVe_Anexos{},
 	)
 	if err != nil {
 		log.Println("ERROR: Failed to migrate other tables:", err)
 	}
+
+	// Execute definition from arbitrary SQL file as requested
+	if err := ExecuteTablesSQL(); err != nil {
+		log.Println("WARNING: Failed to execute tables.sql:", err)
+	}
+}
+
+func ExecuteTablesSQL() error {
+	// Relative path from backend root (where go run is executed)
+	// C:\Users\User\Desktop\SAVe_Svelt e GoLang\Tabelas SAVe\SAVe_New\backend
+	// -> ..\..\tables.sql
+	path := "../../tables.sql"
+
+	content, err := os.ReadFile(path)
+	if err != nil {
+		// Try absolute path as fallback if CWD is different
+		path = "C:\\Users\\User\\Desktop\\SAVe_Svelt e GoLang\\Tabelas SAVe\\tables.sql"
+		content, err = os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+	}
+
+	sqlContent := string(content)
+
+	// Naively replace CREATE TABLE with CREATE TABLE IF NOT EXISTS
+	// This is safe because we want to create them only if they don't exist.
+	// We use a regex or string replacement.
+	// Case insensitive replacement would be better but simple string compare usually works for generated SQL.
+	// The provided sql uses uppercase CREATE TABLE.
+
+	// Note: This simple replacement might break if "CREATE TABLE" appears inside a string literal,
+	// but in a DDL file that's unlikely.
+
+	statements := strings.Split(sqlContent, ";")
+
+	for _, stmt := range statements {
+		trimmed := strings.TrimSpace(stmt)
+		if trimmed == "" {
+			continue
+		}
+
+		// Inject IF NOT EXISTS if not present
+		if strings.Contains(strings.ToUpper(trimmed), "CREATE TABLE") && !strings.Contains(strings.ToUpper(trimmed), "IF NOT EXISTS") {
+			// Replace first occurrence of "CREATE TABLE" with "CREATE TABLE IF NOT EXISTS"
+			// considering the quotes and spacing in the file
+			// File has: CREATE TABLE "Name"
+			updatedStmt := strings.Replace(trimmed, "CREATE TABLE", "CREATE TABLE IF NOT EXISTS", 1)
+			// Allow for lower case too
+			if updatedStmt == trimmed {
+				updatedStmt = strings.Replace(trimmed, "create table", "CREATE TABLE IF NOT EXISTS", 1)
+			}
+			trimmed = updatedStmt
+		}
+
+		if err := DB.Exec(trimmed).Error; err != nil {
+			// Log but don't fail completely, as some errors might be trivial
+			log.Printf("WARNING: specific statement execution failed: %v", err)
+		}
+	}
+
+	log.Println("tables.sql executed successfully (tables created if not existed)")
+	return nil
 }

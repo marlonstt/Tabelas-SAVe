@@ -3,6 +3,7 @@
   import api from "../lib/api";
   import { isGlobalSaving } from "../lib/stores";
   import ConfirmModal from "../components/ConfirmModal.svelte";
+  import AttachmentModal from "../components/AttachmentModal.svelte";
 
   // Import Section Components
   import DadosEntrada from "../components/sections/DadosEntrada.svelte";
@@ -92,6 +93,7 @@
   let visitedPages: string[] = [];
   let canDelete = false;
   let showConfirmModal = false;
+  let showAttachmentModal = false;
 
   // Reactive variable to check if case is archived
   $: isArchived = caseData?.geral?.Encerrado === "Sim";
@@ -209,6 +211,10 @@
   function generateReport() {
     window.location.href = `/case/${id}/report`;
   }
+
+  function attachFiles() {
+    showAttachmentModal = true;
+  }
 </script>
 
 {#if loading}
@@ -257,7 +263,7 @@
 
     <!-- Header with Gradient -->
     <div
-      class="bg-gradient-to-r from-[#464775] to-save-secondary shadow-md px-6 py-4 flex justify-between items-center text-white"
+      class="relative bg-gradient-to-r from-[#464775] to-save-secondary shadow-md px-6 py-4 flex justify-between items-center text-white"
     >
       <div>
         <h2 class="text-2xl font-bold tracking-tight flex items-center">
@@ -269,6 +275,17 @@
         <p class="text-blue-100 text-sm mt-1 ml-14 opacity-90">
           ID do Caso: {id}
         </p>
+      </div>
+
+      <!-- Centered Button -->
+      <div class="absolute left-1/2 transform -translate-x-1/2">
+        <button
+          on:click={attachFiles}
+          class="px-4 py-1 text-xs font-bold rounded bg-white/100 hover:bg-white/50 text-save-primary transition-all duration-200 shadow-sm flex items-center justify-center gap-1 w-full"
+        >
+          <span class="material-icons">attach_file</span>
+          Anexos
+        </button>
       </div>
 
       <div class="flex items-center gap-3">
@@ -392,6 +409,14 @@
     confirmText="Excluir"
     on:close={() => (showConfirmModal = false)}
     on:confirm={confirmDeleteCase}
+  />
+
+  <AttachmentModal
+    isOpen={showAttachmentModal}
+    caseId={id}
+    activeTabId={activeTab}
+    {visibleSections}
+    on:close={() => (showAttachmentModal = false)}
   />
 {/if}
 
