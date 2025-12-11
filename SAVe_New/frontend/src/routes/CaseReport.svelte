@@ -41,6 +41,20 @@
             const response = await api.get(`/cases/${id}`);
             caseData = response.data;
 
+            if (caseData.acompanhamentos) {
+                caseData.acompanhamentos.sort((a: any, b: any) => {
+                    const d1 = new Date(a.Data).getTime();
+                    const d2 = new Date(b.Data).getTime();
+                    if (d1 !== d2) {
+                        return d2 - d1; // Newer first
+                    }
+                    // Tie-breaker: Created time
+                    const c1 = new Date(a.Criado).getTime();
+                    const c2 = new Date(b.Criado).getTime();
+                    return c2 - c1;
+                });
+            }
+
             const tipoForm = caseData.geral?.Tipo_Form?.toLowerCase() || "";
             const isBreve = !(
                 tipoForm === "completo" ||
@@ -141,6 +155,27 @@
         // Remove extra whitespace
         return text.replace(/\s+/g, " ").trim();
     }
+
+    function getAcompanhamentoHeader(dateStr: string, createdStr: string) {
+        const datePart = formatDate(dateStr);
+
+        let timePart = "00:00";
+        if (createdStr) {
+            const date = new Date(createdStr);
+            if (!isNaN(date.getTime())) {
+                timePart = date.toLocaleString("pt-BR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                });
+            }
+        }
+
+        return `Acompanhamento de ${datePart} - ${timePart}`;
+    }
+    function toggleSelectAll() {
+        const allSelected = sections.every((s) => s.selected);
+        sections = sections.map((s) => ({ ...s, selected: !allSelected }));
+    }
 </script>
 
 {#if loading}
@@ -175,6 +210,17 @@
                     <span class="text-gray-700">{section.label}</span>
                 </label>
             {/each}
+        </div>
+
+        <div class="flex justify-end mb-4 px-1">
+            <button
+                on:click={toggleSelectAll}
+                class="text-sm text-save-primary hover:underline font-medium focus:outline-none"
+            >
+                {sections.every((s) => s.selected)
+                    ? "Desmarcar Todos"
+                    : "Marcar Todos"}
+            </button>
         </div>
 
         <div class="flex justify-between">
@@ -787,7 +833,8 @@
                                         <h4
                                             class="font-bold text-save-primary mb-2"
                                         >
-                                            Acompanhamento de {formatDateTime(
+                                            {getAcompanhamentoHeader(
+                                                acomp.Data,
                                                 acomp.Criado,
                                             )}
                                         </h4>
