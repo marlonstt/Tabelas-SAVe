@@ -1357,7 +1357,6 @@
         * {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
-            color-adjust: exact !important;
         }
 
         /* Remove shadows and unnecessary decorations */
