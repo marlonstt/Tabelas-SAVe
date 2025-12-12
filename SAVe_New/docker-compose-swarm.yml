@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  backend:
+    # SUBSTITUA 'SEU_USUARIO' PELO SEU USUARIO REAL DO DOCKER HUB
+    image: SEU_USUARIO/save-backend:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    environment:
+      - DB_HOST=db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=5432
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - save-network
+    depends_on:
+      - db
+
+  frontend:
+    # SUBSTITUA 'SEU_USUARIO' PELO SEU USUARIO REAL DO DOCKER HUB
+    image: SEU_USUARIO/save-frontend:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - save-network
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15-alpine
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      # No Swarm, configs/secrets são ideais, mas bind mount funciona se o arquivo existir em todos os nodes ou se for single-node
+      # Para Swarm real multi-node, o ideal seria remover isso e rodar o script SQL manualmente ou usar 'configs'
+      - ./tables.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - save-network
+
+volumes:
+  db_data:
+
+
+networks:
+  save-network:
+    driver: overlay # Overlay é o driver de rede padrão para Swarm
