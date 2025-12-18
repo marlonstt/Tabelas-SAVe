@@ -2,6 +2,8 @@ module save-backend
 
 go 1.23
 
+toolchain go1.24.0
+
 require (
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-gonic/gin v1.11.0
