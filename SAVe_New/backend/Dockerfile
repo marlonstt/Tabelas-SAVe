@@ -5,6 +5,7 @@ WORKDIR /app
 
 COPY go.mod ./
 COPY go.sum ./
+ENV GOTOOLCHAIN=auto
 RUN go mod download
 
 COPY . .
