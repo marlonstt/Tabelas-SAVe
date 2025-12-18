@@ -1,5 +1,5 @@
-# Build stage - Cache Buster v1
-FROM golang:1.24-alpine AS builder
+# Build stage - Cache Buster v2
+FROM golang:1.23-alpine AS builder
 
 WORKDIR /app
 
