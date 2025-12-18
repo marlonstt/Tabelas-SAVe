@@ -10,6 +10,7 @@ RUN go mod download
 
 COPY . .
 
+RUN go mod tidy
 RUN go build -o main ./cmd/server
 
 # Run stage
