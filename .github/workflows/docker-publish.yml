@@ -2,7 +2,7 @@ name: Build and Push Docker Images
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main", "master", "Limpar-Projeto" ]
   workflow_dispatch:
 
 jobs:
@@ -24,15 +24,15 @@ jobs:
       - name: Build and push Backend
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
-          file: ./backend/Dockerfile
+          context: ./SAVe_New/backend
+          file: ./SAVe_New/backend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/save-backend:latest
 
       - name: Build and push Frontend
         uses: docker/build-push-action@v5
         with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
+          context: ./SAVe_New/frontend
+          file: ./SAVe_New/frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/save-frontend:latest
