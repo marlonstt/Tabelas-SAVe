@@ -705,3 +705,13 @@ CREATE TABLE "SAVe_Anexos" (
     "Criado_Em" TIMESTAMP DEFAULT NOW(),
     FOREIGN KEY ("ID_Caso") REFERENCES "SAVe_Geral"("ID_Caso") ON DELETE CASCADE
 );
+
+-- Table: SAVe_Logs
+CREATE TABLE "SAVe_Logs" (
+    "ID" SERIAL PRIMARY KEY,
+    "Usuario_ID" INTEGER,
+    "Usuario" TEXT,
+    "Acao" TEXT,
+    "Detalhes" TEXT,
+    "Data" TIMESTAMP DEFAULT NOW()
+);

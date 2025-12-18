@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"save-backend/internal/database"
 	"save-backend/internal/models"
@@ -31,6 +32,10 @@ func CreateResponsavel(c *gin.Context) {
 		return
 	}
 
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "CREATE_RESPONSAVEL", fmt.Sprintf("Criou responsável %s", input.Nome))
+
 	c.JSON(http.StatusCreated, input)
 }
 
@@ -59,6 +64,10 @@ func UpdateResponsavel(c *gin.Context) {
 		return
 	}
 
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "UPDATE_RESPONSAVEL", fmt.Sprintf("Atualizou responsável %s", responsavel.Nome))
+
 	c.JSON(http.StatusOK, responsavel)
 }
 
@@ -69,6 +78,10 @@ func DeleteResponsavel(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete responsavel"})
 		return
 	}
+
+	// LOG
+	actorID, actorEmail := GetUserFromContext(c)
+	LogUserActivity(actorID, actorEmail, "DELETE_RESPONSAVEL", fmt.Sprintf("Excluiu responsável ID %s", id))
 
 	c.JSON(http.StatusOK, gin.H{"message": "Responsavel deleted successfully"})
 }

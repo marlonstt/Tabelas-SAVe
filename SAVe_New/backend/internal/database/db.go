@@ -141,6 +141,7 @@ func Connect() {
 		&models.SAVe_Sintese_Analitica{},
 		&models.SAVe_Usuarios{},
 		&models.SAVe_Anexos{},
+		&models.SAVe_Logs{},
 	)
 	if err != nil {
 		log.Println("ERROR: Failed to migrate other tables:", err)

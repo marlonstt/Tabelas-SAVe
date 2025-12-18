@@ -5,7 +5,7 @@
   export let onComplete: () => void;
 
   const images = [
-    { src: "/logo_save_real.png", direction: "center" },
+    { src: "/logo_save_real_load.png", direction: "center" },
     { src: "/MPBR.png", direction: "center" },
     { src: "/CasaLilianIMG.png", direction: "center" },
     { src: "/logo_casa_lilian_real.png", direction: "center" },
