@@ -58,7 +58,7 @@ func CleanupOldLogs() {
 	go func() {
 		for {
 			cutoff := time.Now().AddDate(0, 0, -30)
-			if err := database.DB.Where("Data < ?", cutoff).Delete(&models.SAVe_Logs{}).Error; err != nil {
+			if err := database.DB.Where("\"Data\" < ?", cutoff).Delete(&models.SAVe_Logs{}).Error; err != nil {
 				fmt.Printf("ERROR: Failed to clean old logs: %v\n", err)
 			} else {
 				fmt.Printf("CLEANUP: Deleted logs older than %v\n", cutoff)
