@@ -45,10 +45,7 @@ func Connect() {
 	})
 
 	if err != nil {
-		log.Println("ERROR: Failed to connect to database:", err)
-		log.Println("WARNING: Running in Offline/Mock Mode")
-		Connected = false
-		return
+		log.Fatalf("FATAL: Failed to connect to database: %v. Exiting to prevent split-brain state.", err)
 	}
 
 	log.Println("Connected to database successfully")

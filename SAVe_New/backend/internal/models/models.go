@@ -379,7 +379,7 @@ func (SAVe_Habitacao_territorio) TableName() string {
 }
 
 type SAVe_Assistencia struct {
-	ID                                uint      `gorm:"primaryKey" json:"ID"`
+	ID                                uint      `gorm:"primaryKey;autoIncrement" json:"ID"`
 	ID_Caso                           uint      `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
 	Cad_unico                         string    `gorm:"column:\"Cad_unico\"" json:"Cad_unico"`
 	Status_cad_unico                  string    `gorm:"column:\"Status_cad_unico\"" json:"Status_cad_unico"`
