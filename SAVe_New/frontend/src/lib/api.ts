@@ -35,6 +35,19 @@ api.interceptors.response.use((response) => {
 }, (error) => {
   // Reset saving state on error
   isGlobalSaving.set(false);
+
+  // Global handler for 401 Unauthorized or 403 Forbidden
+  // This ensures that if the session expires, the user is redirected to login
+  if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+
+    // Prevent infinite loop if already on login page
+    if (window.location.pathname !== '/login') {
+      window.location.href = '/login';
+    }
+  }
+
   return Promise.reject(error);
 });
 

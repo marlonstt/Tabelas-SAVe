@@ -9,6 +9,7 @@
   let sortOrder: "asc" | "desc" = "desc";
 
   let searchId = "";
+  let searchProcessNumber = false;
   let showArchived = false;
   let showCaseTypeSelection = false;
 
@@ -43,9 +44,11 @@
   $: filteredCases = cases
     .filter((c) => {
       const matchesId = searchId
-        ? c.ID_Caso.toString().includes(searchId) ||
+        ? c.ID_Caso.toString() === searchId ||
           (c.Nome && c.Nome.toLowerCase().includes(searchId.toLowerCase())) ||
-          (c.Num_Processo && c.Num_Processo.includes(searchId))
+          (searchProcessNumber &&
+            c.Num_Processo &&
+            c.Num_Processo.includes(searchId))
         : true;
       // If showArchived is true, show all. If false, show only NOT Encerrado (Encerrado !== "Sim")
       const isArchived = c.Encerrado === "Sim";
@@ -358,14 +361,27 @@
     <div
       class="mt-6 flex flex-col md:flex-row justify-between items-center bg-white p-4 rounded-lg shadow-2xl border border-gray-200"
     >
-      <div class="flex items-center w-full md:w-auto mb-4 md:mb-0">
-        <span class="material-icons text-gray-400 mr-2">search</span>
-        <input
-          type="text"
-          placeholder="Pesquisar ID..."
-          class="border-gray-300 rounded-md shadow-sm focus:ring-save-primary focus:border-save-primary px-3 py-2 w-full md:w-64"
-          bind:value={searchId}
-        />
+      <div class="flex items-center w-full md:w-auto mb-4 md:mb-0 space-x-4">
+        <div class="relative">
+          <span class="material-icons absolute left-3 top-2.5 text-gray-400"
+            >search</span
+          >
+          <input
+            type="text"
+            placeholder="Pesquisar..."
+            class="pl-10 border-gray-300 rounded-md shadow-sm focus:ring-save-primary focus:border-save-primary px-3 py-2 w-full md:w-64 transition-all"
+            bind:value={searchId}
+          />
+        </div>
+
+        <label class="flex items-center cursor-pointer select-none text-sm">
+          <input
+            type="checkbox"
+            class="form-checkbox text-save-primary h-4 w-4 rounded border-gray-300 focus:ring-save-primary"
+            bind:checked={searchProcessNumber}
+          />
+          <span class="ml-2 text-gray-600">Pesquisar nº processo?</span>
+        </label>
       </div>
 
       <label class="flex items-center cursor-pointer select-none">

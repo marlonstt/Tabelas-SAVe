@@ -120,7 +120,7 @@ func Login(c *gin.Context) {
 		fmt.Fprintf(os.Stderr, "DEBUG_HIT: REAL MODE: Attempting login for: %s\n", input.Email)
 		if err := database.DB.Where("Email = ?", input.Email).First(&user).Error; err != nil {
 			fmt.Fprintf(os.Stderr, "DEBUG_HIT: REAL MODE: User not found in DB: %v\n", err)
-			c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("DEBUG: User not found in DB: %v", err)})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Usuário ou senha incorretos"})
 			return
 		}
 		fmt.Fprintf(os.Stderr, "DEBUG_HIT: REAL MODE: User found: %s Role: %s\n", user.Email, user.Role)
@@ -129,7 +129,7 @@ func Login(c *gin.Context) {
 		// Compare password
 		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
 			fmt.Fprintf(os.Stderr, "DEBUG_HIT: REAL MODE: Password mismatch error: %v\n", err)
-			c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("DEBUG: Password mismatch: %v", err)})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Usuário ou senha incorretos"})
 			return
 		}
 		fmt.Fprintf(os.Stderr, "DEBUG_HIT: REAL MODE: Password match successful\n")
