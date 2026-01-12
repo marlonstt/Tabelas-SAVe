@@ -379,7 +379,7 @@ func (SAVe_Habitacao_territorio) TableName() string {
 }
 
 type SAVe_Assistencia struct {
-	ID                                uint      `gorm:"primaryKey;autoIncrement" json:"ID"`
+	ID                                int       `gorm:"primaryKey;autoIncrement;column:id" json:"ID"`
 	ID_Caso                           uint      `gorm:"column:\"ID_Caso\"" json:"ID_Caso"`
 	Cad_unico                         string    `gorm:"column:\"Cad_unico\"" json:"Cad_unico"`
 	Status_cad_unico                  string    `gorm:"column:\"Status_cad_unico\"" json:"Status_cad_unico"`
@@ -439,8 +439,8 @@ type SAVe_Assistencia struct {
 	BSA_tec_ref_tel                   string    `gorm:"column:\"BSA_tec_ref_tel\"" json:"BSA_tec_ref_tel"`
 	BSA_tec_ref_email                 string    `gorm:"column:\"BSA_tec_ref_email\"" json:"BSA_tec_ref_email"`
 	BSA_seg_alimentar                 string    `gorm:"column:\"BSA_seg_alimentar\"" json:"BSA_seg_alimentar"`
-	CreatedAt                         time.Time `json:"created_at"`
-	UpdatedAt                         time.Time `json:"updated_at"`
+	CreatedAt                         time.Time `gorm:"column:\"created_at\"" json:"created_at"`
+	UpdatedAt                         time.Time `gorm:"column:\"updated_at\"" json:"updated_at"`
 }
 
 func (SAVe_Assistencia) TableName() string {

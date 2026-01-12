@@ -1325,6 +1325,7 @@ func UpdateCaseSection(c *gin.Context) {
 
 			if err := tx.Save(&input).Error; err != nil {
 				tx.Rollback()
+				log.Printf("[ERROR] Failed to update assistencia for ID %d: %v", id, err) // Added logging
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update assistencia: " + err.Error()})
 				return
 			}
