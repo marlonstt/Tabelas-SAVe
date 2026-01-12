@@ -701,7 +701,7 @@ CREATE TABLE "SAVe_Anexos" (
     "Tela" TEXT, -- To distinguish which section/screen the attachment belongs to
     "Nome_Arquivo" TEXT,
     "Tipo_Arquivo" TEXT,
-    "Conteudo" BYTEA, -- Storing file content directly
+    "Caminho" TEXT, -- Storing file path (relative to upload dir)
     "Criado_Em" TIMESTAMP DEFAULT NOW(),
     FOREIGN KEY ("ID_Caso") REFERENCES "SAVe_Geral"("ID_Caso") ON DELETE CASCADE
 );

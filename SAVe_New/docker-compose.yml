@@ -1,66 +1,96 @@
-version: '3.8'
+version: "3.8"
 
 services:
   backend:
-    image: ${DOCKER_USERNAME}/save-backend:latest
+    image: harbor.mpmg.mp.br/mpmg-homo/save-backend:1.0.1
     ports:
-      - "8080:8080"
+      - "8091:8080"
     environment:
-      - DB_HOST=db
+      - DB_HOST=${DB_HOST}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
       - DB_PORT=5432
-      - JWT_SECRET=${JWT_SECRET}
+      - UPLOAD_DIR=/app/uploads # Define onde a aplicação salva internamente
+
+    volumes:
+      - save_uploads:/app/uploads # Mapeia o volume persistente para a pasta interna
+
     deploy:
       replicas: 1
-      restart_policy:
-        condition: on-failure
+
       update_config:
         parallelism: 1
         delay: 10s
-    depends_on:
-      - db
+        monitor: 15s
+        failure_action: rollback
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 15s
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      placement:
+        constraints:
+          - node.role == worker
+        preferences:
+          - spread: node.id
+
     networks:
       - save-network
 
   frontend:
-    image: ${DOCKER_USERNAME}/save-frontend:latest
+    image: harbor.mpmg.mp.br/mpmg-homo/save-frontend:1.0.2
     ports:
-      - "3000:80"
+      - "8092:80"
     environment:
       - NODE_ENV=production
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
     depends_on:
       - backend
-    networks:
-      - save-network
-
-  db:
-    image: postgres:15-alpine
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-    ports:
-      - "5432:5432"
     deploy:
       replicas: 1
+
+      update_config:
+        parallelism: 1
+        delay: 10s
+        monitor: 15s
+        failure_action: rollback
+        order: start-first
+
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        monitor: 15s
+
       restart_policy:
         condition: on-failure
-    volumes:
-      - db_data:/var/lib/postgresql/data
-      - ./tables.sql:/docker-entrypoint-initdb.d/init.sql
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+      placement:
+        constraints:
+          - node.role == worker
+        preferences:
+          - spread: node.id
+
     networks:
       - save-network
-
-volumes:
-  db_data:
-
 
 networks:
   save-network:
     driver: overlay
+
+volumes:
+  save_uploads:
+    # Cria o volume gerenciado pelo Docker
+    driver: local

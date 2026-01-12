@@ -1,0 +1,84 @@
+
+
+------------------------------------------------
+
+SAVe no servidor de homologação teste:
+http://swarm-manager-rh9-homo1.idm.mpmg.mp.br:8093/
+
+------------------------------------------------
+
+http://swarm-manager-rh9-homo1.idm.mpmg.mp.br:8093/
+ 
+VM_Save:
+ 
+CloudVM-807700-DSSA - Gabriel Peixoto - gpeixoto / N=AB7v3c!!L.Jg
+
+CloudVM-310700-DISI - Henrique Valle;
+
+CloudVM-8057-DDCI - Matheus Catrinque;
+ 
+Portas de Acesso: 
+ 
+Projeto SAVe
+8091 - BackEnd
+8092 - BD
+8093 - FrontEnd
+ 
+ ------------------------------------------------
+
+
+Para configurar o banco em outro servidor, precisamos fazer duas mudanças principais:
+ 
+1. Remover o container do banco de dados do docker-compose.yml (já que ele não vai mais rodar junto com a app).
+
+2.  Atualizar o arquivo .env com o IP do novo servidor.
+
+Pergunta: Qual é o IP ou endereço (hostname) desse novo servidor de banco de dados?
+ 
+Vou ajustar os arquivos para você assim que me confirmar. Também recomendo fortemente criar o script de deploy (deploy_swarm.ps1) que mencionei antes, pois ele é fundamental para passar esse IP correto para a aplicação. Posso prosseguir com essas mudanças?
+ 
+ 
+Dúvidas Aplicação - Container:
+ 
+1- Qual o objetivo de uso da VM Linux que foi criada no Azure? (gpeixoto@20.42.106.24)
+ R: Liberdade construir as imagens para o sistemas, VM isolada. porta 80 e 443
+
+2- Como poderemos atualizar a imagem do app no Harbor? Precisamos de permissão ou não teremos acesso mesmo?
+ R: Fazer pull para o harbor com o Docker desktop.
+
+modificar código, rebuildar a imagems, atualizar no harbor, 
+
+3- Podemos rodar um script.ps1 que esta nos arquivos do projeto? Ou só ADMs do servidor?
+R: Sim, no container da aplicação tem terminal. Via portainer?
+ 
+4 Configurar o docker_composer.yml para conectar corretamente no banco de dados(o .env não passou para a imagem, DB_USER, DB_PASSWORD e DB_NAME pois parece que o sworm nao acessa ele como deveria). 
+ 
+5 Restaurar backup do postgres(criarei o arquivo de backup).
+R: Via script ou backup
+
+6- Instruções para fazer pedido de criação do banco de dados no servidor que tem backup?
+
+
+https://git.mpmg.mp.br/gpeixoto/save2
+ 
+msgsilva.estagio
+ 
+.\mpmg
+ 
+DB_NAME=db_CasaLilian
+DB_USER=usrAutomate
+PASSWORD=automate
+IP=postgre92-des.mpmg.mp.br
+ 
+ 
+Precisa pedir o pessoal para registrar o IP da maquina do servidor dentro do postgre
+ 
+https://portainer.mpmg.mp.br/#!/home
+https://harbor.mpmg.mp.br/
+https://git.mpmg.mp.br/gpeixoto/save2/
+ 
+https://www.mpmg.mp.br/data/files/3B/62/06/1B/332F081089C6EFF7760849A8/Solicitacao%20de%20desligamento.pdf
+ 
+19.16.1937.0000262/2026-28
+SEI / MPMG
+ 

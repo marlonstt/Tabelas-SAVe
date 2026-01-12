@@ -110,6 +110,9 @@ func Connect() {
 		log.Println("ERROR: Failed to migrate SAVe_Ensino_trab_renda or SAVe_Assistencia:", err)
 	}
 
+	// SAVe_Anexos manual column
+	DB.Exec("ALTER TABLE \"SAVe_Anexos\" ADD COLUMN IF NOT EXISTS \"Caminho\" text")
+
 	err = DB.AutoMigrate(
 		&models.SAVe_Geral{},
 		&models.SAVe_DadosDeEntrada{},
