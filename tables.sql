@@ -330,7 +330,7 @@ CREATE TABLE "SAVe_Habitacao_territorio" (
 
 -- Table: SAVe_Assistencia
 CREATE TABLE "SAVe_Assistencia" (
-    "ID" SERIAL PRIMARY KEY,
+    "id" SERIAL PRIMARY KEY,
     "ID_Caso" INTEGER,
     "Cad_unico" TEXT,
     "Status_cad_unico" TEXT,
@@ -701,7 +701,7 @@ CREATE TABLE "SAVe_Anexos" (
     "Tela" TEXT, -- To distinguish which section/screen the attachment belongs to
     "Nome_Arquivo" TEXT,
     "Tipo_Arquivo" TEXT,
-    "Conteudo" BYTEA, -- Storing file content directly
+    "Caminho" TEXT, -- Storing file path (relative to upload dir)
     "Criado_Em" TIMESTAMP DEFAULT NOW(),
     FOREIGN KEY ("ID_Caso") REFERENCES "SAVe_Geral"("ID_Caso") ON DELETE CASCADE
 );

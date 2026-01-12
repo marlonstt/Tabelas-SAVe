@@ -45,10 +45,7 @@ func Connect() {
 	})
 
 	if err != nil {
-		log.Println("ERROR: Failed to connect to database:", err)
-		log.Println("WARNING: Running in Offline/Mock Mode")
-		Connected = false
-		return
+		log.Fatalf("FATAL: Failed to connect to database: %v. Exiting to prevent split-brain state.", err)
 	}
 
 	log.Println("Connected to database successfully")
@@ -112,6 +109,9 @@ func Connect() {
 	if err := DB.AutoMigrate(&models.SAVe_Ensino_trab_renda{}, &models.SAVe_Assistencia{}); err != nil {
 		log.Println("ERROR: Failed to migrate SAVe_Ensino_trab_renda or SAVe_Assistencia:", err)
 	}
+
+	// SAVe_Anexos manual column
+	DB.Exec("ALTER TABLE \"SAVe_Anexos\" ADD COLUMN IF NOT EXISTS \"Caminho\" text")
 
 	err = DB.AutoMigrate(
 		&models.SAVe_Geral{},

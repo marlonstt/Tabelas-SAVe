@@ -93,14 +93,16 @@
         <div class="grid grid-cols-1 md:grid-cols-1 gap-2 max-w-sm mx-auto p-4">
             <a
                 href="/"
-                class="bg-save-primary text-white py-1 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center no-underline"
+                class="text-white py-1 px-6 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity shadow-md flex items-center justify-center no-underline"
+                style="background: linear-gradient(90deg, #6264A7 0%, #35365A 35%, #35365A 65%, #6264A7 100%);"
             >
                 Acessar Casos
             </a>
 
             <button
                 on:click={openCaseSelection}
-                class="bg-save-primary text-white py-1 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center"
+                class="text-white py-1 px-6 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity shadow-md flex items-center justify-center"
+                style="background: linear-gradient(90deg, #6264A7 0%, #35365A 25%, #35365A 75%, #6264A7 100%);"
             >
                 Criar Novo Caso
             </button>
@@ -108,7 +110,8 @@
             {#if user.role === "Admin" || user.role === "admin"}
                 <a
                     href="/admin/users"
-                    class="bg-save-primary text-white py-1 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center no-underline"
+                    class="text-white py-1 px-6 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity shadow-md flex items-center justify-center no-underline"
+                    style="background: linear-gradient(90deg, #6264A7 0%, #35365A 25%, #35365A 75%, #6264A7 100%);"
                 >
                     Gestão de Usuários
                 </a>
@@ -116,7 +119,8 @@
 
             <a
                 href="/dashboards"
-                class="bg-save-primary text-white py-1 px-6 rounded-lg font-bold text-lg hover:bg-save-secondary transition-colors shadow-md flex items-center justify-center no-underline"
+                class="text-white py-1 px-6 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity shadow-md flex items-center justify-center no-underline"
+                style="background: linear-gradient(90deg, #6264A7 0%, #35365A 35%, #35365A 65%, #6264A7 100%);"
             >
                 Dashboards
             </a>
