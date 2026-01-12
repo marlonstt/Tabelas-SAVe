@@ -330,7 +330,7 @@ CREATE TABLE "SAVe_Habitacao_territorio" (
 
 -- Table: SAVe_Assistencia
 CREATE TABLE "SAVe_Assistencia" (
-    "ID" SERIAL PRIMARY KEY,
+    "id" SERIAL PRIMARY KEY,
     "ID_Caso" INTEGER,
     "Cad_unico" TEXT,
     "Status_cad_unico" TEXT,
