@@ -56,12 +56,15 @@ func GetAllCases(c *gin.Context) {
 
 	// 4. Fetch extra details (Comarca_origem, N_procedimento_MPE)
 	type ExtraDetails struct {
-		ID_Caso            int
-		N_procedimento_MPE string
-		Comarca_origem     string
+		ID_Caso              int
+		N_procedimento_MPE   string
+		Comarca_origem       string
+		Data                 string
+		Classificacao_vitima string
+		Classificacao_crime  string
 	}
 	var details []ExtraDetails
-	if err := database.DB.Table("\"SAVe_DadosDeEntrada\"").Select("\"ID_Caso\", \"N_procedimento_MPE\", \"Comarca_origem\"").Find(&details).Error; err != nil {
+	if err := database.DB.Table("\"SAVe_DadosDeEntrada\"").Select("\"ID_Caso\", \"N_procedimento_MPE\", \"Comarca_origem\", \"Data\", \"Classificacao_vitima\", \"Classificacao_crime\"").Find(&details).Error; err != nil {
 		fmt.Println("Error fetching extra details:", err)
 	}
 	detailsMap := make(map[int]ExtraDetails)
@@ -82,6 +85,18 @@ func GetAllCases(c *gin.Context) {
 			// Overwrite Comarca with Comarca_origem if present
 			if detail.Comarca_origem != "" {
 				cases[i].Comarca = detail.Comarca_origem
+			}
+			// Fix Data if missing (e.g. older cases or created before sync fix)
+			if cases[i].Data == "" && detail.Data != "" {
+				cases[i].Data = detail.Data
+			}
+			// Fix Tipo_Vitima if missing
+			if cases[i].Tipo_Vitima == "" && detail.Classificacao_vitima != "" {
+				cases[i].Tipo_Vitima = detail.Classificacao_vitima
+			}
+			// Fix Tipo_Crime if missing
+			if cases[i].Tipo_Crime == "" && detail.Classificacao_crime != "" {
+				cases[i].Tipo_Crime = detail.Classificacao_crime
 			}
 		}
 
@@ -706,11 +721,32 @@ func UpdateCaseSection(c *gin.Context) {
 			}
 		}
 
-		// 4. REMOVED: Update SAVe_Geral fields
-		// CRITICAL FIX: Removed automatic updates to SAVe_Geral from dados-entrada endpoint
-		// to prevent accidental clearing of fields like Encerrado, Tipo_Form, etc.
-		// SAVe_Geral fields should ONLY be updated through specific, controlled endpoints.
-		// If needed in the future, create a dedicated endpoint for updating SAVe_Geral fields.
+		// 4. Update SAVe_Geral fields selectively
+		// We use a map to update ONLY specific fields and avoid clearing others (like Encerrado, Tipo_Form)
+		updates := make(map[string]interface{})
+		if input.SAVe_DadosDeEntrada.Data != "" {
+			updates["Data"] = input.SAVe_DadosDeEntrada.Data
+		}
+		if input.SAVe_DadosDeEntrada.N_procedimento_MPE != "" {
+			updates["Num_Processo"] = input.SAVe_DadosDeEntrada.N_procedimento_MPE
+		}
+		if input.SAVe_DadosDeEntrada.Comarca_origem != "" {
+			updates["Comarca"] = input.SAVe_DadosDeEntrada.Comarca_origem
+		}
+		if input.SAVe_DadosDeEntrada.Classificacao_vitima != "" {
+			updates["Tipo_Vitima"] = input.SAVe_DadosDeEntrada.Classificacao_vitima
+		}
+		if input.SAVe_DadosDeEntrada.Classificacao_crime != "" {
+			updates["Tipo_Crime"] = input.SAVe_DadosDeEntrada.Classificacao_crime
+		}
+
+		if len(updates) > 0 {
+			if err := tx.Model(&models.SAVe_Geral{}).Where("\"ID_Caso\" = ?", id).Updates(updates).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update geral fields"})
+				return
+			}
+		}
 
 		if err := tx.Commit().Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
