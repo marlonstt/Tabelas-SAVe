@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import api from "../lib/api";
+  import { formatDate } from "../lib/utils";
   import CaseTypeSelection from "../components/CaseTypeSelection.svelte";
 
   let cases: any[] = [];
@@ -343,7 +344,7 @@
                   </div>
                 </td>
                 <td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">
-                  {c.Data || "-"}
+                  {formatDate(c.Data)}
                 </td>
               </tr>
             {/each}
