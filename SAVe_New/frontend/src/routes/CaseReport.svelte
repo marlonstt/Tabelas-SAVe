@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import api from "../lib/api";
+    import { formatDate } from "../lib/utils";
 
     export let id: string;
 
@@ -101,17 +102,6 @@
     }
 
     // Helper functions for formatting
-    function formatDate(dateStr: string) {
-        if (!dateStr) return "Não informado";
-        const date = new Date(dateStr);
-        return isNaN(date.getTime())
-            ? dateStr
-            : date.toLocaleDateString("pt-BR", { timeZone: "UTC" });
-        // PowerApps 'Text(Date, "dd/mm/yyyy")' usually implies date component only.
-        // Backend dates like "1990-01-01T00:00:00Z" might shift if timezone applied.
-        // Often best to treat as UTC or parse YYYY-MM-DD directly if just a date.
-        // For timestamps like created_at, we want local time.
-    }
 
     function formatDateTime(dateStr: string) {
         if (!dateStr) return "Não informado";

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import api from "../../lib/api";
+    import { formatDate } from "../../lib/utils";
 
     export let caseId: string;
     export let isArchived: boolean = false;
@@ -1015,11 +1016,9 @@
                                         <input
                                             type="text"
                                             class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm bg-gray-100"
-                                            value={telefone.Atualizado
-                                                ? new Date(
-                                                      telefone.Atualizado,
-                                                  ).toLocaleDateString()
-                                                : ""}
+                                            value={formatDate(
+                                                telefone.Atualizado,
+                                            )}
                                             disabled
                                         />
                                     </div>
@@ -1077,11 +1076,7 @@
                                         <input
                                             type="text"
                                             class="block w-full rounded-md border-gray-300 shadow-sm focus:border-save-primary focus:ring focus:ring-save-primary/30 text-sm bg-gray-100"
-                                            value={email.Atualizado
-                                                ? new Date(
-                                                      email.Atualizado,
-                                                  ).toLocaleDateString()
-                                                : ""}
+                                            value={formatDate(email.Atualizado)}
                                             disabled
                                         />
                                     </div>
@@ -1307,9 +1302,9 @@
                                 <div
                                     class="text-xs text-gray-500 mt-2 text-right"
                                 >
-                                    Informado em {new Date(
+                                    Informado em {formatDate(
                                         endereco.Atualizado,
-                                    ).toLocaleDateString()}
+                                    )}
                                 </div>
                             {/if}
                         </div>

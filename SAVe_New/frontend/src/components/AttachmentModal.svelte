@@ -1,6 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher, onMount } from "svelte";
     import api from "../lib/api";
+    import { formatDate } from "../lib/utils";
 
     export let isOpen = false;
     export let caseId: string;
@@ -258,9 +259,9 @@
                                                     >
                                                     <span
                                                         class="text-xs text-gray-400"
-                                                        >({new Date(
+                                                        >({formatDate(
                                                             file.Criado_Em,
-                                                        ).toLocaleDateString()})</span
+                                                        )})</span
                                                     >
                                                 </div>
 
