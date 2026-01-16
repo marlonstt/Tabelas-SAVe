@@ -8,7 +8,9 @@
   import TelaDashboards from "./routes/TelaDashboards.svelte";
   import Sidebar from "./components/Sidebar.svelte";
   import Responsaveis from "./components/Responsaveis.svelte";
+
   import CaseReport from "./routes/CaseReport.svelte";
+  import Toast from "./components/Toast.svelte";
 
   let currentPath = window.location.pathname;
   // Initialize synchronously to avoid flash of login screen
@@ -103,6 +105,7 @@
       </main>
     </div>
   </div>
+  <Toast />
 {/if}
 
 <style>
