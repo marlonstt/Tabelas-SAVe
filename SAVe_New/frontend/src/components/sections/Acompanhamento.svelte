@@ -70,7 +70,7 @@
 
     async function loadResponsaveis() {
         try {
-            const response = await api.get("/admin/responsaveis");
+            const response = await api.get("/responsaveis");
             responsaveisList = response.data;
         } catch (error) {
             console.error("Error loading responsaveis:", error);

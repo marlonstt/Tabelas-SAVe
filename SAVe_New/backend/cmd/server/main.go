@@ -63,7 +63,7 @@ func main() {
 				admin.DELETE("/users/:id", handlers.DeleteUser)
 
 				// Responsaveis routes
-				admin.GET("/responsaveis", handlers.GetResponsaveis)
+				// GET moved to shared auth group
 				admin.POST("/responsaveis", handlers.CreateResponsavel)
 				admin.PUT("/responsaveis/:id", handlers.UpdateResponsavel)
 				admin.DELETE("/responsaveis/:id", handlers.DeleteResponsavel)
@@ -87,6 +87,9 @@ func main() {
 			// Generic attachment routes
 			auth.GET("/attachments/:id/download", handlers.DownloadAttachment)
 			auth.DELETE("/attachments/:id", handlers.DeleteAttachment)
+
+			// Shared routes (Accessible by all authenticated users)
+			auth.GET("/responsaveis", handlers.GetResponsaveis)
 		}
 	}
 

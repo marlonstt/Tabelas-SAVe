@@ -36,7 +36,7 @@
     async function loadResponsaveis() {
         loading = true;
         try {
-            const response = await api.get("/admin/responsaveis");
+            const response = await api.get("/responsaveis");
             responsaveis = response.data;
         } catch (error) {
             console.error("Error loading responsaveis:", error);
