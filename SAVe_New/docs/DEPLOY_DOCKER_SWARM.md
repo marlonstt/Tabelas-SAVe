@@ -35,9 +35,15 @@ nano .env
 ```
 Conteúdo:
 ```
+# Configuração do Banco de Dados Externo
+# DB_HOST deve ser o IP do servidor onde o PostgreSQL está rodando
+DB_HOST=192.168.X.X
 DB_USER=postgres
 DB_PASSWORD=SUA_SENHA_SEGURA
 DB_NAME=save_db
+DB_PORT=5432
+
+# Configuração da Aplicação
 JWT_SECRET=CHAVE_SECRETA_LONGA_E_ALEATORIA
 DOCKER_USERNAME=msgsilva
 ```
@@ -56,18 +62,16 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DB_HOST=db
+      - DB_HOST=${DB_HOST}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
-      - DB_PORT=5432
+      - DB_PORT=${DB_PORT}
       - JWT_SECRET=${JWT_SECRET}
     deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
-    depends_on:
-      - db
     networks:
       - save-network
 
@@ -85,26 +89,6 @@ services:
       - backend
     networks:
       - save-network
-
-  db:
-    image: postgres:15-alpine
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-    ports:
-      - "5432:5432"
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    networks:
-      - save-network
-
-volumes:
-  db_data:
 
 networks:
   save-network:
@@ -138,14 +122,14 @@ docker service logs save_frontend
 ---
 
 ## Passo 6: Inicializar o Banco de Dados
-Na primeira execução, você precisa criar as tabelas:
+> **Nota:** Como o banco de dados está em um servidor separado (não Docker), você deve executar o script de criação de tabelas diretamente nesse servidor.
 
+1.  Conecte-se ao servidor do banco de dados (ou use uma ferramenta como pgAdmin/DBeaver).
+2.  Execute o conteúdo do arquivo `tables.sql` no banco de dados `save_db`.
+
+Exemplo via linha de comando (se tiver acesso psql):
 ```bash
-# Copiar o arquivo tables.sql para o container do banco
-docker cp tables.sql $(docker ps -qf "name=save_db"):/tmp/
-
-# Executar o script SQL
-docker exec -it $(docker ps -qf "name=save_db") psql -U postgres -d save_db -f /tmp/tables.sql
+psql -h IP_DO_BANCO -U postgres -d save_db -f tables.sql
 ```
 
 ---

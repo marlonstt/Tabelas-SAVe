@@ -2,6 +2,8 @@
     import { createEventDispatcher, onMount } from "svelte";
     import api from "../lib/api";
     import { formatDate } from "../lib/utils";
+    import { showToast } from "../lib/stores";
+    import ConfirmModal from "./ConfirmModal.svelte";
 
     export let isOpen = false;
     export let caseId: string;
@@ -13,8 +15,13 @@
     let attachments: any[] = [];
     let loading = false;
     let uploadLoading = false;
+
     let fileInput: HTMLInputElement;
     let selectedFile: File | null = null;
+
+    // Deletion Modal State
+    let showConfirmModal = false;
+    let attachmentToDelete: any = null;
 
     $: activeSectionLabel =
         visibleSections.find((s) => s.id === activeTabId)?.label || activeTabId;
@@ -48,7 +55,7 @@
             attachments = res.data;
         } catch (err) {
             console.error("Error loading attachments:", err);
-            alert("Erro ao carregar anexos.");
+            showToast("Erro ao carregar anexos.", "error");
         } finally {
             loading = false;
         }
@@ -75,13 +82,13 @@
                     "Content-Type": "multipart/form-data",
                 },
             });
-            alert("Arquivo anexado com sucesso!");
+            showToast("Arquivo anexado com sucesso!", "success");
             selectedFile = null;
             if (fileInput) fileInput.value = "";
             await loadAttachments();
         } catch (err) {
             console.error("Error uploading file:", err);
-            alert("Erro ao enviar arquivo.");
+            showToast("Erro ao enviar arquivo.", "error");
         } finally {
             uploadLoading = false;
         }
@@ -111,25 +118,28 @@
             window.URL.revokeObjectURL(url);
         } catch (err) {
             console.error("Download failed:", err);
-            alert("Erro ao baixar arquivo.");
+            showToast("Erro ao baixar arquivo.", "error");
         }
     }
 
     async function deleteAttachment(attachment: any) {
-        if (
-            !confirm(
-                `Tem certeza que deseja excluir o anexo "${attachment.Nome_Arquivo}"?`,
-            )
-        ) {
-            return;
-        }
+        attachmentToDelete = attachment;
+        showConfirmModal = true;
+    }
+
+    async function confirmDelete() {
+        if (!attachmentToDelete) return;
 
         try {
-            await api.delete(`/attachments/${attachment.ID}`);
+            await api.delete(`/attachments/${attachmentToDelete.ID}`);
+            showToast("Anexo excluído com sucesso!", "success");
             await loadAttachments();
         } catch (err) {
             console.error("Delete failed:", err);
-            alert("Erro ao excluir arquivo.");
+            showToast("Erro ao excluir arquivo.", "error");
+        } finally {
+            showConfirmModal = false;
+            attachmentToDelete = null;
         }
     }
 
@@ -313,3 +323,18 @@
         </div>
     </div>
 {/if}
+
+<ConfirmModal
+    isOpen={showConfirmModal}
+    title="Excluir Anexo"
+    message={attachmentToDelete
+        ? `Tem certeza que deseja excluir o anexo "${attachmentToDelete.Nome_Arquivo}"?`
+        : "Tem certeza que deseja excluir este anexo?"}
+    confirmText="Excluir"
+    confirmColor="bg-red-600 hover:bg-red-700"
+    on:close={() => {
+        showConfirmModal = false;
+        attachmentToDelete = null;
+    }}
+    on:confirm={confirmDelete}
+/>

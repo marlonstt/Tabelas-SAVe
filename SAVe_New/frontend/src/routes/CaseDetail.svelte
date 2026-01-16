@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import api from "../lib/api";
-  import { isGlobalSaving } from "../lib/stores";
+  import { isGlobalSaving, showToast } from "../lib/stores";
   import ConfirmModal from "../components/ConfirmModal.svelte";
   import AttachmentModal from "../components/AttachmentModal.svelte";
 
@@ -105,12 +105,16 @@
   async function confirmDeleteCase() {
     try {
       await api.delete(`/cases/${id}`);
-      alert("Caso excluído com sucesso!");
-      window.location.href = "/dashboard";
+      showToast("Caso excluído com sucesso!", "success");
+      // Use pushState for soft navigation without reload
+      window.history.pushState({}, "", "/dashboard");
+      // Trigger popstate event so App.svelte catches it
+      window.dispatchEvent(new Event("popstate"));
     } catch (err: any) {
       console.error("Erro ao excluir caso:", err);
-      alert(
+      showToast(
         "Erro ao excluir caso: " + (err.response?.data?.error || err.message),
+        "error",
       );
       showConfirmModal = false;
     }
@@ -179,17 +183,13 @@
 
     try {
       // Persist to backend
-      // Map "breve" -> "Breve", "completo" -> "Completo" for backend consistency if needed
-      // But backend just saves string, so lowercase is fine if consistent.
-      // However, existing data seems to use Title Case ("Breve", "Completo").
-      // Let's send Title Case to be safe.
       const typeTitleCase = type.charAt(0).toUpperCase() + type.slice(1);
       await api.put(`/cases/${id}/geral`, { Tipo_Form: typeTitleCase });
     } catch (err) {
       console.error("Error updating form type:", err);
       // Revert on error
       formType = oldType;
-      alert("Erro ao salvar tipo de formulário");
+      showToast("Erro ao salvar tipo de formulário", "error");
     }
   }
 
@@ -200,11 +200,12 @@
 
     try {
       await api.put(`/cases/${id}/reopen`);
-      alert("Caso reaberto com sucesso!");
+      showToast("Caso reaberto com sucesso!", "success");
+      // Just reload for now as it refreshes state reliably
       window.location.reload();
     } catch (err) {
       console.error("Error reopening case:", err);
-      alert("Erro ao reabrir caso");
+      showToast("Erro ao reabrir caso", "error");
     }
   }
 

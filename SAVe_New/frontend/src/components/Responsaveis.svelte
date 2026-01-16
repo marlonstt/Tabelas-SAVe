@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import api from "../lib/api";
+    import { showToast } from "../lib/stores";
     import ConfirmModal from "./ConfirmModal.svelte";
 
     let responsaveis: any[] = [];
@@ -36,11 +37,11 @@
     async function loadResponsaveis() {
         loading = true;
         try {
-            const response = await api.get("/admin/responsaveis");
+            const response = await api.get("/responsaveis");
             responsaveis = response.data;
         } catch (error) {
             console.error("Error loading responsaveis:", error);
-            alert("Erro ao carregar responsáveis.");
+            showToast("Erro ao carregar responsáveis.", "error");
         } finally {
             loading = false;
         }
@@ -86,7 +87,7 @@
         const finalArea = area === "Outro" ? customArea : area;
 
         if (!nome || !finalCargo || !finalArea) {
-            alert("Preencha todos os campos.");
+            showToast("Preencha todos os campos.", "info");
             return;
         }
 
@@ -104,9 +105,10 @@
             }
             closeModal();
             loadResponsaveis();
+            showToast("Responsável salvo com sucesso!", "success");
         } catch (error) {
             console.error("Error saving responsavel:", error);
-            alert("Erro ao salvar responsável.");
+            showToast("Erro ao salvar responsável.", "error");
         }
     }
 
@@ -124,9 +126,10 @@
                 loadResponsaveis();
                 showConfirmModal = false;
                 responsavelToDeleteId = null;
+                showToast("Responsável excluído com sucesso!", "success");
             } catch (error) {
                 console.error("Error deleting responsavel:", error);
-                alert("Erro ao excluir responsável.");
+                showToast("Erro ao excluir responsável.", "error");
             }
         }
     }

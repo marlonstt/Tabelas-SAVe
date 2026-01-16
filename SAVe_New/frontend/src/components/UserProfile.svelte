@@ -1,6 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
     import api from "../lib/api";
+    import { showToast } from "../lib/stores";
 
     export let user: any;
     export let isOpen = false;
@@ -69,7 +70,7 @@
                 currentPassword: passwordData.currentPassword,
                 newPassword: passwordData.newPassword,
             });
-            alert("Senha alterada com sucesso");
+            showToast("Senha alterada com sucesso!", "success");
             showChangePassword = false;
             passwordData = {
                 currentPassword: "",
@@ -87,7 +88,7 @@
             ) {
                 currentPasswordError = "Senha incorreta.";
             } else {
-                alert(errorMsg || "Erro ao alterar senha");
+                showToast(errorMsg || "Erro ao alterar senha", "error");
             }
         }
     }
@@ -161,11 +162,12 @@
                     }),
                 );
 
-                alert("Foto de perfil atualizada com sucesso!");
+                showToast("Foto de perfil atualizada com sucesso!", "success");
             } catch (error: any) {
-                alert(
+                showToast(
                     error.response?.data?.error ||
                         "Erro ao atualizar foto de perfil",
+                    "error",
                 );
             }
         };

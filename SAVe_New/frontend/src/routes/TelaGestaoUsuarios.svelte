@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import api from "../lib/api";
+    import { showToast } from "../lib/stores";
     import ConfirmModal from "../components/ConfirmModal.svelte";
 
     interface User {
@@ -40,8 +41,10 @@
             users = response.data;
         } catch (error) {
             console.error("Error fetching users:", error);
-            alert(
+            console.error("Error fetching users:", error);
+            showToast(
                 "Erro ao carregar usuários. Verifique se você é administrador.",
+                "error",
             );
         } finally {
             loading = false;
@@ -80,8 +83,12 @@
             }
             showModal = false;
             fetchUsers();
+            showToast("Usuário salvo com sucesso!", "success");
         } catch (error: any) {
-            alert(error.response?.data?.error || "Erro ao salvar usuário");
+            showToast(
+                error.response?.data?.error || "Erro ao salvar usuário",
+                "error",
+            );
         }
     }
 
@@ -97,8 +104,9 @@
                 fetchUsers();
                 showConfirmModal = false;
                 userToDeleteId = null;
+                showToast("Usuário excluído com sucesso!", "success");
             } catch (error) {
-                alert("Erro ao excluir usuário");
+                showToast("Erro ao excluir usuário", "error");
             }
         }
     }

@@ -2,6 +2,7 @@
     import { createEventDispatcher } from "svelte";
     import UserProfile from "./UserProfile.svelte";
     import api from "../lib/api";
+    import { showToast } from "../lib/stores";
     import CaseTypeSelection from "./CaseTypeSelection.svelte";
 
     export let user: any;
@@ -46,9 +47,10 @@
             window.location.href = `/case/${response.data.id}`;
         } catch (err: any) {
             console.error(err);
-            alert(
+            showToast(
                 "Erro ao criar caso: " +
                     (err.response?.data?.error || err.message),
+                "error",
             );
         }
     }

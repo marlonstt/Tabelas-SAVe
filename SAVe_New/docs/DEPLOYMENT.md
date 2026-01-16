@@ -34,12 +34,18 @@ A aplicação foi preparada para ser totalmente portátil. Siga os passos abaixo
     Copie a pasta do projeto (`SAVe_New`) para o servidor. Você pode fazer isso via Git (clonando o repositório) ou enviando os arquivos via SCP/FTP.
     *Certifique-se de que o arquivo `tables.sql` (que está na pasta pai) também esteja acessível ou copie-o para dentro de `SAVe_New` e ajuste o `docker-compose.yml` se necessário.*
 
-2.  **Configurar Variáveis de Ambiente (Opcional)**
-    O arquivo `docker-compose.yml` já vem com configurações padrão. Para produção, recomenda-se alterar as senhas e chaves secretas diretamente no arquivo ou criar um arquivo `.env`.
-    *   Alterar `JWT_SECRET` no serviço `backend`.
-    *   Alterar senhas do banco de dados (`POSTGRES_PASSWORD`).
+3.  **Configurar Variáveis de Ambiente (Opcional)**
+    O arquivo `docker-compose.yml` requer a configuração correta para conectar ao banco de dados externo.
+    
+    > **Importante:** Como o banco de dados roda fora do Docker, você DEVE configurar o `DB_HOST` com o IP do servidor de banco.
 
-3.  **Iniciar a Aplicação**
+    Crie ou edite o arquivo `.env` com:
+    *   `DB_HOST=IP_DO_BANCO`
+    *   `DB_USER=postgres`
+    *   `DB_PASSWORD=SUA_SENHA`
+    *   `JWT_SECRET=CHAVE_SECRETA_NOVA`
+
+4.  **Iniciar a Aplicação**
     Abra o terminal na pasta do projeto (`SAVe_New`) e execute:
 
     ```bash
